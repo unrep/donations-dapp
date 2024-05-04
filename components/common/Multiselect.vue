@@ -3,7 +3,7 @@
     <div
       v-if="opened"
       ref="multiselectRef"
-      class="absolute -left-1 w-60 border rounded-xl overflow-y-auto shadow-sm mt-1 overflow-hidden"
+      class="bg-white absolute -left-1 w-60 border rounded-xl overflow-y-auto shadow-sm mt-1 overflow-hidden"
     >
       <div class="w-full py-2 pl-3 pr-2 flex items-center gap-2 border-b">
         <IconsSearch />
@@ -19,7 +19,7 @@
         <button
           v-for="filter in props.filters"
           :key="filter.text"
-          class="bg-white capitalize font-semibold hover:bg-gray-100 active:bg-gray-100 py-1.5 px-3 flex justify-between items-center duration-200"
+          class="capitalize font-semibold hover:bg-gray-100 active:bg-gray-100 py-1.5 px-3 flex justify-between items-center duration-200"
           @click="filter.selected = !filter.selected"
         >
           {{ filter.text }}

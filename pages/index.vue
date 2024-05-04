@@ -48,7 +48,7 @@
 
       <LandingSearch class="z-20" :filters="filters" />
 
-      <LandingCampaignSearchResultList class="z-10" :campaigns="campaigns" />
+      <LandingCampaignSearchResultList class="z-10 -mt-2" :campaigns="campaigns" />
     </div>
   </div>
 </template>
