@@ -45,12 +45,16 @@
           Search campaigns by name or categories to find the one you need
         </div>
       </div>
-      <LandingSearch :filters="filters" />
+
+      <LandingSearch class="z-20" :filters="filters" />
+
+      <LandingCampaignSearchResultList class="z-10" :campaigns="campaigns" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import campaigns from "~/mockCampaigns.json";
 const filters = ref([
   { text: "filter one", selected: false },
   { text: "filter two", selected: false },

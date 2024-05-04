@@ -3,7 +3,7 @@
     class="bg-white shrink-0 snap-center w-full max-w-xs relative group flex flex-col items-center justify-center from-gray-100 bg-gradient-to-br shadow-lg rounded-3xl overflow-hidden hover:border-indigo-500 hover:border-2 duration-300"
   >
     <img
-      class="z-10 w-full h-full aspect-video object-cover object-center relative group-hover:scale-[2.5] group-hover:translate-y-1/2 duration-500 ease-in-out"
+      class="z-10 w-full max-h-[50%] h-full aspect-video object-cover object-center relative group-hover:scale-[2.5] group-hover:translate-y-1/2 duration-500 ease-in-out"
       :src="image"
       alt="campaign"
     />
@@ -58,13 +58,12 @@
 </template>
 
 <script setup lang="ts">
-const { title, goal, raised, image } = defineProps<{
-  title: string;
-  description: string;
-  goal: number;
-  raised: number;
-  image: string;
+import { type Campaign } from "~/types";
+const { campaign } = defineProps<{
+  campaign: Campaign;
 }>();
+
+const { title, goal, raised, image, description } = campaign;
 
 const raisedPercentage = computed(() => Math.floor((raised / goal) * 100));
 </script>
