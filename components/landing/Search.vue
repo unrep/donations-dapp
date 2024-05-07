@@ -15,22 +15,24 @@
     </div>
 
     <div class="w-full flex items-center justify-start flex-wrap gap-2">
-      <div
-        v-for="filter in selectedFilters"
-        :key="filter.text"
-        class="divide-x grid grid-cols-2 items-stretch capitalize font-semibold bg-white hover:bg-gray-100 active:bg-gray-100 duration-200 border rounded-full text-sm text-gray-500"
-        style="grid-template-columns: 1fr min-content"
-      >
-        <div class="py-1.5 pl-[.875rem] pr-3">
-          {{ filter.text }}
-        </div>
-        <button
-          class="pl-2 pr-2.5 h-full flex items-center justify-center"
-          @click="filter.selected = false"
+      <TransitionGroup name="scale-in">
+        <div
+          v-for="filter in selectedFilters"
+          :key="filter.text"
+          class="overflow-hidden divide-x grid grid-cols-2 items-stretch capitalize font-semibold bg-white hover:bg-gray-100 active:bg-gray-100 duration-200 border rounded-full text-sm text-gray-500"
+          style="grid-template-columns: 1fr min-content"
         >
-          <IconsCross :size="1.25" />
-        </button>
-      </div>
+          <div class="pl-[.875rem] pr-3 line-clamp-1 leading-8 overflow-hidden">
+            {{ filter.text }}
+          </div>
+          <button
+            class="pl-2 pr-2.5 h-full flex items-center justify-center"
+            @click="filter.selected = false"
+          >
+            <IconsCross :size="1.25" />
+          </button>
+        </div>
+      </TransitionGroup>
 
       <div class="relative h-full flex flex-col items-center justify-center">
         <button
@@ -64,3 +66,25 @@ const selectedFilters = computed(() =>
 
 const opened = ref(false);
 </script>
+
+<style lang="scss" scoped>
+.scale-in {
+  &-enter-active,
+  &-leave-active {
+    transition: max-width scale 3s;
+    transform-origin: left;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    max-width: 0;
+    transform: scaleX(0);
+  }
+
+  &-enter-to,
+  &-leave-from {
+    max-width: 10rem;
+    transform: scaleX(1);
+  }
+}
+</style>

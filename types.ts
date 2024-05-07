@@ -1,8 +1,10 @@
 export type Campaign = {
   id: string;
   title: string;
-  description: string;
-  goal: number;
-  raised: number;
   image: string;
+  raised: number;
+  goal: number;
+  description: string;
+  createdAt?: Date;
+  donationsCount?: number;
 };

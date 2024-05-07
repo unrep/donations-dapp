@@ -12,6 +12,7 @@ export default defineNuxtConfig({
   },
   plugins: [],
   modules: [
+    "nuxt-anchorscroll",
     "@pinia/nuxt", // https://pinia.vuejs.org/ssr/nuxt.html
     "@nuxtjs/eslint-module", // https://nuxt.com/modules/eslint
     "@nuxtjs/tailwindcss", // https://nuxt.com/modules/tailwindcss

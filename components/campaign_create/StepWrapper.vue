@@ -58,7 +58,6 @@
         Continue
       </button>
     </div>
-    <!-- <div class="mlg:hidden" /> -->
   </div>
 </template>
 

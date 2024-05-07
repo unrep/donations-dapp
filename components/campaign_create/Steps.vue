@@ -2,37 +2,47 @@
   <!-- Desktop -->
   <div class="hidden mlg:flex h-full w-full flex-col justify-between p-10">
     <div class="text-4xl font-black text-white text-left w-full">
+      <NuxtLink
+        to="/"
+        class="mb-5 w-full flex items-center justify-center gap-2 text-lg text-white hover:scale-105 duration-200"
+      >
+        <IconsArrow class="-rotate-90" />
+        <span class="font-normal">Home</span>
+      </NuxtLink>
+
       Create a Campaign
     </div>
 
-    <div class="w-full flex flex-col items-center justify-center gap-2">
-      <div
-        v-for="(step, index) in steps"
-        :key="index"
-        class="w-full duration-200 animate-appear-bounce z-10"
-        :style="{
-          '--delay': `${index * 200}ms`,
-        }"
-      >
+    <div class="flex flex-col items-center justify-center gap-10">
+      <div class="w-full flex flex-col items-center justify-center gap-2">
         <div
-          :class="[
-            'w-full flex items-center gap-2 p-2 rounded-full duration-200',
-            step.selected
-              ? 'scale-110 translate-x-[4.25%] opacity-100'
-              : 'scale-100 translate-x-0 opacity-30',
-          ]"
+          v-for="(step, index) in steps"
+          :key="index"
+          class="w-full duration-200 animate-appear-bounce z-10"
+          :style="{
+            '--delay': `${index * 200}ms`,
+          }"
         >
           <div
-            class="self-start bg-white aspect-square text-indigo-600 size-8 rounded-full flex justify-center items-center"
+            :class="[
+              'w-full flex items-center gap-2 p-2 rounded-full duration-200',
+              step.selected
+                ? 'scale-110 translate-x-[4.25%] opacity-100'
+                : 'scale-100 translate-x-0 opacity-30',
+            ]"
           >
-            <div v-if="currentStep.index <= index">
-              {{ index + 1 }}
+            <div
+              class="self-start bg-white aspect-square text-indigo-600 size-8 rounded-full flex justify-center items-center"
+            >
+              <div v-if="currentStep.index <= index">
+                {{ index + 1 }}
+              </div>
+              <div v-else><IconsCheck /></div>
             </div>
-            <div v-else><IconsCheck /></div>
-          </div>
 
-          <div :class="`text-white line-clamp-1`">
-            {{ step.stepName }}
+            <div :class="`text-white line-clamp-1`">
+              {{ step.stepName }}
+            </div>
           </div>
         </div>
       </div>
@@ -43,13 +53,15 @@
 
   <!-- Mobile -->
   <div
-    class="z-50 mlg:hidden flex flex-col items-center justify-center w-full bg-indigo-500 font-black text-white py-5 duration-200"
+    class="mlg:hidden flex flex-col items-center justify-center w-full py-10 bg-indigo-500 font-black text-white duration-200"
   >
-    <div
-      class="hidden sm:block text-4xl font-black text-white text-center w-full pt-10 pb-20"
+    <NuxtLink
+      to="/"
+      class="mb-10 w-full flex items-center justify-center gap-2 text-lg text-white hover:scale-105 duration-200"
     >
-      Create a Campaign
-    </div>
+      <IconsArrow class="-rotate-90" />
+      <span class="font-medium">Home</span>
+    </NuxtLink>
 
     <div class="w-full h-full flex items-center justify-center">
       <TransitionRoot

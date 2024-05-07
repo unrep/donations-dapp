@@ -3,9 +3,10 @@
     class="w-full h-full min-h-screen flex flex-col mlg:grid grid-cols-2 items-stretch justify-center from-indigo-600 mlg:to-white mlg:bg-gradient-to-r"
     style="grid-template-columns: max-content 1fr"
   >
-    <CampaignCreateSteps />
+    <CampaignCreateSteps class="z-20" />
 
     <CampaignCreateStepWrapper
+      class="z-10"
       :main-text="currentStep.step?.mainText || ''"
       :description-text="currentStep.step?.descriptionText || ''"
       :on-continue="onContinue"
