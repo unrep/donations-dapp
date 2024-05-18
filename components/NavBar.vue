@@ -1,7 +1,7 @@
 <template>
   <div
     ref="navRef"
-    class="z-50 sticky top-0 left-0 w-full bg-opacity-50 backdrop-blur-lg flex items-center justify-center border-b nav-shadow"
+    class="z-50 sticky top-0 left-0 w-full bg-opacity-50 bg-white backdrop-blur-lg flex items-center justify-center border-b nav-shadow"
   >
     <div class="w-full p-5 max-w-7xl flex justify-between items-center">
       <div class="text-4xl font-black text-indigo-600 hidden md:block">
@@ -24,7 +24,7 @@
         >
           Start campaign
         </NuxtLink>
-        <NuxtLink class="nav-button" @click="scrollToAnchor('#scrollhere')">
+        <NuxtLink class="nav-button" @click="scrollToAnchor('#searchElement')">
           Search
         </NuxtLink>
       </div>
@@ -58,16 +58,11 @@
         />
       </div>
 
-      <NuxtLink to="/" class="nav-button" @click="scrollToAnchor('#scrollhere')"
-        >Home</NuxtLink
-      >
-      <NuxtLink
-        to="/create-campaign"
-        class="nav-button"
-        @click="scrollToAnchor('#scrollhere')"
+      <NuxtLink to="/" class="nav-button">Home</NuxtLink>
+      <NuxtLink to="/create-campaign" class="nav-button"
         >Start campaign</NuxtLink
       >
-      <NuxtLink class="nav-button" @click="scrollToAnchor('#scrollhere')"
+      <NuxtLink class="nav-button" @click="scrollToAnchor('#searchElement')"
         >Search</NuxtLink
       >
     </div>
@@ -78,6 +73,22 @@
 const nuxtApp = useNuxtApp();
 
 const navRef = ref<HTMLElement | null>(null);
+
+const scrollY = ref(0);
+
+function updateScroll() {
+  scrollY.value = window.scrollY;
+  console.log("Scroll position:", scrollY.value);
+}
+
+onMounted(() => {
+  console.log("mounted");
+  window.addEventListener("scroll", () => console.log("scrolling"));
+});
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", updateScroll);
+});
 
 // Set custom anchor with Y axis scrolling to dynamic offset
 nuxtApp.$anchorScroll!.defaults.toAnchor = () => ({

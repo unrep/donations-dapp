@@ -16,7 +16,7 @@
     </div>
 
     <div
-      class="z-20 overflow-hidden p-5 absolute bg-opacity-50 backdrop-blur-md flex gap-5 flex-col items-center justify-between -top-full group-hover:-top-0 left-0 w-full h-full bg-white duration-500 ease-in-out"
+      class="z-20 overflow-hidden p-5 absolute bg-opacity-70 backdrop-blur-md flex gap-5 flex-col items-center justify-between -top-full group-hover:-top-0 left-0 w-full h-full bg-white duration-500 ease-in-out"
     >
       <div class="text-xl font-bold">{{ title }}</div>
 
