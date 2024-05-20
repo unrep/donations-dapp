@@ -2,7 +2,7 @@ import { uploadFile } from "~/helpers/ipfs/uploadFileIPFS";
 
 export const useCampaignStore = defineStore("campaign", () => {
   const campaignName = ref("");
-  const goalAmount = ref<bigint | null>(null);
+  const goalAmount = ref<number | null>(null);
   const description = ref("");
   const image = ref<File | null>(null);
   const errorMessage = ref<string | null>(null);

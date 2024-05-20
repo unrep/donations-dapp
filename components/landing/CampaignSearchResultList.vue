@@ -11,8 +11,10 @@
 </template>
 
 <script lang="ts" setup>
-import { type Campaign } from "~/types";
+import type { Campaign } from "~/types";
+
 defineProps({
   campaigns: Array<Campaign>,
 });
 </script>
+~

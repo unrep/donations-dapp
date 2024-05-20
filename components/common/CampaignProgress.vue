@@ -1,7 +1,7 @@
 <template>
-  <div class="text-base mt-5 px-1">
-    {{ raised }} ETH
-    <span class="font-semibold text-sm">of {{ goal }} ETH</span>
+  <div class="text-lg mt-5 px-1">
+    {{ raisedUSD }}
+    <span class="font-semibold text-base">raised of {{ goalUSD }} </span>
   </div>
 
   <div class="w-full px-1 text-center mt-2">
@@ -27,6 +27,9 @@ const { campaign } = defineProps<{
 
 const { goal, raised } = campaign;
 
+const goalUSD = computed(() => computeETHPrice(goal.toString()));
+const raisedUSD = computed(() => computeETHPrice(raised.toString()));
+
 const raisedPercentage = computed(() =>
   Math.floor((campaign.raised / campaign.goal) * 100),
 );
@@ -37,3 +40,4 @@ const raisedPercentage = computed(() =>
   width: var(--raised-percentage);
 }
 </style>
+~

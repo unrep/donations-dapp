@@ -6,10 +6,12 @@
       <NavBar />
 
       <div
-        class="w-full max-w-7xl p-5 md:px-5 md:py-10 flex flex-col lg:grid grid-flow-col gap-5 md:gap-10 items-center justify-between"
+        class="w-full max-w-7xl p-5 md:px-5 md:py-10 flex flex-col lg:grid grid-flow-col flex-nowrap gap-5 md:gap-10 justify-items-stretch"
         style="grid-template-columns: 7fr 3fr"
       >
-        <div class="flex flex-col items-center justify-center gap-5 md:gap-10">
+        <div
+          class="flex-grow flex flex-col items-center justify-center gap-5 md:gap-10"
+        >
           <div
             class="w-full text-3xl md:text-4xl xl:text-5xl font-bold text-indigo-800"
           >
@@ -24,7 +26,7 @@
         </div>
 
         <div
-          class="h-full w-full lg:w-max shadow-md bg-opacity-40 backdrop-blur-sm bg-white rounded-3xl lg:rounded-[2.5rem] p-5 pt-5 gap-10 flex flex-col justify-center items-center lg:items-start"
+          class="h-full w-full shadow-md bg-opacity-40 backdrop-blur-sm bg-white rounded-3xl lg:rounded-[2.5rem] py-5 px-5 gap-10 flex flex-col justify-center items-center lg:items-start"
         >
           <div
             class="gap-5 w-full h-full flex flex-col items-start justify-start px-2 pt-2"
@@ -40,9 +42,9 @@
 
             <div class="w-full">
               <div class="w-full text-2xl font-semibold px-1">
-                {{ raised }} ETH
+                {{ raisedUSD }}
                 <span class="font-normal text-base"
-                  >raised of {{ goal }} ETH</span
+                  >raised of {{ goalUSD }}</span
                 >
               </div>
 
@@ -102,6 +104,9 @@ const campaignId = ref<string>(route.query.id as string);
 const campaign = campaigns[1];
 
 const { goal, raised } = campaign;
+
+const goalUSD = computed(() => computeETHPrice(goal.toString()));
+const raisedUSD = computed(() => computeETHPrice(raised.toString()));
 
 const raisedPercentage = computed(() =>
   Math.floor((campaign.raised / campaign.goal) * 100),

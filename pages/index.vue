@@ -1,9 +1,9 @@
 <template>
-  <!-- <MainPollsGrid :polls="polls" /> -->
-  <div class="">
+  <div>
     <NavBar />
-
     <LandingHero />
+
+    <!-- <button @click="onboardStore.openModal()">Connect wallet</button> -->
 
     <div
       class="w-full bg-white flex flex-col justify-center items-center gap-10 pb-10"

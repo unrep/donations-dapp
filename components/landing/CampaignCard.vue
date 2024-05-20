@@ -41,7 +41,8 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 
-import { type Campaign } from "~/types";
+import type { Campaign } from "~/types";
+
 const { campaign } = defineProps<{
   campaign: Campaign;
 }>();
@@ -49,3 +50,4 @@ const router = useRouter();
 
 const { title, image, description } = campaign;
 </script>
+~

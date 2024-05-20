@@ -74,22 +74,6 @@ const nuxtApp = useNuxtApp();
 
 const navRef = ref<HTMLElement | null>(null);
 
-const scrollY = ref(0);
-
-function updateScroll() {
-  scrollY.value = window.scrollY;
-  console.log("Scroll position:", scrollY.value);
-}
-
-onMounted(() => {
-  console.log("mounted");
-  window.addEventListener("scroll", () => console.log("scrolling"));
-});
-
-onUnmounted(() => {
-  window.removeEventListener("scroll", updateScroll);
-});
-
 // Set custom anchor with Y axis scrolling to dynamic offset
 nuxtApp.$anchorScroll!.defaults.toAnchor = () => ({
   behavior: "smooth",

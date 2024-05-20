@@ -14,10 +14,11 @@ body {
 
 // Disable scroll bounce effect on iOS
 html, body {
-	-webkit-overflow-scrolling : touch !important;
-	overflow: auto !important;
-	height: 100% !important;
+    -webkit-overflow-scrolling : touch !important;
+    // overflow: auto !important;
+    height: 100% !important;
 }
+
 
 .bg-radial-base {
     background: radial-gradient(
