@@ -1,6 +1,6 @@
 <template>
   <label
-    :class="`${image ? 'p-1.5' : 'p-5'} upload-label`"
+    :class="`${image ? 'p-1.5' : 'py-10 px-5'} upload-label`"
     @drop="handleDrop"
     @dragover="(e) => e.preventDefault()"
     @dragenter="(e) => e.preventDefault()"
@@ -19,8 +19,14 @@
       </button>
     </div>
 
-    <div v-if="!image" :class="`${image ? 'mt-5' : 'mt-2'} text-center`">
-      {{ "Upload campaign image" }}
+    <div
+      v-if="!image"
+      :class="`${image ? 'mt-5' : 'mt-2'} text-center font-medium`"
+    >
+      <span class="underline text-indigo-700 underline-offset-2"
+        >Click to upload</span
+      >
+      or drag and drop
     </div>
     <input
       ref="inputElement"
@@ -100,15 +106,23 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .upload-label {
-  @apply flex flex-col items-center justify-center
-    mlg:min-h-64
-    rounded-3xl border border-gray-400 border-dashed 
+  @apply relative flex flex-col items-center justify-center
+    mlg:min-h-64 overflow-hidden
+    rounded-3xl 
     text-gray-500 text-base
     cursor-pointer duration-200;
 
+  &:before {
+    @apply duration-200 rounded-[1.75rem] absolute -top-1 -left-1 -right-1 -bottom-1 border-[5px] border-gray-400 border-dashed;
+    content: "";
+  }
   &:hover,
   &:active {
-    @apply text-indigo-800 border-indigo-500;
+    @apply text-indigo-800 border-indigo-800 bg-indigo-800 bg-opacity-5;
+
+    &:before {
+      @apply border-indigo-800;
+    }
   }
 }
 
