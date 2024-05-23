@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white shrink-0 snap-center w-full max-w-xs relative group flex flex-col items-center justify-between from-gray-100 bg-gradient-to-br shadow-lg rounded-3xl overflow-hidden hover:border-indigo-500 hover:border-2 duration-300"
+    class="bg-white shrink-0 snap-center w-full max-w-xs relative group flex flex-col items-center justify-between from-gray-100 bg-gradient-to-br shadow-lg rounded-3xl overflow-hidden hover:border-indigo-800 hover:border-2 duration-300"
   >
     <img
       class="z-10 w-full max-h-[50%] h-full aspect-video object-cover object-center relative group-hover:scale-[2.5] group-hover:translate-y-1/2 duration-500 ease-in-out"
@@ -28,7 +28,7 @@
         class="w-full translate-y-[200%] group-hover:translate-y-0 delay-[400ms] duration-200"
       >
         <button
-          class="shadow-lg font-semibold w-full px-5 py-2 bg-indigo-500 text-white rounded-xl hover:scale-105 duration-200"
+          class="shadow-lg font-semibold w-full px-5 py-2 bg-indigo-800 text-white rounded-xl hover:scale-105 duration-200"
           @click="router.push(`/campaign?id=${campaign.id}`)"
         >
           See campaign page

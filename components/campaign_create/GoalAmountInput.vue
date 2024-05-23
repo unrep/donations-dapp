@@ -1,6 +1,9 @@
 <template>
   <div
-    class="flex items-center justify-stretch gap-4 w-full border border-gray-300 outline-indigo-500 rounded-lg shadow-sm px-4 py-2 overflow-hidden"
+    :class="[
+      'flex items-center justify-stretch gap-4 w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 overflow-hidden',
+      { 'border-indigo-800 border-shadow': isFocused },
+    ]"
   >
     <div class="text-gray-500">ETH</div>
 
@@ -10,6 +13,8 @@
       inputmode="numeric"
       pattern="\d*"
       class="w-full font-thin text-lg outline-none pl-4 border-l"
+      @focus="isFocused = true"
+      @blur="isFocused = false"
       @input="handleInputChange"
     />
     <Transition name="fade-to-left">
@@ -48,6 +53,8 @@ function handleInputChange(event: Event) {
 
   goalAmount.value = Number(target.value);
 }
+
+const isFocused = ref(false);
 </script>
 
 <style scoped lang="scss">
@@ -80,5 +87,9 @@ input[type="number"] {
     transform: translateX(0);
     opacity: 1;
   }
+}
+
+.border-shadow {
+  box-shadow: 0 0 0px 1px #3730a3;
 }
 </style>

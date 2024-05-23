@@ -108,7 +108,7 @@ onMounted(() => {
 
   &:hover,
   &:active {
-    @apply text-indigo-600 border-indigo-500;
+    @apply text-indigo-800 border-indigo-500;
   }
 }
 

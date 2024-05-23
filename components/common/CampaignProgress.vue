@@ -11,7 +11,7 @@
     </div>
     <div class="w-full rounded-full overflow-hidden h-3 bg-gray-200">
       <div
-        class="raised-percentage-width h-full bg-indigo-500 rounded-full"
+        class="raised-percentage-width h-full bg-indigo-800 rounded-full"
         :style="{ '--raised-percentage': `${raisedPercentage}%` }"
       />
     </div>

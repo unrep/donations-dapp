@@ -1,47 +1,58 @@
 <template>
   <div
-    class="w-full h-full min-h-screen flex flex-col mlg:grid grid-cols-2 items-stretch justify-center from-indigo-600 mlg:to-white mlg:bg-gradient-to-r"
+    class="w-full h-full min-h-screen flex flex-col mlg:grid grid-cols-2 items-stretch justify-center"
     style="grid-template-columns: max-content 1fr"
   >
     <CampaignCreateSteps class="z-20" />
 
-    <CampaignCreateStepWrapper
-      class="z-10"
-      :main-text="currentStep.step?.mainText || ''"
-      :description-text="currentStep.step?.descriptionText || ''"
-      :on-continue="onContinue"
-      :on-back="onBack"
-    >
-      <template #input>
+    <CampaignCreateStepWrapper class="z-10">
+      <div class="w-full space-y-1">
+        <div class="font-medium">{{ steps[0].shortStepName }}</div>
         <CampaignCreateNameInput
-          v-if="currentStep.index === 0"
-          :placeholder="currentStep.step?.inputPlaceholder"
+          :placeholder="steps[0].inputPlaceholder"
           :onkeyup="handleEnter"
         />
-        <CampaignCreateGoalAmountInput
-          v-if="currentStep.index === 1"
-          :placeholder="currentStep.step?.inputPlaceholder"
-          :onkeyup="handleEnter"
+        <CampaignCreateErrorMessage
+          v-if="steps[0].errorShow"
+          :error-message="steps[0].errorMessage"
         />
-        <CampaignCreateDescriptionInput
-          v-if="currentStep.index === 2"
-          :placeholder="currentStep.step?.inputPlaceholder"
-        />
-        <CampaignCreateFileUpload
-          v-if="currentStep.index === 3"
-          :placeholder="currentStep.step?.inputPlaceholder"
-          :onkeyup="handleEnter"
-        />
+      </div>
 
-        <div
-          :class="[
-            'px-2 text-red-500 animate-pulse duration-200 leading-5 overflow-hidden ease-out',
-            errorMessage ? 'max-h-6 pt-1' : 'max-h-0 pt-0',
-          ]"
-        >
-          {{ errorMessage }}
-        </div>
-      </template>
+      <div class="w-full space-y-1">
+        <div class="font-medium">{{ steps[1].shortStepName }}</div>
+        <CampaignCreateGoalAmountInput
+          :placeholder="steps[1].inputPlaceholder"
+          :onkeyup="handleEnter"
+        />
+        <CampaignCreateErrorMessage
+          v-if="steps[1].errorShow"
+          :error-message="steps[1].errorMessage"
+        />
+      </div>
+
+      <div class="w-full space-y-1">
+        <div class="font-medium">{{ steps[2].shortStepName }}</div>
+        <CampaignCreateDescriptionInput
+          :placeholder="steps[2].inputPlaceholder"
+          :onkeyup="handleEnter"
+        />
+        <CampaignCreateErrorMessage
+          v-if="steps[2].errorShow"
+          :error-message="steps[2].errorMessage"
+        />
+      </div>
+
+      <div class="w-full space-y-1">
+        <div class="font-medium">{{ steps[3].shortStepName }}</div>
+        <CampaignCreateFileUpload
+          :placeholder="steps[3].inputPlaceholder"
+          :onkeyup="handleEnter"
+        />
+        <CampaignCreateErrorMessage
+          v-if="steps[3].errorShow"
+          :error-message="steps[3].errorMessage"
+        />
+      </div>
     </CampaignCreateStepWrapper>
   </div>
 </template>
@@ -49,17 +60,9 @@
 <script setup lang="ts">
 import { useCampaignStore } from "~/stores/campaign.store";
 
-const { currentStep, errorMessage } = storeToRefs(useCampaignStore());
-const { incrementStep, decrementStep } = useCampaignStore();
+const { steps } = storeToRefs(useCampaignStore());
 
-function onContinue() {
-  incrementStep();
-  document.body.scrollTop = 0;
-}
-function onBack() {
-  decrementStep();
-  document.documentElement.scrollTop = 0;
-}
+function onContinue() {}
 
 function handleEnter(enter: KeyboardEvent) {
   if (enter.key !== "Enter") return;

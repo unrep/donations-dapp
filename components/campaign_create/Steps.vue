@@ -1,13 +1,32 @@
 <template>
   <!-- Desktop -->
-  <div class="hidden mlg:flex h-full w-full flex-col justify-between p-10">
-    <div class="text-4xl font-black text-white text-left w-full">
+  <div
+    class="relative hidden mlg:grid grid-rows-3 h-full w-full justify-between p-10"
+  >
+    <div class="bouncing-blobs-container">
+      <div class="bouncing-blobs-glass"></div>
+      <div class="bouncing-blobs">
+        <div class="bouncing-blob bouncing-blob--pink"></div>
+        <div class="bouncing-blob bouncing-blob--purple"></div>
+        <div class="bouncing-blob bouncing-blob--pink"></div>
+        <div class="bouncing-blob bouncing-blob--white"></div>
+        <div class="bouncing-blob bouncing-blob--pink"></div>
+        <div class="bouncing-blob bouncing-blob--purple"></div>
+        <div class="bouncing-blob bouncing-blob--pink"></div>
+        <div class="bouncing-blob bouncing-blob--purple"></div>
+        <div class="bouncing-blob bouncing-blob--pink"></div>
+        <div class="bouncing-blob bouncing-blob--purple"></div>
+        <div class="bouncing-blob bouncing-blob--pink"></div>
+      </div>
+    </div>
+
+    <div class="text-4xl font-black text-indigo-800 text-left w-full">
       <NuxtLink
         to="/"
-        class="mb-5 w-full flex items-center justify-center gap-2 text-lg text-white hover:scale-105 duration-200"
+        class="mb-5 w-full flex items-center justify-center gap-2 text-lg text-indigo-800 hover:scale-105 duration-200"
       >
         <IconsArrow class="-rotate-90" />
-        <span class="font-normal">Home</span>
+        <span class="font-medium">Home</span>
       </NuxtLink>
 
       Create a Campaign
@@ -26,21 +45,21 @@
           <div
             :class="[
               'w-full flex items-center gap-2 p-2 rounded-full duration-200',
-              step.selected
-                ? 'scale-110 translate-x-[4.25%] opacity-100'
-                : 'scale-100 translate-x-0 opacity-30',
+              step.inputValue ? 'opacity-30' : 'opacity-100',
             ]"
           >
             <div
-              class="self-start bg-white aspect-square text-indigo-600 size-8 rounded-full flex justify-center items-center"
+              class="self-start bg-indigo-800 aspect-square text-white size-8 rounded-full flex justify-center items-center"
             >
-              <div v-if="currentStep.index <= index">
+              <div v-if="step.inputValue">
+                <IconsCheck color="white" />
+              </div>
+              <div v-else>
                 {{ index + 1 }}
               </div>
-              <div v-else><IconsCheck /></div>
             </div>
 
-            <div :class="`text-white line-clamp-1`">
+            <div :class="`text-indigo-800 font-medium line-clamp-1`">
               {{ step.stepName }}
             </div>
           </div>
@@ -53,73 +72,30 @@
 
   <!-- Mobile -->
   <div
-    class="mlg:hidden flex flex-col items-center justify-center w-full py-10 bg-indigo-500 font-black text-white duration-200"
+    class="mlg:hidden flex flex-col items-center justify-center gap-5 bg-indigo-800 w-full py-5 font-black text-white duration-200"
   >
-    <NuxtLink
-      to="/"
-      class="mb-10 w-full flex items-center justify-center gap-2 text-lg text-white hover:scale-105 duration-200"
+    <div
+      class="w-full flex flex-col justify-center items-center px-10 pb-3 pt-1 gap-5"
     >
-      <IconsArrow class="-rotate-90" />
-      <span class="font-medium">Home</span>
-    </NuxtLink>
-
-    <div class="w-full h-full flex items-center justify-center">
-      <TransitionRoot
-        v-for="(step, index) in steps"
-        :key="index"
-        :show="index >= indexesToDisplay[0] && index <= indexesToDisplay[1]"
-        :class="[
-          'flex-grow w-full flex items-center justify-center overflow-hidden duration-500',
-        ]"
-        enter="transition-all"
-        enter-from="max-w-0 scale-0 opacity-0"
-        :enter-to="`window-max-width scale-100 opacity-100`"
-        leave="transition-all"
-        :leave-from="`window-max-width scale-100 opacity-100`"
-        leave-to="max-w-0 scale-0 opacity-0"
-        :style="{
-          '--max-width': `${viewportWidth / 3}px`,
-        }"
+      <NuxtLink
+        to="/"
+        class="w-full left-10 flex items-center justify-center gap-2 text-base text-white hover:scale-105 duration-200"
       >
-        <div
-          :class="[
-            'w-full flex-grow flex flex-col gap-2 items-center font-bold justify-center duration-200',
-            step.selected ? 'opacity-100' : 'opacity-50 scale-75',
-          ]"
-        >
-          <div
-            class="size-10 bg-white rounded-full flex justify-center items-center text-indigo-500"
-          >
-            {{ index + 1 }}
-          </div>
-          <div class="text-white text-center line-clamp-2 w-min">
-            {{ step.shortStepName }}
-          </div>
-        </div>
-      </TransitionRoot>
+        <IconsArrow class="-rotate-90 size-4" />
+        <span class="font-medium">Home</span>
+      </NuxtLink>
+      <div class="text-3xl">Create a Campaign</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { TransitionRoot } from "@headlessui/vue";
-
+import { initBlobs } from "~/helpers/useBlobAnimation";
 import { useCampaignStore } from "~/stores/campaign.store";
 
-const { currentStep, steps } = storeToRefs(useCampaignStore());
+const { steps } = storeToRefs(useCampaignStore());
 
-const viewportWidth = ref(window.innerWidth);
-
-const indexesToDisplay = computed(() => {
-  const index = currentStep.value.index;
-  if (index === 0) {
-    return [index, index + 2];
-  } else if (index === steps.value.length - 1) {
-    return [index - 2, index];
-  } else {
-    return [index - 1, index + 1];
-  }
-});
+onMounted(initBlobs);
 </script>
 
 <style lang="scss" scoped>

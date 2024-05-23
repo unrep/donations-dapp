@@ -10,7 +10,7 @@
       <input
         type="text"
         placeholder=" Search for campaigns"
-        class="w-full bg-transparent hide-scrollbar outline-none caret-indigo-500"
+        class="w-full bg-transparent hide-scrollbar outline-none caret-indigo-800"
       />
     </div>
 

@@ -11,7 +11,7 @@
         <input
           type="text"
           placeholder="Search by..."
-          class="w-full bg-transparent outline-none caret-indigo-500 text-sm"
+          class="w-full bg-transparent outline-none caret-indigo-800 text-sm"
         />
       </div>
 

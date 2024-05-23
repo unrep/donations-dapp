@@ -1,6 +1,6 @@
 import { client } from "./initiateClientIPFS";
 
-export function uploadFile(object: any, image: File | null) {
+export function uploadFile(object: any, image: File | null | undefined) {
   const dataToSend = [new File([object], "content")];
   if (image) dataToSend.push(new File([image], "image"));
 

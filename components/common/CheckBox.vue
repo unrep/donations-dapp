@@ -2,7 +2,7 @@
   <label
     :class="[
       'size-[1.125rem] border rounded-md duration-200 flex justify-center items-center cursor-pointer',
-      checked ? 'bg-indigo-500 border-indigo-500' : 'bg-white border-gray-300',
+      checked ? 'bg-indigo-800 border-indigo-800' : 'bg-white border-gray-300',
     ]"
   >
     <IconsCheck :size="0.85" color="#fff" />
