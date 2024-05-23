@@ -2,7 +2,7 @@
   <textarea
     v-model="description"
     rows="5"
-    class="w-full border border-gray-300 outline-indigo-800 rounded-lg font-thin shadow-sm text-lg px-4 py-2 resize-none"
+    class="create-campaign-input w-full border border-gray-300 outline-indigo-800 rounded-lg font-thin shadow-sm text-lg px-4 py-2 resize-none"
   />
 </template>
 

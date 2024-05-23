@@ -1,6 +1,6 @@
 <template>
   <label
-    :class="`${image ? 'p-1.5' : 'py-10 px-5'} upload-label`"
+    :class="`${image ? 'p-1.5' : 'py-10 px-5'} upload-label ${imageInputFocused ? 'active' : ''} create-campaign-input`"
     @drop="handleDrop"
     @dragover="(e) => e.preventDefault()"
     @dragenter="(e) => e.preventDefault()"
@@ -35,6 +35,8 @@
       alt="Image input"
       class="w-0 h-0 overflow-hidden"
       @change="handleInput"
+      @focus="() => (imageInputFocused = true)"
+      @blur="() => (imageInputFocused = false)"
     />
   </label>
 </template>
@@ -102,22 +104,33 @@ function clearInput(event: Event) {
 onMounted(() => {
   image.value && setInputImage(image.value);
 });
+
+const imageInputFocused = ref(false);
 </script>
 
 <style lang="scss" scoped>
 .upload-label {
   @apply relative flex flex-col items-center justify-center
     mlg:min-h-64 overflow-hidden
-    rounded-3xl 
+    rounded-lg 
     text-gray-500 text-base
     cursor-pointer duration-200;
 
   &:before {
-    @apply duration-200 rounded-[1.75rem] absolute -top-1 -left-1 -right-1 -bottom-1 border-[5px] border-gray-400 border-dashed;
+    @apply duration-200 rounded-xl absolute -top-1 -left-1 -right-1 -bottom-1 border-[5px] border-gray-400 border-dashed;
     content: "";
   }
+
   &:hover,
   &:active {
+    @apply text-indigo-800 border-indigo-800 bg-indigo-800 bg-opacity-5;
+
+    &:before {
+      @apply border-indigo-800;
+    }
+  }
+
+  &.active {
     @apply text-indigo-800 border-indigo-800 bg-indigo-800 bg-opacity-5;
 
     &:before {

@@ -3,7 +3,7 @@
     v-model="campaignName"
     type="text"
     maxlength="30"
-    class="w-full border border-gray-300 outline-indigo-800 rounded-lg font-thin shadow-sm px-4 py-2"
+    class="create-campaign-input w-full border border-gray-300 outline-indigo-800 rounded-lg font-thin shadow-sm px-4 py-2"
   />
 </template>
 

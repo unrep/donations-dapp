@@ -8,10 +8,7 @@
     <CampaignCreateStepWrapper class="z-10">
       <div class="w-full space-y-1">
         <div class="font-medium">{{ steps[0].shortStepName }}</div>
-        <CampaignCreateNameInput
-          :placeholder="steps[0].inputPlaceholder"
-          :onkeyup="handleEnter"
-        />
+        <CampaignCreateNameInput :placeholder="steps[0].inputPlaceholder" />
         <CampaignCreateErrorMessage
           v-if="steps[0].errorShow"
           :error-message="steps[0].errorMessage"
@@ -22,7 +19,6 @@
         <div class="font-medium">{{ steps[1].shortStepName }}</div>
         <CampaignCreateGoalAmountInput
           :placeholder="steps[1].inputPlaceholder"
-          :onkeyup="handleEnter"
         />
         <CampaignCreateErrorMessage
           v-if="steps[1].errorShow"
@@ -34,7 +30,6 @@
         <div class="font-medium">{{ steps[2].shortStepName }}</div>
         <CampaignCreateDescriptionInput
           :placeholder="steps[2].inputPlaceholder"
-          :onkeyup="handleEnter"
         />
         <CampaignCreateErrorMessage
           v-if="steps[2].errorShow"
@@ -44,10 +39,7 @@
 
       <div class="w-full space-y-1">
         <div class="font-medium">{{ steps[3].shortStepName }}</div>
-        <CampaignCreateFileUpload
-          :placeholder="steps[3].inputPlaceholder"
-          :onkeyup="handleEnter"
-        />
+        <CampaignCreateFileUpload :placeholder="steps[3].inputPlaceholder" />
         <CampaignCreateErrorMessage
           v-if="steps[3].errorShow"
           :error-message="steps[3].errorMessage"
@@ -62,10 +54,13 @@ import { useCampaignStore } from "~/stores/campaign.store";
 
 const { steps } = storeToRefs(useCampaignStore());
 
-function onContinue() {}
+const inputs = ref<HTMLCollectionOf<HTMLInputElement | HTMLTextAreaElement>>();
 
-function handleEnter(enter: KeyboardEvent) {
-  if (enter.key !== "Enter") return;
-  onContinue();
-}
+onMounted(() => {
+  inputs.value = document.getElementsByClassName("create-campaign-input") as
+    | HTMLCollectionOf<HTMLInputElement>
+    | HTMLCollectionOf<HTMLTextAreaElement>;
+
+  inputs.value[0].focus();
+});
 </script>

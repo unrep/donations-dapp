@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      'flex items-center justify-stretch gap-4 w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 overflow-hidden',
+      'create-campaign-input  flex items-center justify-stretch gap-4 w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 overflow-hidden',
       { 'border-indigo-800 border-shadow': isFocused },
     ]"
   >
