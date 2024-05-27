@@ -11,5 +11,5 @@
 </template>
 
 <script lang="ts" setup>
-import { campaigns } from "~/mockCampaigns";
+import { campaigns } from "~/data/mockCampaigns";
 </script>

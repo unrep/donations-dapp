@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      'w-full max-w-7xl p-5 flex flex-col grid-flow-col flex-nowrap gap-5 justify-items-stretch',
+      'w-full max-w-7xl p-5 flex flex-col grid-cols-2 flex-nowrap gap-5 justify-items-stretch',
       preview
         ? '2xl:grid xl:px-5 xl:py-10 xl:gap-10'
         : 'lg:grid md:px-5 md:py-10 md:gap-10',
@@ -81,6 +81,11 @@
       >
         Donate
       </button>
+    </div>
+
+    <div class="w-full flex flex-col justify-center items-start gap-5">
+      <div class="text-3xl font-semibold">Campaign description</div>
+      {{ campaign.description }}
     </div>
   </div>
 

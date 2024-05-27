@@ -21,7 +21,7 @@
 import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
-import { campaigns } from "~/mockCampaigns";
+import { campaigns } from "~/data/mockCampaigns";
 
 import type { Campaign } from "~/types";
 

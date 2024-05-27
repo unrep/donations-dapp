@@ -6,19 +6,21 @@
     >
       <div
         class="z-10 absolute w-full h-full bg-black bg-opacity-20 backdrop-blur-sm"
-        @click.stop="emit('update:isOpen', false)"
+        @click.stop="closeModal"
       />
 
       <div
-        class="z-20 overflow-hidden p-7 w-full max-w-3xl absolute shadow-lg rounded-3xl bg-white grid grid-cols-2 items-center justify-center gap-10"
+        class="z-20 overflow-hidden p-7 w-11/12 mlg:w-full max-w-3xl absolute shadow-lg rounded-3xl bg-white flex flex-col mlg:grid grid-cols-2 items-center justify-center gap-10"
         style="grid-template-columns: 1fr 2fr"
       >
-        <div class="self-start space-y-5">
-          <h1 class="text-4xl font-bold text-indigo-800">
+        <div class="self-start space-y-1 mlg:space-y-5">
+          <h1
+            class="text-4xl font-bold text-indigo-800 text-center mlg:text-left"
+          >
             Donate to this campaign
           </h1>
 
-          <p class="text-base text-gray-500">
+          <p class="text-base text-gray-500 hidden mlg:block">
             Your donation will help this campaign reach its goal.
           </p>
         </div>
@@ -68,19 +70,21 @@
           </Transition>
         </div>
 
-        <button
-          class="w-min bg-white border text-indigo-800 text-lg font-medium px-8 py-2 rounded-xl hover:scale-105 duration-200 shadow-md"
-          @click="emit('update:isOpen', false)"
-        >
-          Cancel
-        </button>
+        <div class="w-full col-span-2 flex justify-between items-center">
+          <button
+            class="w-min bg-white border text-indigo-800 text-lg font-medium px-8 py-2 rounded-xl hover:scale-105 duration-200 shadow-md"
+            @click="closeModal"
+          >
+            Cancel
+          </button>
 
-        <button
-          class="disabled:bg-indigo-500 disabled:hover:scale-100 justify-self-end w-min bg-indigo-800 text-white text-lg font-medium px-8 py-2 rounded-xl hover:scale-105 duration-200 shadow-md"
-          :disabled="!canDonate"
-        >
-          Donate
-        </button>
+          <button
+            class="disabled:bg-indigo-500 disabled:hover:scale-100 justify-self-end w-min bg-indigo-800 text-white text-lg font-medium px-8 py-2 rounded-xl hover:scale-105 duration-200 shadow-md"
+            :disabled="!canDonate"
+          >
+            Donate
+          </button>
+        </div>
       </div>
     </div>
   </Transition>
@@ -116,7 +120,6 @@ function togglePresetPrice(index: number | null) {
 
 const canDonate = ref(false);
 
-// Optional: Debugging
 watch(
   [presetPrices, showEthInput, inputValue],
   () => {
@@ -126,6 +129,8 @@ watch(
   },
   { deep: true },
 );
+
+const closeModal = () => emit("update:isOpen", false);
 </script>
 
 <style lang="scss" scoped>

@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { campaigns } from "~/mockCampaigns";
+import { campaigns } from "~/data/mockCampaigns";
 import { useContractCampaignStore } from "~/stores/contract.campaign";
 
 const filters = ref([

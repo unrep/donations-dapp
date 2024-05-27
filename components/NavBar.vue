@@ -3,6 +3,7 @@
     ref="navRef"
     class="z-50 sticky top-0 left-0 w-full bg-opacity-50 bg-white backdrop-blur-lg flex items-center justify-center border-b nav-shadow"
   >
+    <!-- Mobile -->
     <div class="w-full p-5 max-w-7xl flex justify-between items-center">
       <NuxtLink
         to="/"
@@ -46,11 +47,12 @@
     </div>
   </div>
 
+  <!-- Mobile -->
   <Transition name="slide-from-right">
     <div
       v-if="navbarOpen"
       ref="mobileNavRef"
-      class="z-50 fixed top-0 right-0 w-2/3 h-screen bg-white bg-opacity-50 backdrop-blur-lg flex flex-col items-end justify-start gap-10"
+      class="z-50 fixed lg:hidden top-0 right-0 w-2/3 h-screen bg-white bg-opacity-50 backdrop-blur-lg flex flex-col items-end justify-start gap-10"
     >
       <div
         class="flex items-center justify-center p-5"
@@ -68,7 +70,14 @@
       <NuxtLink to="/create-campaign" class="nav-button"
         >Start campaign</NuxtLink
       >
-      <NuxtLink class="nav-button" @click="scrollToAnchor('#searchElement')"
+      <NuxtLink
+        class="nav-button"
+        @click="
+          () => {
+            scrollToAnchor('#searchElement');
+            navbarOpen = false;
+          }
+        "
         >Search</NuxtLink
       >
     </div>

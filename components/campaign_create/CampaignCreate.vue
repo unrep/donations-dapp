@@ -160,7 +160,7 @@ const campaign = computed(() => {
   return {
     id: "0",
     title: "Campaign Title",
-    image: "https://source.unsplash.com/random/800x600",
+    image: "fundraising.webp",
     raised: 0,
     goal: 1,
     description: "Campaign Description",
