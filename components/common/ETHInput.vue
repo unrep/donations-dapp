@@ -8,7 +8,7 @@
     <div class="text-gray-500">ETH</div>
 
     <input
-      v-model="goalAmount"
+      v-model="inputted"
       type="number"
       inputmode="numeric"
       pattern="\d*"
@@ -19,25 +19,54 @@
     />
     <Transition name="fade-to-left">
       <div
-        v-if="goalAmount"
+        v-if="inputted"
         class="text-sm text-black text-opacity-50 font-medium pl-4 py-1 border-l h-full duration-100"
       >
-        {{ goalAmountUSD }}
+        {{ inputtedUSD }}
       </div>
     </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useCampaignStore } from "~/stores/campaign.store";
+const props = defineProps({
+  modelValue: {
+    type: [Number, null] as any,
+    required: true,
+  },
+});
 
-const { goalAmount } = storeToRefs(useCampaignStore());
+const emit = defineEmits<{
+  (eventName: "update:modelValue", value: number | null): void;
+}>();
+
+const inputted = computed({
+  get: () => props.modelValue,
+  set: (value: number | null) => {
+    emit("update:modelValue", validateInputMinMax(value));
+  },
+});
+
 const minInputValue = 0;
 const maxInputValue = 100000;
 
-const goalAmountUSD = computed(() =>
-  computeETHPrice(goalAmount.value?.toString() || "0"),
+const inputtedUSD = computed(() =>
+  computeETHPrice(inputted.value?.toString() || "0"),
 );
+
+const isFocused = ref(false);
+
+function validateInputMinMax(value: number | null) {
+  if (!value) return null;
+
+  if (value < minInputValue) {
+    value = minInputValue;
+  } else if (value > maxInputValue) {
+    value = maxInputValue;
+  }
+
+  return value;
+}
 
 function handleInputChange(event: Event) {
   const target = event.target as HTMLInputElement;
@@ -50,11 +79,7 @@ function handleInputChange(event: Event) {
   } else if (value > maxInputValue) {
     target.value = maxInputValue.toString();
   }
-
-  goalAmount.value = Number(target.value);
 }
-
-const isFocused = ref(false);
 </script>
 
 <style scoped lang="scss">

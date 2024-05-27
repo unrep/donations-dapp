@@ -3,22 +3,7 @@
   <div
     class="relative hidden mlg:grid grid-rows-3 h-full w-full justify-between p-10"
   >
-    <div class="bouncing-blobs-container">
-      <div class="bouncing-blobs-glass"></div>
-      <div class="bouncing-blobs">
-        <div class="bouncing-blob bouncing-blob--pink"></div>
-        <div class="bouncing-blob bouncing-blob--purple"></div>
-        <div class="bouncing-blob bouncing-blob--pink"></div>
-        <div class="bouncing-blob bouncing-blob--white"></div>
-        <div class="bouncing-blob bouncing-blob--pink"></div>
-        <div class="bouncing-blob bouncing-blob--purple"></div>
-        <div class="bouncing-blob bouncing-blob--pink"></div>
-        <div class="bouncing-blob bouncing-blob--purple"></div>
-        <div class="bouncing-blob bouncing-blob--pink"></div>
-        <div class="bouncing-blob bouncing-blob--purple"></div>
-        <div class="bouncing-blob bouncing-blob--pink"></div>
-      </div>
-    </div>
+    <CommonBlobs />
 
     <div class="text-4xl font-black text-indigo-800 text-left w-full">
       <NuxtLink
@@ -90,12 +75,9 @@
 </template>
 
 <script setup lang="ts">
-import { initBlobs } from "~/helpers/useBlobAnimation";
 import { useCampaignStore } from "~/stores/campaign.store";
 
 const { steps } = storeToRefs(useCampaignStore());
-
-onMounted(initBlobs);
 </script>
 
 <style lang="scss" scoped>

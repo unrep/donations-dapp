@@ -2,7 +2,7 @@
   <div
     class="max-w-7xl h-full w-full flex flex-wrap items-stretch justify-center gap-5"
   >
-    <LandingCampaignCard
+    <CampaignCard
       v-for="campaign in campaigns"
       :key="campaign.title"
       :campaign="campaign"

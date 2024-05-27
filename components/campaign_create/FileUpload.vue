@@ -10,7 +10,7 @@
     </div>
 
     <div class="relative">
-      <img ref="imageElement" class="w-full rounded-2xl" />
+      <img ref="imageElement" class="w-full rounded-lg" />
       <button
         v-if="image"
         class="show absolute top-2 right-2 bg-black bg-opacity-50 rounded-full flex items-center justify-center size-7 text-white"

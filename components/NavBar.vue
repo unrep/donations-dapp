@@ -4,9 +4,15 @@
     class="z-50 sticky top-0 left-0 w-full bg-opacity-50 bg-white backdrop-blur-lg flex items-center justify-center border-b nav-shadow"
   >
     <div class="w-full p-5 max-w-7xl flex justify-between items-center">
-      <div class="text-4xl font-black text-indigo-800 hidden md:block">
-        Raise&Reach
-      </div>
+      <NuxtLink
+        to="/"
+        :class="[
+          'text-4xl font-black text-indigo-800 hidden md:block',
+          currentPath === '/' && 'active',
+        ]"
+        >Raise&Reach</NuxtLink
+      >
+
       <div class="text-4xl font-black text-indigo-800 block md:hidden">R&R</div>
 
       <div class="items-center gap-5 hidden lg:flex">

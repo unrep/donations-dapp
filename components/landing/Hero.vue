@@ -1,21 +1,10 @@
 <template>
   <div>
-    <div class="bouncing-blobs-container">
-      <div class="bouncing-blobs-glass"></div>
-      <div class="bouncing-blobs">
-        <div class="bouncing-blob bouncing-blob--pink"></div>
-        <div class="bouncing-blob bouncing-blob--pink"></div>
-        <div class="bouncing-blob bouncing-blob--white"></div>
-        <div class="bouncing-blob bouncing-blob--pink"></div>
-        <div class="bouncing-blob bouncing-blob--purple"></div>
-        <div class="bouncing-blob bouncing-blob--purple"></div>
-        <div class="bouncing-blob bouncing-blob--pink"></div>
-      </div>
-    </div>
+    <CommonBlobs />
 
     <div class="w-full h-[50vh] md:h-[60vh]">
       <div
-        class="w-full h-full flex flex-col items-center justify-center gap-8"
+        class="w-full h-full flex flex-col items-center justify-center gap-8 sm:px-10"
       >
         <div
           class="text-4xl md:text-5xl font-black text-indigo-800 text-center"
@@ -37,9 +26,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { initBlobs } from "~/helpers/useBlobAnimation";
-
-onMounted(initBlobs);
-</script>

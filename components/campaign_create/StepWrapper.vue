@@ -1,46 +1,36 @@
 <template>
+  <!-- Desktop -->
   <div
-    class="relative flex-grow w-full h-full flex flex-col items-center justify-between input-container bg-white slide-in p-10 sm:py-20 mlg:py-10"
+    class="w-full h-full max-h-screen hidden mlg:flex flex-col items-center justify-center bg-none mlg:slide-in mlg:p-10 mlg:py-10"
   >
     <div
-      class="w-full max-w-2xl flex flex-col items-center justify-between gap-5"
+      class="box-border overflow-y-scroll w-full h-full p-10 flex flex-col items-center justify-center bg-white bg-opacity-90 backdrop-blur-3xl input-container rounded-3xl"
     >
-      <div class="w-full flex flex-col items-start justify-center gap-5">
+      <div
+        :class="[
+          'w-full h-full flex flex-col items-center justify-between gap-5',
+          limitSize ? 'max-w-2xl' : '',
+        ]"
+      >
         <slot />
       </div>
     </div>
+  </div>
 
-    <!-- Mobile -->
-    <div
-      class="z-50 flex gap-5 margin-auto justify-self-end fixed mlg:relative bottom-10 mlg:bottom-0"
-    >
-      <!-- <Transition class="flex mlg:hidden" name="scale">
-        <button
-          v-if="currentStep.index > 0"
-          ontouchstart=""
-          :class="[
-            'px-10 py-3 bg-white border rounded-xl text-gray-500 active:scale-105 duration-200',
-            currentStep.index > 0 ? 'scale-100' : 'scale-x-50 scale-y-0',
-          ]"
-          style="box-shadow: 0 0 10px -2px rgba(0, 0, 0, 0.1)"
-          @click="onBack()"
-        >
-          Back
-        </button>
-      </Transition> -->
-      <!-- <button
-        ontouchstart=""
-        tabindex="0"
-        class="py-3 px-10 shadow-xl bg-indigo-800 font-semibold text-mlg rounded-xl text-white mlg:hover:scale-105 active:scale-105 duration-200"
-        @click="onContinue()"
-      >
-        Continue
-      </button> -->
-    </div>
+  <!-- Mobile -->
+  <div
+    class="flex-grow flex mlg:hidden flex-col items-start justify-between gap-5 w-full h-full p-10 bg-white"
+  >
+    <slot />
   </div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+const { limitSize } = defineProps<{
+  onContinue: () => void;
+  limitSize: boolean;
+}>();
+</script>
 
 <style lang="scss">
 .scale-enter-active,
