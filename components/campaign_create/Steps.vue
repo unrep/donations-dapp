@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { useCampaignStore } from "~/stores/campaign.store";
+import { useCampaignStore } from "~/stores/campaign";
 
 const { steps } = storeToRefs(useCampaignStore());
 </script>

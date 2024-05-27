@@ -12,6 +12,6 @@ export const ETH_TOKEN: Token = {
 };
 
 export const fundraisingContractConfig = {
-  address: "0xc0431C32561DabE0c8FD791B52590BbBA413c235", // fundraising contract in local node
+  address: "0x1A2894885076934dAf5a398Ff216c6d665707bbA", // fundraising contract in local node
   abi: fundraisingABI,
 } as const;

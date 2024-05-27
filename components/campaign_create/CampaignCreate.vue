@@ -113,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { useCampaignStore } from "~/stores/campaign.store";
+import { useCampaignStore } from "~/stores/campaign";
 import { useOnboardStore } from "~/stores/onboard";
 
 import type { Campaign } from "~/types";

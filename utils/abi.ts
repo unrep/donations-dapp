@@ -102,6 +102,25 @@ export const fundraisingABI = [
         type: "uint256",
       },
     ],
+    name: "campaignFilters",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     name: "campaigns",
     outputs: [
       {
@@ -187,10 +206,57 @@ export const fundraisingABI = [
         name: "_ipfsHash",
         type: "string",
       },
+      {
+        internalType: "string[]",
+        name: "_filters",
+        type: "string[]",
+      },
     ],
     name: "createCampaign",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "nextCampaignId",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_startDate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_endDate",
+        type: "uint256",
+      },
+      {
+        internalType: "string[]",
+        name: "_searchFilters",
+        type: "string[]",
+      },
+    ],
+    name: "searchCampaigns",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

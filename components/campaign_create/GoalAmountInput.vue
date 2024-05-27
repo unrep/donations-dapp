@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { useCampaignStore } from "~/stores/campaign.store";
+import { useCampaignStore } from "~/stores/campaign";
 
 const { goalAmount } = storeToRefs(useCampaignStore());
 const minInputValue = 0;

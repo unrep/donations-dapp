@@ -40,6 +40,7 @@
 
 <script setup lang="ts">
 import { campaigns } from "~/mockCampaigns";
+import { useContractCampaignStore } from "~/stores/contract.campaign";
 
 const filters = ref([
   { text: "filter one", selected: false },
@@ -48,4 +49,6 @@ const filters = ref([
   { text: "filter four", selected: false },
   { text: "filter five", selected: false },
 ]);
+
+onMounted(useContractCampaignStore);
 </script>
