@@ -28,7 +28,6 @@
 
 <script lang="ts" setup>
 const { limitSize } = defineProps<{
-  onContinue: () => void;
   limitSize: boolean;
 }>();
 

@@ -8,7 +8,6 @@
     <CampaignCreateStepWrapper
       ref="stepWrapper"
       :limit-size="campaignCreationStep === 0"
-      :on-continue="onContinue"
     >
       <template v-if="campaignCreationStep === 0">
         <div
@@ -31,7 +30,7 @@
 
       <CampaignPreview
         v-else-if="campaignCreationStep === 1"
-        :campaign="campaign"
+        :campaign="getInputCampaign()"
       />
 
       <template v-else-if="campaignCreationStep === 2">
@@ -42,9 +41,9 @@
           Campaign created successfully!
         </div>
 
-        <div class="flex gap-5">
+        <div class="w-full flex justify-center items-center gap-5">
           <NuxtLink
-            :to="`/campaign?id=${campaign.id}`"
+            :to="`/campaign?id=${0}`"
             class="text-base py-3 px-5 shadow-xl bg-indigo-800 font-semibold rounded-xl text-white mlg:hover:scale-105 active:scale-105 duration-200"
           >
             Your campaign
@@ -67,24 +66,46 @@
           v-if="campaignCreationStep > 0"
           ontouchstart=""
           tabindex="0"
-          class="flex items-center justify-center gap-2 py-3 px-10 shadow-xl font-semibold border rounded-xl text-indigo-800 mlg:hover:scale-105 active:scale-105 duration-200"
+          class="flex items-center justify-center gap-2 py-3 px-10 shadow-sm font-semibold border rounded-xl text-indigo-800 mlg:hover:scale-105 active:scale-105 duration-200"
           @click="onBack()"
         >
           <IconsArrow class="-rotate-90" />
           Back
         </button>
 
-        <button
-          ontouchstart=""
-          tabindex="0"
-          class="py-3 px-10 shadow-xl bg-indigo-800 font-semibold rounded-xl text-white mlg:hover:scale-105 active:scale-105 duration-200"
-          @click="onContinue()"
-        >
-          Continue
-        </button>
+        <CommonButton :loading="false" @click="addTokenStep.func">
+          <transition v-bind="TransitionPrimaryButtonText" mode="out-in">
+            <span
+              v-if="addTokenStep.key === 'connect-wallet'"
+              class="flex items-center justify-center"
+            >
+              <span>Connect Wallet</span>
+            </span>
+            <span
+              v-else-if="addTokenStep.key === 'preview'"
+              class="flex items-center justify-center"
+            >
+              Continue
+            </span>
+            <span
+              v-else-if="addTokenStep.key === 'create-campaign'"
+              class="flex items-center justify-center"
+            >
+              Create Campaign
+            </span>
+            <span
+              v-else-if="addTokenStep.key === 'loading'"
+              class="flex items-center justify-center px-5"
+            >
+              <IconsLoadingDots width="1.5em" height="1.5em" />
+            </span>
+          </transition>
+        </CommonButton>
       </div>
-
-      <div class="hidden mlg:block h-5 border border-transparent w-full"></div>
+      <div
+        v-if="campaignCreationStep !== 2"
+        class="hidden mlg:block h-5 border border-transparent w-full"
+      ></div>
     </CampaignCreateStepWrapper>
   </div>
 </template>
@@ -94,41 +115,44 @@ import { useCampaignStore } from "~/stores/campaign";
 import { useOnboardStore } from "~/stores/onboard";
 
 import type { VNodeRef } from "vue";
-import type { Campaign } from "~/types";
 
 const { openModal } = useOnboardStore();
-const { account, web3ModalOpened } = storeToRefs(useOnboardStore());
-
+const { account } = storeToRefs(useOnboardStore());
 const stepWrapper = ref<VNodeRef | undefined>(undefined);
-
 const campaignCreationStep = ref(0);
-async function onContinue() {
-  if (!checkAllStepsCompleted()) return;
-  stepWrapper.value?.scrollUp();
+const isCampaignSending = ref(false);
 
-  switch (campaignCreationStep.value) {
-    case 0:
-      campaignCreationStep.value++;
-      break;
-    case 1:
-      !account.value.isConnected && (await openModal());
-
-      while (web3ModalOpened.value) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-
-      if (account.value.isConnected) {
-        await sendCampaign();
-        campaignCreationStep.value++;
-      }
-      break;
-    case 2:
-      campaignCreationStep.value++;
-      break;
-    default:
-      break;
+const addTokenStep = computed(() => {
+  if (isCampaignSending.value) {
+    return {
+      key: "loading",
+      func: () => null,
+    } as const;
   }
-}
+  if (campaignCreationStep.value < 1) {
+    return {
+      key: "preview",
+      func: () => {
+        if (!checkAllStepsCompleted()) return;
+        stepWrapper.value?.scrollUp();
+        campaignCreationStep.value++;
+      },
+    } as const;
+  } else if (!account.value.isConnected) {
+    return {
+      key: "connect-wallet",
+      func: openModal,
+    } as const;
+  }
+  return {
+    key: "create-campaign",
+    func: async () => {
+      isCampaignSending.value = true;
+      await sendCampaign()?.finally(() => (isCampaignSending.value = false));
+      campaignCreationStep.value++;
+    },
+  } as const;
+});
 
 function onBack() {
   stepWrapper.value?.scrollUp();
@@ -137,18 +161,18 @@ function onBack() {
 
 const { checkAllStepsCompleted, sendCampaign, steps } = useCampaignStore();
 
-const campaign = computed(() => {
+function getInputCampaign() {
   return {
     id: "0",
-    title: "Campaign Title",
-    image: "fundraising.webp",
+    title: steps[0].inputValue,
+    image: URL.createObjectURL(steps[3].inputValue),
     raised: 0,
-    goal: 1,
-    description: "Campaign Description",
+    goal: steps[1].inputValue,
+    description: steps[2].inputValue,
     createdAt: new Date(),
     donationsCount: 0,
-  } as Campaign;
-});
+  };
+}
 
 const inputs = ref<HTMLCollectionOf<HTMLInputElement | HTMLTextAreaElement>>();
 
