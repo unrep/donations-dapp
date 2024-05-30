@@ -4,11 +4,12 @@
     class="w-full h-full max-h-screen hidden mlg:flex flex-col items-center justify-center bg-none mlg:slide-in mlg:p-10 mlg:py-10"
   >
     <div
-      class="box-border overflow-y-scroll w-full h-full p-10 flex flex-col items-center justify-center bg-white bg-opacity-90 backdrop-blur-3xl input-container rounded-3xl"
+      ref="container"
+      class="scroll-smooth overflow-y-auto w-full h-full p-10 flex flex-col items-center justify-center bg-white bg-opacity-90 backdrop-blur-3xl input-container rounded-3xl"
     >
       <div
         :class="[
-          'w-full h-full flex flex-col items-center justify-between gap-5',
+          'w-full h-full flex flex-col items-center justify-between gap-10',
           limitSize ? 'max-w-2xl' : '',
         ]"
       >
@@ -19,7 +20,7 @@
 
   <!-- Mobile -->
   <div
-    class="flex-grow flex mlg:hidden flex-col items-start justify-between gap-5 w-full h-full p-10 bg-white"
+    class="flex-grow flex mlg:hidden flex-col items-start justify-between gap-5 w-full h-full p-5 bg-white"
   >
     <slot />
   </div>
@@ -30,6 +31,18 @@ const { limitSize } = defineProps<{
   onContinue: () => void;
   limitSize: boolean;
 }>();
+
+const container = ref<HTMLDivElement | null>(null);
+
+const scrollUp = () => {
+  if (container.value) {
+    container.value.scrollTop = 0;
+  }
+};
+
+defineExpose({
+  scrollUp,
+});
 </script>
 
 <style lang="scss">

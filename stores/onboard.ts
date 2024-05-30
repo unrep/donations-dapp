@@ -192,14 +192,7 @@ export const useOnboardStore = defineStore("onboard", () => {
 
     getWallet,
     getPublicClient: () => {
-      if (!l1Network.value)
-        throw new Error(
-          `L1 network is not available on ${selectedNetwork.value.name}`
-        );
-
-      const publicClient = getPublicClient(wagmiConfig, {
-        chainId: l1Network.value?.id,
-      });
+      const publicClient = getPublicClient(wagmiConfig);
       if (!publicClient) {
         throw new Error("Public client is not available");
       }

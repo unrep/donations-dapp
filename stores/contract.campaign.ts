@@ -5,9 +5,10 @@ import { useOnboardStore } from "./onboard";
 export const useContractCampaignStore = defineStore(
   "contact_campaign",
   async () => {
-    const { getPublicClient, getWallet } = useOnboardStore();
+    const { getPublicClient } = useOnboardStore();
     const publicClient = getPublicClient();
-    const walletClient = await getWallet();
+
+    // const walletClient = await getWallet();
 
     console.log("before contract");
     const contract = getContract({
@@ -15,7 +16,7 @@ export const useContractCampaignStore = defineStore(
       abi: fundraisingContractConfig.abi,
       client: {
         public: publicClient,
-        wallet: walletClient,
+        // wallet: walletClient,
       },
     });
     console.log("after contract");

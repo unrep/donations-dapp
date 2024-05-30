@@ -6,48 +6,25 @@
     <CampaignCreateSteps />
 
     <CampaignCreateStepWrapper
+      ref="stepWrapper"
       :limit-size="campaignCreationStep === 0"
       :on-continue="onContinue"
     >
       <template v-if="campaignCreationStep === 0">
-        <div class="w-full space-y-1">
-          <div class="font-medium">{{ steps[0].stepName }}</div>
-          <CampaignCreateNameInput :placeholder="steps[0].inputPlaceholder" />
-          <CampaignCreateErrorMessage
-            v-if="steps[0].showErrorMessage"
-            :error-message="steps[0].errorMessage"
-          />
-        </div>
-
-        <div class="w-full space-y-1">
-          <div class="font-medium">{{ steps[1].stepName }}</div>
-          <CommonETHInput
-            v-model="steps[1].inputValue"
-            :placeholder="steps[1].inputPlaceholder"
+        <div
+          v-for="step in steps"
+          :key="step.stepName"
+          class="w-full space-y-1"
+        >
+          <div class="font-medium">{{ step.stepName }}</div>
+          <component
+            :is="step.component"
+            v-bind="step.props"
+            @update:model-value="step.events?.onInput"
           />
           <CampaignCreateErrorMessage
-            v-if="steps[1].showErrorMessage"
-            :error-message="steps[1].errorMessage"
-          />
-        </div>
-
-        <div class="w-full space-y-1">
-          <div class="font-medium">{{ steps[2].stepName }}</div>
-          <CampaignCreateDescriptionInput
-            :placeholder="steps[2].inputPlaceholder"
-          />
-          <CampaignCreateErrorMessage
-            v-if="steps[2].showErrorMessage"
-            :error-message="steps[2].errorMessage"
-          />
-        </div>
-
-        <div class="w-full space-y-1">
-          <div class="font-medium">{{ steps[3].stepName }}</div>
-          <CampaignCreateFileUpload :placeholder="steps[3].inputPlaceholder" />
-          <CampaignCreateErrorMessage
-            v-if="steps[3].showErrorMessage"
-            :error-message="steps[3].errorMessage"
+            v-if="step.showErrorMessage"
+            :error-message="step.errorMessage"
           />
         </div>
       </template>
@@ -116,14 +93,18 @@
 import { useCampaignStore } from "~/stores/campaign";
 import { useOnboardStore } from "~/stores/onboard";
 
+import type { VNodeRef } from "vue";
 import type { Campaign } from "~/types";
 
 const { openModal } = useOnboardStore();
 const { account, web3ModalOpened } = storeToRefs(useOnboardStore());
 
+const stepWrapper = ref<VNodeRef | undefined>(undefined);
+
 const campaignCreationStep = ref(0);
 async function onContinue() {
   if (!checkAllStepsCompleted()) return;
+  stepWrapper.value?.scrollUp();
 
   switch (campaignCreationStep.value) {
     case 0:
@@ -150,11 +131,11 @@ async function onContinue() {
 }
 
 function onBack() {
+  stepWrapper.value?.scrollUp();
   campaignCreationStep.value > 0 && campaignCreationStep.value--;
 }
 
-const { checkAllStepsCompleted, sendCampaign } = useCampaignStore();
-const { steps } = storeToRefs(useCampaignStore());
+const { checkAllStepsCompleted, sendCampaign, steps } = useCampaignStore();
 
 const campaign = computed(() => {
   return {

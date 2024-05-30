@@ -1,18 +1,18 @@
 <template>
   <label
-    :class="`${image ? 'p-1.5' : 'py-10 px-5'} upload-label ${imageInputFocused ? 'active' : ''} create-campaign-input`"
+    :class="`${modelValue ? 'p-1.5' : 'py-10 px-5'} upload-label ${imageInputFocused ? 'active' : ''} create-campaign-input`"
     @drop="handleDrop"
     @dragover="(e) => e.preventDefault()"
     @dragenter="(e) => e.preventDefault()"
   >
-    <div v-if="!image">
+    <div v-if="!modelValue">
       <IconsImage />
     </div>
 
     <div class="relative">
       <img ref="imageElement" class="w-full rounded-lg" />
       <button
-        v-if="image"
+        v-if="modelValue"
         class="show absolute top-2 right-2 bg-black bg-opacity-50 rounded-full flex items-center justify-center size-7 text-white"
       >
         <IconsCross @click="clearInput" />
@@ -20,8 +20,8 @@
     </div>
 
     <div
-      v-if="!image"
-      :class="`${image ? 'mt-5' : 'mt-2'} text-center font-medium`"
+      v-if="!modelValue"
+      :class="`${modelValue ? 'mt-5' : 'mt-2'} text-center font-medium`"
     >
       <span class="underline text-indigo-700 underline-offset-2"
         >Click to upload</span
@@ -42,9 +42,16 @@
 </template>
 
 <script setup lang="ts">
-import { useCampaignStore } from "~/stores/campaign";
+const props = defineProps({
+  modelValue: {
+    type: [File, null] as any,
+    required: true,
+  },
+});
 
-const { image } = storeToRefs(useCampaignStore());
+const emit = defineEmits<{
+  (eventName: "update:modelValue", value: File | null): void;
+}>();
 
 const inputElement = ref<HTMLInputElement | null>(null);
 const imageElement = ref<HTMLImageElement | null>(null);
@@ -72,14 +79,14 @@ function handleDrop(event: DragEvent) {
 
   if (inputElement.value && dataTransfer.files.length) {
     inputElement.value.files = dataTransfer.files;
-    image.value = dataTransfer.files[0];
+    emit("update:modelValue", dataTransfer.files[0]);
     setInputImage();
   }
 }
 
 function handleInput() {
   if (!inputElement.value?.files?.length) return;
-  image.value = inputElement.value.files[0];
+  emit("update:modelValue", inputElement.value.files[0]);
   setInputImage();
 }
 
@@ -98,11 +105,11 @@ function clearInput(event: Event) {
   if (inputElement.value) {
     inputElement.value.value = "";
   }
-  image.value = null;
+  emit("update:modelValue", null);
 }
 
 onMounted(() => {
-  image.value && setInputImage(image.value);
+  props.modelValue && setInputImage(props.modelValue);
 });
 
 const imageInputFocused = ref(false);

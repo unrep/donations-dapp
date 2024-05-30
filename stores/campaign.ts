@@ -1,3 +1,9 @@
+import {
+  CommonLineInput,
+  CommonTextArea,
+  CommonETHInput,
+  CampaignCreateFileUpload,
+} from "#components";
 import { uploadFile } from "~/helpers/ipfs/uploadFileIPFS";
 
 export const useCampaignStore = defineStore("campaign", () => {
@@ -6,51 +12,91 @@ export const useCampaignStore = defineStore("campaign", () => {
   const description = ref<string | null>(null);
   const image = ref<File | null>(null);
 
-  const steps = ref<
-    {
-      stepName: string;
-      inputPlaceholder: string;
-      errorMessage: string;
-      showErrorMessage: boolean;
-      inputValue: Ref<any>;
-    }[]
-  >([
+  const steps: {
+    stepName: string;
+    errorMessage: string;
+    showErrorMessage: Ref<boolean | null>;
+    inputValue: Ref<any>;
+    component: Component;
+    props: {
+      [key: string]: any;
+    };
+    events?: {
+      [key: string]: (value: any) => void;
+    };
+  }[] = [
     {
       stepName: "Campaign name",
-      inputPlaceholder: "Enter campaign title here",
       errorMessage: "Campaign name is required",
-      showErrorMessage: false,
+      showErrorMessage: ref(false),
       inputValue: campaignName,
+      component: markRaw(CommonLineInput),
+      props: {
+        placeholder: "Enter campaign title here",
+        modelValue: computed(() => campaignName.value),
+      },
+      events: {
+        onInput: (value) => {
+          campaignName.value = value;
+        },
+      },
     },
     {
       stepName: "Goal amount",
-      inputPlaceholder: "Enter target amount",
       errorMessage: "Goal amount is required",
-      showErrorMessage: false,
+      showErrorMessage: ref(false),
       inputValue: goalAmount,
+      component: markRaw(CommonETHInput),
+      props: {
+        placeholder: "Enter target amount",
+        modelValue: computed(() => goalAmount.value),
+      },
+      events: {
+        onInput: (value) => {
+          goalAmount.value = value;
+        },
+      },
     },
     {
       stepName: "Campaign description",
-      inputPlaceholder: "Share the details of your cause...",
       errorMessage: "Campaign description is required",
-      showErrorMessage: false,
+      showErrorMessage: ref(false),
       inputValue: description,
+      component: markRaw(CommonTextArea),
+      props: {
+        placeholder: "Share the details of your cause...",
+        modelValue: computed(() => description.value),
+      },
+      events: {
+        onInput: (value) => {
+          description.value = value;
+        },
+      },
     },
     {
       stepName: "Photo upload",
-      inputPlaceholder: "No file chosen",
       errorMessage: "Image is required",
-      showErrorMessage: false,
+      showErrorMessage: ref(false),
       inputValue: image,
+      component: markRaw(CampaignCreateFileUpload),
+      props: {
+        placeholder: "No file chosen",
+        modelValue: computed(() => image.value),
+      },
+      events: {
+        onInput: (value) => {
+          image.value = value;
+        },
+      },
     },
-  ]);
+  ];
 
   watch(
-    steps,
+    [campaignName, goalAmount, description, image],
     (newValues) => {
-      steps.value.forEach((step, index) => {
-        if (newValues[index].inputValue && step.showErrorMessage) {
-          step.showErrorMessage = false;
+      steps.forEach((step, index) => {
+        if (newValues[index] && step.showErrorMessage.value) {
+          step.showErrorMessage.value = false;
         }
       });
     },
@@ -59,9 +105,9 @@ export const useCampaignStore = defineStore("campaign", () => {
 
   function checkAllStepsCompleted() {
     let allStepsCompleted = true;
-    steps.value.forEach((step) => {
-      step.showErrorMessage = !step.inputValue;
-      !step.inputValue && (allStepsCompleted = false);
+    steps.forEach((step) => {
+      step.showErrorMessage.value = !step.inputValue.value;
+      step.showErrorMessage.value && (allStepsCompleted = false);
     });
     return allStepsCompleted;
   }
