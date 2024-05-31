@@ -50,4 +50,3 @@ const router = useRouter();
 
 const { title, image, description } = campaign;
 </script>
-~

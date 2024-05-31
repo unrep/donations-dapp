@@ -10,7 +10,6 @@ export type Token = {
   iconUrl?: string;
   price?: TokenPrice;
 };
-export type TokenAmount = Token & { amount: BigNumberish };
 
 export declare namespace Api {
   namespace Response {
@@ -135,7 +134,7 @@ declare global {
           callback: (response: string) => void;
           "expired-callback": (response: string) => void;
           "error-callback": (response: string) => void;
-        }
+        },
       ) => string | undefined;
       reset: (widgetId: string) => void;
     };
@@ -153,8 +152,8 @@ export type Campaign = {
   id: string;
   title: string;
   image: string;
-  raised: number;
-  goal: number;
+  raised: string;
+  goal: string;
   description: string;
   createdAt?: Date;
   donationsCount?: number;

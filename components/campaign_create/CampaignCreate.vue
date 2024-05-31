@@ -111,6 +111,8 @@
 </template>
 
 <script setup lang="ts">
+import "@toast-ui/editor/dist/toastui-editor.css";
+
 import { useCampaignStore } from "~/stores/campaign";
 import { useOnboardStore } from "~/stores/onboard";
 
@@ -166,7 +168,7 @@ function getInputCampaign() {
     id: "0",
     title: steps[0].inputValue,
     image: URL.createObjectURL(steps[3].inputValue),
-    raised: 0,
+    raised: "0",
     goal: steps[1].inputValue,
     description: steps[2].inputValue,
     createdAt: new Date(),

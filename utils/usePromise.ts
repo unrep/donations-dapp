@@ -16,7 +16,7 @@ type UsePromiseExecuteOptions = typeof defaultExecuteOptions;
 
 export default <ResultType, ErrorType = Error>(
   fn: () => Promise<ResultType>,
-  options?: UsePromiseOptions
+  options?: UsePromiseOptions,
 ) => {
   const opts = Object.assign({}, defaultExecuteOptions, options);
 
@@ -31,7 +31,7 @@ export default <ResultType, ErrorType = Error>(
   };
 
   const execute = async (
-    options?: UsePromiseExecuteOptions
+    options?: UsePromiseExecuteOptions,
   ): Promise<ResultType | undefined> => {
     const { force } = Object.assign({}, defaultExecuteOptions, options);
     if (!promise || force) {
@@ -48,7 +48,9 @@ export default <ResultType, ErrorType = Error>(
     } catch (e) {
       promise = undefined;
       const err = formatError(e as Error);
-      if (!err) return;
+      if (!err) {
+        return;
+      }
 
       error.value = err as unknown as ErrorType;
       throw err;

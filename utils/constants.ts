@@ -1,6 +1,8 @@
-import { fundraisingABI } from "./abi";
+import { fundraisingABI } from "~/utils/contract/abi";
 
 import type { Token } from "~/types";
+
+const appConfig = useAppConfig();
 
 export const ETH_TOKEN: Token = {
   address: "0x000000000000000000000000000000000000800A",
@@ -11,7 +13,9 @@ export const ETH_TOKEN: Token = {
   iconUrl: "/img/eth.svg",
 };
 
+
+
 export const fundraisingContractConfig = {
-  address: "0x1A2894885076934dAf5a398Ff216c6d665707bbA", // fundraising contract in local node
+  address: appConfig.contract.address,
   abi: fundraisingABI,
 } as const;

@@ -10,8 +10,8 @@ import {
 } from "@wagmi/core";
 import { createWeb3Modal } from "@web3modal/wagmi";
 
-import { projectId, wagmiConfig } from "@/data/wagmi";
-import { confirmedSupportedWallets, disabledWallets } from "@/data/wallets";
+import { projectId, wagmiConfig } from "~/data/wagmi";
+import { confirmedSupportedWallets, disabledWallets } from "~/data/wallets";
 import { formatError } from "~/utils/formatters";
 import useObservable from "~/utils/useObservable";
 import usePromise from "~/utils/usePromise";
@@ -29,13 +29,13 @@ export const useOnboardStore = defineStore("onboard", () => {
   const walletName = ref<string | undefined>();
   const walletWarningDisabled = useStorage(
     "zksync-bridge-wallet-warning-disabled",
-    false
+    false,
   );
   const walletNotSupported = computed(() => {
     if (walletWarningDisabled.value) return false;
     if (!walletName.value) return false;
     return !confirmedSupportedWallets.find(
-      (wallet) => wallet === walletName.value
+      (wallet) => wallet === walletName.value,
     );
   });
   const identifyWalletName = async () => {
@@ -52,11 +52,11 @@ export const useOnboardStore = defineStore("onboard", () => {
 
     if (walletName.value && connector) {
       const isWalletDisabled = !!disabledWallets.find(
-        (wallet) => wallet === walletName.value
+        (wallet) => wallet === walletName.value,
       );
       if (isWalletDisabled)
         throw new Error(
-          `Unfortunately ${walletName.value} wallet is not supported at the moment!`
+          `Unfortunately ${walletName.value} wallet is not supported at the moment!`,
         );
     }
   };
@@ -126,7 +126,7 @@ export const useOnboardStore = defineStore("onboard", () => {
         err.message.includes("does not support programmatic chain switching")
       ) {
         throw new Error(
-          `Please switch network manually to "${networkName}" in your ${walletName.value} wallet`
+          `Please switch network manually to "${networkName}" in your ${walletName.value} wallet`,
         );
       }
       throw err;
@@ -140,11 +140,11 @@ export const useOnboardStore = defineStore("onboard", () => {
     async () => {
       if (!l1Network.value)
         throw new Error(
-          `L1 network is not available on ${selectedNetwork.value.name}`
+          `L1 network is not available on ${selectedNetwork.value.name}`,
         );
       return await switchNetworkById(l1Network.value.id);
     },
-    { cache: false }
+    { cache: false },
   );
   const setCorrectNetwork = async () => {
     return await switchNetwork().catch(() => undefined);
@@ -156,15 +156,15 @@ export const useOnboardStore = defineStore("onboard", () => {
     () => account.value.address,
     () => {
       notifyOnAccountChange(account.value.address);
-    }
+    },
   );
 
   const getWallet = async (
-    chainId: number | undefined = l1Network.value?.id
+    chainId: number | undefined = l1Network.value?.id,
   ) => {
     const client = await getWalletClient(
       wagmiConfig,
-      chainId ? { chainId } : undefined
+      chainId ? { chainId } : undefined,
     );
     if (!client) throw new Error("Wallet is not available");
 

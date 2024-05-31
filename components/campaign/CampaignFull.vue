@@ -83,7 +83,7 @@
 
     <div class="w-full flex flex-col justify-center items-start gap-5">
       <div class="text-3xl font-semibold">Campaign description</div>
-      {{ campaign.description }}
+      <CommonRichViewer :content="campaign.description" />
     </div>
   </div>
 
@@ -112,10 +112,10 @@ const { campaign } = defineProps({
   },
 });
 
-const goalUSD = computed(() => computeETHPrice(campaign.goal.toString()));
-const raisedUSD = computed(() => computeETHPrice(campaign.raised.toString()));
+const goalUSD = computed(() => computeETHPrice(campaign.goal));
+const raisedUSD = computed(() => computeETHPrice(campaign.raised));
 
 const raisedPercentage = computed(() =>
-  Math.floor((campaign.raised / campaign.goal) * 100),
+  Math.floor((+campaign.raised / +campaign.goal) * 100),
 );
 </script>

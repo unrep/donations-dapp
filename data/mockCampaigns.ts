@@ -1,12 +1,12 @@
-import type { Campaign } from "./types";
+import type { Campaign } from "../types";
 
 export const campaigns: Campaign[] = [
   {
     id: "example1",
     title: "Fundraising for a certain purpose",
     image: "image.png",
-    raised: 0.026,
-    goal: 0.05,
+    raised: "260000000000000000",
+    goal: "500000000000000000",
     description:
       "Here is the fundraising image, featuring a diverse group of people coming together to support a common cause. It captures a positive and warm community atmosphere, ideal for fundraising events. You can view and use the image for your needs. Let me know if there's anything else you'd like to adjust or add!",
     createdAt: new Date("2022-01-01T00:00:00Z"),
@@ -17,8 +17,8 @@ export const campaigns: Campaign[] = [
     title:
       "Fundraising for a certain purpose with a long title to test the layout",
     image: "s2.png",
-    raised: 0.0490009,
-    goal: 0.05,
+    raised: "260000000000000000",
+    goal: "500000000000000000",
     description:
       "Here is the fundraising image, featuring a diverse group of people coming together to support a common cause. It captures a positive and warm community atmosphere, ideal for fundraising events. You can view and use the image for your needs. Let me know if there's anything else you'd like to adjust or add!",
     createdAt: new Date("2022-01-02T00:00:00Z"),
@@ -28,8 +28,8 @@ export const campaigns: Campaign[] = [
     id: "example3",
     title: "Fundraising for a certain purpose",
     image: "fundraising.webp",
-    raised: 0.002,
-    goal: 0.05,
+    raised: "260000000000000000",
+    goal: "500000000000000000",
     description:
       "Here is the fundraising image, featuring a diverse group of people coming together to support a common cause. It captures a positive and warm community atmosphere, ideal for fundraising events. You can view and use the image for your needs. Let me know if there's anything else you'd like to adjust or add!",
     createdAt: new Date("2022-01-03T00:00:00Z"),
@@ -39,8 +39,8 @@ export const campaigns: Campaign[] = [
     id: "example4",
     title: "Fundraising for a certain purpose",
     image: "s2.png",
-    raised: 0.026,
-    goal: 0.05,
+    raised: "260000000000000000",
+    goal: "500000000000000000",
     description:
       "Here is the fundraising image, featuring a diverse group of people coming together to support a common cause. It captures a positive and warm community atmosphere, ideal for fundraising events. You can view and use the image for your needs. Let me know if there's anything else you'd like to adjust or add!",
     createdAt: new Date("2022-01-04T00:00:00Z"),
@@ -50,8 +50,8 @@ export const campaigns: Campaign[] = [
     id: "example5",
     title: "Fundraising for a certain purpose",
     image: "fundraising.webp",
-    raised: 0.0490009,
-    goal: 0.05,
+    raised: "260000000000000000",
+    goal: "500000000000000000",
     description:
       "Here is the fundraising image, featuring a diverse group of people coming together to support a common cause. It captures a positive and warm community atmosphere",
     createdAt: new Date("2022-01-05T00:00:00Z"),
@@ -61,8 +61,8 @@ export const campaigns: Campaign[] = [
     id: "example6",
     title: "Fundraising for a certain purpose",
     image: "fundraising.webp",
-    raised: 0.002,
-    goal: 0.05,
+    raised: "500000000000000000",
+    goal: "500000000000000000",
     description:
       "Here is the fundraising image, featuring a diverse group of people coming together to support a common cause. It captures a positive and warm community atmosphere, ideal for fundraising events. You can view and use the image for your needs. Let me know if there's anything else you'd like to adjust or add!",
     createdAt: new Date("2022-01-06T00:00:00Z"),
@@ -72,8 +72,8 @@ export const campaigns: Campaign[] = [
     id: "example7",
     title: "Fundraising for a certain purpose",
     image: "fundraising.webp",
-    raised: 0.026,
-    goal: 0.05,
+    raised: "500000000000000000",
+    goal: "500000000000000000",
     description:
       "Here is the fundraising image, featuring a diverse group of people coming together to support a common cause. It captures a positive and warm community atmosphere, ideal for fundraising events. You can view and use the image for your needs. Let me know if there's anything else you'd like to adjust or add!",
     createdAt: new Date("2022-01-07T00:00:00Z"),
@@ -83,8 +83,8 @@ export const campaigns: Campaign[] = [
     id: "example8",
     title: "Fundraising for a certain purpose",
     image: "fundraising.webp",
-    raised: 0.0490009,
-    goal: 0.05,
+    raised: "500000000000000000",
+    goal: "500000000000000000",
     description:
       "Here is the fundraising image, featuring a diverse group of people coming together to support a common cause. It captures a positive and warm community atmosphere, ideal for fundraising events. You can view and use the image for your needs. Let me know if there's anything else you'd like to adjust or add!",
     createdAt: new Date("2022-01-08T00:00:00Z"),
@@ -94,8 +94,8 @@ export const campaigns: Campaign[] = [
     id: "example9",
     title: "Fundraising for a certain purpose",
     image: "fundraising.webp",
-    raised: 0.002,
-    goal: 0.05,
+    raised: "500000000000000000",
+    goal: "500000000000000000",
     description:
       "Here is the fundraising image, featuring a diverse group of people coming together to support a common cause. It captures a positive and warm community atmosphere, ideal for fundraising events. You can view and use the image for your needs. Let me know if there's anything else you'd like to adjust or add!",
     createdAt: new Date("2022-01-09T00:00:00Z"),
@@ -105,8 +105,8 @@ export const campaigns: Campaign[] = [
     id: "example10",
     title: "Fundraising for a certain purpose",
     image: "fundraising.webp",
-    raised: 0.026,
-    goal: 0.05,
+    raised: "500000000000000000",
+    goal: "500000000000000000",
     description:
       "Here is the fundraising image, featuring a diverse group of people coming together to support a common cause. It captures a positive and warm community atmosphere, ideal for fundraising events. You can view and use the image for your needs. Let me know if there's anything else you'd like to adjust or add!",
     createdAt: new Date("2022-01-10T00:00:00Z"),

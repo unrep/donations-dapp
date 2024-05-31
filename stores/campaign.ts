@@ -1,6 +1,6 @@
 import {
   CommonLineInput,
-  CommonTextArea,
+  CommonRichEditor,
   CommonETHInput,
   CampaignCreateFileUpload,
 } from "#components";
@@ -62,7 +62,7 @@ export const useCampaignStore = defineStore("campaign", () => {
       errorMessage: "Campaign description is required",
       showErrorMessage: ref(false),
       inputValue: description,
-      component: markRaw(CommonTextArea),
+      component: markRaw(CommonRichEditor),
       props: {
         placeholder: "Share the details of your cause...",
         modelValue: computed(() => description.value),
@@ -100,7 +100,7 @@ export const useCampaignStore = defineStore("campaign", () => {
         }
       });
     },
-    { deep: true }
+    { deep: true },
   );
 
   function checkAllStepsCompleted() {
@@ -113,7 +113,7 @@ export const useCampaignStore = defineStore("campaign", () => {
   }
 
   function sendCampaign() {
-    console.log("UPLOADING");
+    // console.log("UPLOADING");
     const resDataJSON = JSON.stringify({
       campaignName: campaignName.value,
       goalAmount: goalAmount.value?.toString(),
@@ -128,7 +128,7 @@ export const useCampaignStore = defineStore("campaign", () => {
         // createCampaign(cid);
       })
       .finally(() => {
-        console.log("DONE");
+        // console.log("DONE");
       });
   }
 

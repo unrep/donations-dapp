@@ -27,11 +27,11 @@ const { campaign } = defineProps<{
 
 const { goal, raised } = campaign;
 
-const goalUSD = computed(() => computeETHPrice(goal.toString()));
-const raisedUSD = computed(() => computeETHPrice(raised.toString()));
+const goalUSD = computed(() => computeETHPrice(goal));
+const raisedUSD = computed(() => computeETHPrice(raised));
 
 const raisedPercentage = computed(() =>
-  Math.floor((campaign.raised / campaign.goal) * 100),
+  Math.floor((+campaign.raised / +campaign.goal) * 100),
 );
 </script>
 

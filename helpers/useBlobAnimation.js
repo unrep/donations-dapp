@@ -68,20 +68,21 @@ class Blob {
 export function initBlobs() {
   const blobEls = document.querySelectorAll(".bouncing-blob");
   const blobs = Array.from(blobEls).map((blobEl) => new Blob(blobEl));
+  return blobs;
 
-  function handleResize() {
-    blobs.forEach((blob) => blob.updateSpeed());
-  }
+  // function handleResize() {
+  //   blobs.forEach((blob) => blob.updateSpeed());
+  // }
 
-  window.addEventListener("resize", handleResize);
+  // window.addEventListener("resize", handleResize);
 
-  function update() {
-    requestAnimationFrame(update);
-    blobs.forEach((blob) => {
-      blob.update();
-      blob.move();
-    });
-  }
+  // function update() {
+  //   requestAnimationFrame(update);
+  //   blobs.forEach((blob) => {
+  //     blob.update();
+  //     blob.move();
+  //   });
+  // }
 
-  requestAnimationFrame(update);
+  // requestAnimationFrame(update);
 }

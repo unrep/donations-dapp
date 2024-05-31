@@ -9,7 +9,7 @@
 <script setup lang="ts">
 const props = defineProps({
   modelValue: {
-    type: [String, null] as any,
+    type: [String, null] as PropType<string | null>,
     required: true,
   },
 });

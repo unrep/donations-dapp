@@ -1,38 +1,15 @@
-import { getAccount } from "@wagmi/core";
-import { type BigNumberish } from "ethers";
-import { formatUnits, parseUnits } from "ethers/utils";
-import { BaseError } from "viem";
-
-import { wagmiConfig } from "~/data/wagmi";
+import { getAddress, formatUnits } from "viem";
 
 export function shortenAddress(address: string, chars = 3): string {
   return `${address.slice(0, chars + 2)}...${address.slice(-3)}`;
 }
 
-export function parseTokenAmount(
-  amount: BigNumberish,
-  decimals: number
-): string {
-  const result = formatUnits(amount.toString(), decimals).toString();
-  if (result.endsWith(".0")) {
-    return result.slice(0, -2);
-  }
-  return result;
-}
-
-export function decimalToBigNumber(amount: string, decimals: number) {
-  return parseUnits(amount, decimals);
-}
-
-export function formatRawTokenPrice(
-  amount: BigNumberish,
+export function formatTokenPrice(
+  amount: bigint,
   decimals: number,
-  price: number
-): number {
-  const tokenAmount = parseTokenAmount(amount, decimals);
-  return parseFloat(tokenAmount) * price;
-}
-export function formatPricePretty(price: number): string {
+  _price: number,
+): string {
+  const price = parseFloat(formatUnits(amount, decimals)) * _price;
   if (!price) {
     return "$0.00";
   } else if (price < 0.01) {
@@ -40,54 +17,9 @@ export function formatPricePretty(price: number): string {
   }
   return "$" + price.toFixed(2);
 }
-export function formatTokenPrice(
-  amount: BigNumberish,
-  decimals: number,
-  price: number
-): string {
-  return formatPricePretty(formatRawTokenPrice(amount, decimals, price));
-}
-
-/* Might return value like "0.0000" */
-export function removeSmallAmount(
-  amount: BigNumberish,
-  decimals: number,
-  price: number,
-  minTokenValue = 0.001,
-  maxChars = 6
-): string {
-  const tokenAmount = parseTokenAmount(amount, decimals);
-  // eslint-disable-next-line prefer-const
-  let [whole, fractional] = tokenAmount.split(".");
-  if (!fractional) {
-    fractional = "0";
-  }
-  if (whole.length > maxChars) {
-    return whole;
-  }
-
-  let acc = whole + ".";
-  for (let a = 0; a < fractional.length; a++) {
-    const currentDecimalAmount = "0." + "".padEnd(a, "0") + "9";
-    const currentPrice = parseFloat(currentDecimalAmount) * price;
-    if (currentPrice >= minTokenValue || acc.length + 1 < maxChars) {
-      acc += fractional[a];
-    } else {
-      break;
-    }
-  }
-  if (acc.endsWith(".0")) {
-    return acc.slice(0, -2);
-  } else if (acc.endsWith(".")) {
-    return acc.slice(0, -1);
-  }
-  return acc;
-}
 
 export function checksumAddress(address: string) {
-  return getAccount(wagmiConfig).addresses?.find(
-    (accountAddress) => accountAddress === address
-  );
+  return getAddress(address.toLowerCase());
 }
 
 export function formatError(error?: Error) {
@@ -113,14 +45,12 @@ export function formatError(error?: Error) {
       return new Error("Transaction fee was to low. Try again.");
     } else if (
       message === "Network Error" ||
-      message === "Failed to fetch ()" ||
-      message.includes("<no response> Failed to fetch") ||
-      message.includes("noNetwork") ||
-      (error instanceof BaseError &&
-        error?.details?.startsWith("Failed to fetch"))
+      message === "Failed to fetch" ||
+      message.includes("<no response>") ||
+      message.includes("noNetwork")
     ) {
       return new Error(
-        "Network error. Check your internet connection and try again."
+        "Network error. Check your internet connection and try again.",
       );
     }
   }

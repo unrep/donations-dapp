@@ -7,15 +7,15 @@ import { Buffer } from "buffer";
 
 // eslint-disable-next-line import/no-mutable-exports
 export let client: Client.Client | null = null;
-const runtimeConfig = useRuntimeConfig();
 
 async function main() {
+  const runtimeConfig = useRuntimeConfig();
   // Load client with specific private key
-  const principal = Signer.parse(runtimeConfig.public.KEY);
+  const principal = Signer.parse(runtimeConfig.public.ipfs.KEY);
   const store = new StoreMemory();
   client = await Client.create({ principal, store });
   // Add proof that this agent has been delegated capabilities on the space
-  const proof = await parseProof(runtimeConfig.public.PROOF);
+  const proof = await parseProof(runtimeConfig.public.ipfs.PROOF);
   const space = await client.addSpace(proof);
   await client.setCurrentSpace(space.did());
 }

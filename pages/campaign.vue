@@ -5,15 +5,6 @@
       <NavBar />
       <CampaignFull v-if="campaign" :campaign="campaign" />
     </div>
-    <div
-      class="w-full max-w-7xl p-5 text-left text-lg lg:grid gap-10"
-      style="grid-template-columns: 7fr 3fr"
-    >
-      <CampaignDescription
-        v-if="campaign"
-        :description="campaign.description"
-      />
-    </div>
   </div>
 </template>
 
@@ -44,4 +35,3 @@ onMounted(() => {
   width: var(--raised-percentage);
 }
 </style>
-~/mockCampaigns

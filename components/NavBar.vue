@@ -1,39 +1,29 @@
 <template>
   <div
     ref="navRef"
-    class="z-50 sticky top-0 left-0 w-full bg-opacity-50 bg-white backdrop-blur-lg flex items-center justify-center border-b nav-shadow"
+    class="z-50 sticky top-0 left-0 w-full bg-white/70 backdrop-blur-lg flex items-center justify-center border-b shadow shadow-black/5"
   >
     <!-- Mobile -->
     <div class="w-full p-5 max-w-7xl flex justify-between items-center">
       <NuxtLink
         to="/"
-        :class="[
-          'text-4xl font-black text-indigo-800 hidden md:block',
-          currentPath === '/' && 'active',
-        ]"
+        class="text-4xl font-black text-indigo-800 hidden md:block"
         >Raise&Reach</NuxtLink
       >
 
       <div class="text-4xl font-black text-indigo-800 block md:hidden">R&R</div>
 
       <div class="items-center gap-5 hidden lg:flex">
-        <NuxtLink
-          to="/"
-          :class="['nav-button', currentPath === '/' && 'active']"
-          >Home</NuxtLink
-        >
-        <NuxtLink
-          to="/create-campaign"
-          :class="[
-            'nav-button',
-            currentPath === '/create-campaign' && 'active',
-          ]"
-        >
+        <NuxtLink to="/" class="nav-button">Home</NuxtLink>
+        <NuxtLink to="/create-campaign" class="nav-button">
           Start campaign
         </NuxtLink>
-        <NuxtLink class="nav-button" @click="scrollToAnchor('#searchElement')">
+        <button
+          class="nav-button"
+          @click.stop.prevent="scrollToAnchor('#searchElement')"
+        >
           Search
-        </NuxtLink>
+        </button>
       </div>
 
       <div class="flex items-center gap-5 lg:hidden">
@@ -54,10 +44,7 @@
       ref="mobileNavRef"
       class="z-50 fixed lg:hidden top-0 right-0 w-2/3 h-screen bg-white bg-opacity-50 backdrop-blur-lg flex flex-col items-end justify-start gap-10"
     >
-      <div
-        class="flex items-center justify-center p-5"
-        :style="`height: ${navRef?.clientHeight || 0}px`"
-      >
+      <div class="flex items-center justify-center p-5">
         <IconsNav
           class="text-indigo-800 z-20"
           width="1.5rem"
@@ -70,85 +57,70 @@
       <NuxtLink to="/create-campaign" class="nav-button"
         >Start campaign</NuxtLink
       >
-      <NuxtLink
-        class="nav-button"
-        @click="
-          () => {
-            scrollToAnchor('#searchElement');
-            navbarOpen = false;
-          }
-        "
-        >Search</NuxtLink
-      >
+      <button class="nav-button" @click="scrollToAnchor('#searchElement')">
+        Search
+      </button>
     </div>
   </Transition>
 </template>
 
 <script setup lang="ts">
-const nuxtApp = useNuxtApp();
+import { useElementSize, useWindowScroll, onClickOutside } from "@vueuse/core";
 
 const navRef = ref<HTMLElement | null>(null);
-
-// Set custom anchor with Y axis scrolling to dynamic offset
-nuxtApp.$anchorScroll!.defaults.toAnchor = () => ({
-  behavior: "smooth",
-  offsetTop: -(navRef.value?.clientHeight || 0) - 40,
-});
-
-const { scrollToAnchor } = useAnchorScroll();
-
-const { path: currentPath } = useRoute();
-
-const navbarOpen = ref(false);
+const { height: headerHeight } = useElementSize(navRef);
+const { y: windowScrollTop } = useWindowScroll();
 
 const mobileNavRef = ref<HTMLElement | null>(null);
-
-const handleClickOutside = (event: MouseEvent) => {
-  mobileNavRef.value &&
-    !mobileNavRef.value.contains(event.target as Node) &&
-    (navbarOpen.value = false);
-};
-
-watch(navbarOpen, (opened) => {
-  if (opened) {
-    document.addEventListener("click", handleClickOutside);
-  } else {
-    document.removeEventListener("click", handleClickOutside);
-  }
+const navbarOpen = ref(false);
+onClickOutside(mobileNavRef, () => {
+  if (!mobileNavRef.value) return;
+  navbarOpen.value = false;
 });
+
+const scrollToAnchor = (anchor: string) => {
+  navbarOpen.value = false;
+  const element = document.querySelector(anchor);
+  if (!element) return;
+
+  const scrollOffset = 40;
+  const elementPosition =
+    element.getBoundingClientRect().top + windowScrollTop.value;
+  window.scrollTo({
+    top: elementPosition - (headerHeight.value || 0) - scrollOffset,
+    behavior: "smooth",
+  });
+};
 </script>
 
-<style>
-.nav-shadow {
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
-}
-
+<style lang="scss" scoped>
 .nav-button {
   @apply px-5 py-2 text-indigo-800 text-2xl lg:text-lg font-bold rounded-lg duration-200 cursor-pointer;
 
-  &.active {
+  &.router-link-exact-active {
     @apply scale-110;
   }
-
-  &:hover {
-    @apply scale-105;
+  &:not(.router-link-exact-active) {
+    &:hover {
+      @apply scale-105;
+    }
   }
 }
 
 .slide-from-right {
   &-enter-active,
   &-leave-active {
-    transition: transform 0.3s;
+    @apply transition-transform;
   }
 
   &-enter-from,
   &-leave-to {
-    transform: translateX(100%);
+    @apply translate-x-full;
   }
 
   &-enter-to,
   &-leave-from {
-    transform: translateX(0);
+    @apply translate-x-0;
   }
 }
 </style>

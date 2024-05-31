@@ -1,7 +1,7 @@
 import { type Chain, zkSync, zkSyncSepoliaTestnet } from "@wagmi/core/chains";
 import { defaultWagmiConfig } from "@web3modal/wagmi/vue";
 
-export const projectId = useAppConfig().walletConnectProjectID as string;
+export const projectId = useAppConfig().walletConnectProjectID;
 if (!projectId)
   throw new Error("Missing WalletConnect project ID in .env file");
 

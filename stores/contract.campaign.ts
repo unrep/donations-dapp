@@ -10,7 +10,6 @@ export const useContractCampaignStore = defineStore(
 
     // const walletClient = await getWallet();
 
-    console.log("before contract");
     const contract = getContract({
       address: fundraisingContractConfig.address,
       abi: fundraisingContractConfig.abi,
@@ -19,9 +18,7 @@ export const useContractCampaignStore = defineStore(
         // wallet: walletClient,
       },
     });
-    console.log("after contract");
 
-    const res = await contract.read.campaigns([BigInt(0)]);
-    console.log(res);
-  }
+    await contract.read.campaigns([BigInt(0)]);
+  },
 );
