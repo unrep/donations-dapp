@@ -4,7 +4,8 @@ import {
   CommonETHInput,
   CampaignCreateFileUpload,
 } from "#components";
-import { uploadFile } from "~/helpers/ipfs/uploadFileIPFS";
+import { useWeb3Storage } from "~/helpers/IPFS";
+const { uploadFile } = useWeb3Storage();
 
 export const useCampaignStore = defineStore("campaign", () => {
   const campaignName = ref<string | null>(null);

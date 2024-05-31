@@ -13,8 +13,6 @@ export const ETH_TOKEN: Token = {
   iconUrl: "/img/eth.svg",
 };
 
-
-
 export const fundraisingContractConfig = {
   address: appConfig.contract.address,
   abi: fundraisingABI,

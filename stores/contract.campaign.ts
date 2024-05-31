@@ -1,4 +1,4 @@
-import { getContract } from "viem";
+import { getContract, type Address } from "viem";
 
 import { useOnboardStore } from "./onboard";
 
@@ -11,7 +11,7 @@ export const useContractCampaignStore = defineStore(
     // const walletClient = await getWallet();
 
     const contract = getContract({
-      address: fundraisingContractConfig.address,
+      address: fundraisingContractConfig.address as Address,
       abi: fundraisingContractConfig.abi,
       client: {
         public: publicClient,
