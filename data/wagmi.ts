@@ -5,48 +5,32 @@ export const projectId = useAppConfig().walletConnectProjectID;
 if (!projectId)
   throw new Error("Missing WalletConnect project ID in .env file");
 
-export const chains: [Chain, ...Chain[]] = [
+const dockerizedLocalNode = {
+  id: 270,
+  name: "Dockerized local node",
+  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ["http://localhost:3050"],
+    },
+    public: {
+      http: ["http://localhost:3050"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "Local Explorer",
+      url: "http://localhost:3010",
+    },
+  },
+  testnet: true,
+} satisfies Chain;
+
+export const chains = [
   zkSync,
   zkSyncSepoliaTestnet,
-  ...(import.meta.env.MODE === "development"
-    ? [
-        {
-          id: 270,
-          name: "Dockerized local node",
-          nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-          rpcUrls: {
-            default: {
-              http: ["http://localhost:3050"],
-            },
-            public: {
-              http: ["http://localhost:3050"],
-            },
-          },
-          blockExplorers: {
-            default: {
-              name: "Local Explorer",
-              url: "http://localhost:3010",
-            },
-          },
-          testnet: true,
-        },
-        {
-          id: 260,
-          name: "In-memory local node",
-          nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-          rpcUrls: {
-            default: {
-              http: ["http://127.0.0.1:8011"],
-            },
-            public: {
-              http: ["http://127.0.0.1:8011"],
-            },
-          },
-          testnet: true,
-        },
-      ]
-    : []),
-];
+  ...(import.meta.env.MODE === "development" ? [dockerizedLocalNode] : []),
+] as const;
 
 const metadata = {
   name: "Donations Dapp",
@@ -60,3 +44,6 @@ export const wagmiConfig = defaultWagmiConfig({
   projectId,
   metadata,
 });
+
+export const chain =
+  import.meta.env.MODE === "development" ? dockerizedLocalNode : zkSync;

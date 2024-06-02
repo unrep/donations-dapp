@@ -10,17 +10,13 @@ import {
 } from "@wagmi/core";
 import { createWeb3Modal } from "@web3modal/wagmi";
 
-import { projectId, wagmiConfig } from "~/data/wagmi";
+import { chain, projectId, wagmiConfig } from "~/data/wagmi";
 import { confirmedSupportedWallets, disabledWallets } from "~/data/wallets";
 import { formatError } from "~/utils/formatters";
 import useObservable from "~/utils/useObservable";
 import usePromise from "~/utils/usePromise";
 
-import { useNetworkStore } from "./network";
-
 export const useOnboardStore = defineStore("onboard", () => {
-  const { selectedNetwork, l1Network } = storeToRefs(useNetworkStore());
-
   reconnect(wagmiConfig);
 
   const account = ref(getAccount(wagmiConfig));
@@ -63,6 +59,7 @@ export const useOnboardStore = defineStore("onboard", () => {
 
   const web3modal = createWeb3Modal({
     wagmiConfig,
+    defaultChain: chain,
     projectId: projectId!,
     termsConditionsUrl: "https://zksync.io/terms",
     privacyPolicyUrl: "https://zksync.io/privacy",
@@ -115,7 +112,7 @@ export const useOnboardStore = defineStore("onboard", () => {
 
   const isCorrectNetworkSet = computed(() => {
     const walletNetworkId = account.value.chain?.id;
-    return walletNetworkId === l1Network.value?.id;
+    return walletNetworkId === chain.id;
   });
   const switchNetworkById = async (chainId: number, networkName?: string) => {
     try {
@@ -138,11 +135,7 @@ export const useOnboardStore = defineStore("onboard", () => {
     execute: switchNetwork,
   } = usePromise(
     async () => {
-      if (!l1Network.value)
-        throw new Error(
-          `L1 network is not available on ${selectedNetwork.value.name}`,
-        );
-      return await switchNetworkById(l1Network.value.id);
+      return await switchNetworkById(chain.id);
     },
     { cache: false },
   );
@@ -159,9 +152,7 @@ export const useOnboardStore = defineStore("onboard", () => {
     },
   );
 
-  const getWallet = async (
-    chainId: number | undefined = l1Network.value?.id,
-  ) => {
+  const getWallet = async (chainId: number | undefined = chain.id) => {
     const client = await getWalletClient(
       wagmiConfig,
       chainId ? { chainId } : undefined,
@@ -192,7 +183,7 @@ export const useOnboardStore = defineStore("onboard", () => {
 
     getWallet,
     getPublicClient: () => {
-      const publicClient = getPublicClient(wagmiConfig);
+      const publicClient = getPublicClient(wagmiConfig, { chainId: chain.id });
       if (!publicClient) {
         throw new Error("Public client is not available");
       }

@@ -1,5 +1,6 @@
 import { fundraisingABI } from "~/utils/contract/abi";
 
+import type { Address } from "viem";
 import type { Token } from "~/types";
 
 const appConfig = useAppConfig();
@@ -14,6 +15,6 @@ export const ETH_TOKEN: Token = {
 };
 
 export const fundraisingContractConfig = {
-  address: appConfig.contract.address,
+  address: appConfig.contract.address as Address,
   abi: fundraisingABI,
 } as const;

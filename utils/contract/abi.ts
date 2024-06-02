@@ -174,30 +174,6 @@ export const fundraisingABI = [
     inputs: [
       {
         internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "contributions",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
         name: "_goalAmount",
         type: "uint256",
       },
@@ -215,6 +191,106 @@ export const fundraisingABI = [
     name: "createCampaign",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getAllCampaignFilters",
+    outputs: [
+      {
+        internalType: "string[]",
+        name: "",
+        type: "string[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "campaignIds",
+        type: "uint256[]",
+      },
+    ],
+    name: "getCampaignSummaries",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "organizer",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "goalAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "raisedAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "isOpen",
+            type: "bool",
+          },
+          {
+            internalType: "string",
+            name: "ipfsHash",
+            type: "string",
+          },
+        ],
+        internalType: "struct Fundraising.CampaignSummary[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_campaignId",
+        type: "uint256",
+      },
+    ],
+    name: "getContributions",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "contributor",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "timestamp",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Fundraising.Contribution[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
