@@ -40,6 +40,22 @@
       <template v-else-if="campaignCreationStep === 2">
         <div />
         <div
+          v-if="!account.isConnected"
+          class="w-full text-center text-4xl mlg:text-5xl font-bold text-indigo-800"
+        >
+          You need to connect your wallet first
+        </div>
+        <div
+          v-else
+          class="w-full text-center text-4xl mlg:text-5xl font-bold text-indigo-800"
+        >
+          Now you can create the campaign
+        </div>
+      </template>
+
+      <template v-else-if="campaignCreationStep === 3">
+        <div />
+        <div
           class="w-full text-center text-4xl mlg:text-5xl font-bold text-indigo-800"
         >
           Campaign created successfully!
@@ -63,7 +79,7 @@
       </template>
 
       <div
-        v-if="campaignCreationStep < 2"
+        v-if="campaignCreationStep < 3"
         class="flex justify-center items-center gap-5 w-full"
       >
         <button
@@ -107,7 +123,7 @@
         </CommonButton>
       </div>
       <div
-        v-if="campaignCreationStep !== 2"
+        v-if="campaignCreationStep < 2"
         class="hidden mlg:block h-5 border border-transparent w-full"
       ></div>
     </CampaignCreateStepWrapper>
@@ -135,7 +151,7 @@ const addTokenStep = computed(() => {
       func: () => null,
     } as const;
   }
-  if (campaignCreationStep.value < 1) {
+  if (campaignCreationStep.value < 2) {
     return {
       key: "preview",
       func: () => {
