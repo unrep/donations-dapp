@@ -3,8 +3,12 @@ import {
   CommonRichEditor,
   CommonETHInput,
   CampaignCreateFileUpload,
+  CommonFiltersSelect,
 } from "#components";
 import { useWeb3Storage } from "~/helpers/IPFS";
+
+import { useContractCampaignStore } from "./contract.campaign";
+
 const { uploadFile } = useWeb3Storage();
 
 export const useCampaignStore = defineStore("campaign", () => {
@@ -12,12 +16,23 @@ export const useCampaignStore = defineStore("campaign", () => {
   const goalAmount = ref<number | null>(null);
   const description = ref<string | null>(null);
   const image = ref<File | null>(null);
+  const { result: filters, execute: getFilters } = usePromise(() => {
+    const { getCampaignFilters } = useContractCampaignStore();
+    return getCampaignFilters().then((res) =>
+      res.map((filter) => ({ text: filter, selected: false })),
+    );
+  });
+  getFilters();
+  const selectedFilters = computed(() =>
+    filters.value?.filter((filter) => filter.selected),
+  );
 
   const steps: {
     stepName: string;
     errorMessage: string;
     showErrorMessage: Ref<boolean | null>;
     inputValue: Ref<any>;
+    completed: Ref<boolean>;
     component: Component;
     props: {
       [key: string]: any;
@@ -32,6 +47,7 @@ export const useCampaignStore = defineStore("campaign", () => {
       showErrorMessage: ref(false),
       inputValue: campaignName,
       component: markRaw(CommonLineInput),
+      completed: computed(() => !!campaignName.value),
       props: {
         placeholder: "Enter campaign title here",
         modelValue: computed(() => campaignName.value),
@@ -48,6 +64,7 @@ export const useCampaignStore = defineStore("campaign", () => {
       showErrorMessage: ref(false),
       inputValue: goalAmount,
       component: markRaw(CommonETHInput),
+      completed: computed(() => !!goalAmount.value),
       props: {
         placeholder: "Enter target amount",
         modelValue: computed(() => goalAmount.value),
@@ -59,11 +76,35 @@ export const useCampaignStore = defineStore("campaign", () => {
       },
     },
     {
+      stepName: "Campaign filters",
+      errorMessage: "Campaign filters are required",
+      showErrorMessage: ref(false),
+      inputValue: filters,
+      component: markRaw(CommonFiltersSelect),
+      completed: computed(() => !!selectedFilters.value?.length),
+      props: {
+        placeholder: "Select campaign filters",
+        filters: computed(() => filters.value),
+      },
+      events: {
+        onSelect: ({
+          filterIndex,
+          selected,
+        }: {
+          filterIndex: number;
+          selected: boolean;
+        }) => {
+          filters.value && (filters.value[filterIndex].selected = selected);
+        },
+      },
+    },
+    {
       stepName: "Campaign description",
       errorMessage: "Campaign description is required",
       showErrorMessage: ref(false),
       inputValue: description,
       component: markRaw(CommonRichEditor),
+      completed: computed(() => !!description.value),
       props: {
         placeholder: "Share the details of your cause...",
         modelValue: computed(() => description.value),
@@ -80,6 +121,7 @@ export const useCampaignStore = defineStore("campaign", () => {
       showErrorMessage: ref(false),
       inputValue: image,
       component: markRaw(CampaignCreateFileUpload),
+      completed: computed(() => !!image.value),
       props: {
         placeholder: "No file chosen",
         modelValue: computed(() => image.value),
@@ -93,11 +135,15 @@ export const useCampaignStore = defineStore("campaign", () => {
   ];
 
   watch(
-    [campaignName, goalAmount, description, image],
+    [campaignName, goalAmount, filters, description, image],
     (newValues) => {
       steps.forEach((step, index) => {
         if (newValues[index] && step.showErrorMessage.value) {
-          step.showErrorMessage.value = false;
+          if (index === 2) {
+            step.showErrorMessage.value = !selectedFilters.value?.length;
+          } else {
+            step.showErrorMessage.value = false;
+          }
         }
       });
     },
@@ -107,14 +153,13 @@ export const useCampaignStore = defineStore("campaign", () => {
   function checkAllStepsCompleted() {
     let allStepsCompleted = true;
     steps.forEach((step) => {
-      step.showErrorMessage.value = !step.inputValue.value;
+      step.showErrorMessage.value = !step.completed.value;
       step.showErrorMessage.value && (allStepsCompleted = false);
     });
     return allStepsCompleted;
   }
 
-  function sendCampaign() {
-    // console.log("UPLOADING");
+  async function sendCampaign() {
     const resDataJSON = JSON.stringify({
       campaignName: campaignName.value,
       goalAmount: goalAmount.value?.toString(),
@@ -122,15 +167,15 @@ export const useCampaignStore = defineStore("campaign", () => {
     });
 
     // Call the uploadFile function from the IPFS helper
-    return uploadFile(resDataJSON, image.value)
+    await uploadFile(resDataJSON, image.value)
       ?.then((cid) => {
         return cid;
-        // Call the createCampaign function from the contract helper
-        // createCampaign(cid);
       })
       .finally(() => {
         // console.log("DONE");
       });
+
+    // await createCampaign("", cid, filters);
   }
 
   return {
@@ -138,6 +183,8 @@ export const useCampaignStore = defineStore("campaign", () => {
     goalAmount,
     description,
     image,
+
+    filters,
 
     steps,
     checkAllStepsCompleted,

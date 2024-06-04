@@ -3,6 +3,8 @@
     <NavBar />
     <LandingHero />
 
+    <button @click="openModal">open MOdal</button>
+
     <div
       class="w-full bg-white flex flex-col justify-center items-center gap-10 pb-10"
     >
@@ -16,7 +18,7 @@
         </div>
       </div>
 
-      <LandingCardsCarousel />
+      <LandingCardsCarousel v-if="campaigns" :campaigns="campaigns" />
 
       <div
         id="searchElement"
@@ -31,21 +33,22 @@
       <LandingSearch class="z-20 px-10" :filters="filters" />
 
       <LandingCampaignSearchResultList
+        v-if="searchedCampaigns"
         class="z-10 -mt-2 px-10"
-        :campaigns="campaigns"
+        :campaigns="searchedCampaigns"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { campaigns } from "~/data/mockCampaigns";
+import { useOnboardStore } from "~/stores/onboard";
 
-const filters = ref([
-  { text: "filter one", selected: false },
-  { text: "filter two", selected: false },
-  { text: "filter three", selected: false },
-  { text: "filter four", selected: false },
-  { text: "filter five", selected: false },
-]);
+import type { Campaign } from "~/types";
+
+const { openModal } = useOnboardStore();
+
+const filters = ref<{ text: string; selected: boolean }[]>([]);
+const campaigns = ref<Campaign[] | null>(null);
+const searchedCampaigns = ref<Campaign[] | null>(null);
 </script>

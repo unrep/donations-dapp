@@ -3,53 +3,61 @@ import { getContract as getContractViem } from "viem";
 import { useOnboardStore } from "./onboard";
 
 export const useContractCampaignStore = defineStore("contact_campaign", () => {
-  async function getContract() {
+  function getReadContract() {
+    const { getPublicClient } = useOnboardStore();
+
+    return getContractViem({
+      address: fundraisingContractConfig.address,
+      abi: fundraisingContractConfig.abi,
+      client: getPublicClient(),
+    });
+  }
+  async function getWriteContract() {
     const { getPublicClient, getWallet } = useOnboardStore();
 
     return getContractViem({
       address: fundraisingContractConfig.address,
       abi: fundraisingContractConfig.abi,
-      client: {
-        public: getPublicClient(),
-        wallet: await getWallet(),
-      },
+      client: { public: getPublicClient(), wallet: await getWallet() },
     });
   }
 
-  async function getCampaignFilters() {
-    const contract = await getContract();
-    return contract.read.getAllCampaignFilters();
+  function getCampaignFilters() {
+    const contract = getReadContract();
+    return contract.read
+      .getAllCampaignFilters()
+      .then((res) => res.map((filter) => filter.replace(/_/g, " ")));
   }
 
-  async function getCampaign(index: number) {
-    const contract = await getContract();
+  function getCampaign(index: number) {
+    const contract = getReadContract();
     return contract.read.campaigns([BigInt(index)]);
   }
 
-  async function getCampaigns(startIndex: number, endIndex: number) {
-    const contract = await getContract();
+  function getCampaigns(startIndex: number, endIndex: number) {
+    const contract = getReadContract();
     const indexArray = Array.from({ length: endIndex - startIndex }, (_, i) =>
       BigInt(i + startIndex),
     );
     return contract.read.getCampaignSummaries([indexArray]);
   }
 
-  async function getCampaignContributions(campaignIndex: number) {
-    const contract = await getContract();
+  function getCampaignContributions(campaignIndex: number) {
+    const contract = getReadContract();
     return contract.read.getContributions([BigInt(campaignIndex)]);
   }
 
-  async function getLastCampaignIndex() {
-    const contract = await getContract();
-    return contract.read.nextCampaignId();
+  function getLastCampaignIndex() {
+    const contract = getReadContract();
+    return contract.read.nextCampaignId().then((res) => Number(res));
   }
 
-  async function searchCampaigns(
+  function searchCampaigns(
     startDate: number,
     endDate: number,
     filters: string[],
   ) {
-    const contract = await getContract();
+    const contract = getReadContract();
     return contract.read.searchCampaigns([
       BigInt(startDate),
       BigInt(endDate),
@@ -62,7 +70,7 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     ipfsHash: string,
     filters: string[],
   ) {
-    const contract = await getContract();
+    const contract = await getWriteContract();
     return contract.write.createCampaign([
       BigInt(goalAmount),
       ipfsHash,
@@ -71,18 +79,18 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
   }
 
   async function stopCampaign(campaignId: number) {
-    const contract = await getContract();
+    const contract = await getWriteContract();
     return contract.write.stopCampaign([BigInt(campaignId)]);
   }
 
   async function withdrawCampaignFunds(campaignId: number) {
-    const contract = await getContract();
+    const contract = await getWriteContract();
     return contract.write.withdrawFunds([BigInt(campaignId)]);
   }
 
   async function contributeCampaign(campaignId: number) {
     // How to pay here? Method is payable
-    const contract = await getContract();
+    const contract = await getWriteContract();
     return contract.write.contribute([BigInt(campaignId)]);
   }
 

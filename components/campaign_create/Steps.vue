@@ -30,13 +30,13 @@
           <div
             :class="[
               'w-full flex items-center gap-2 p-2 rounded-full duration-200',
-              step.inputValue ? 'opacity-30' : 'opacity-100',
+              step.completed ? 'opacity-30' : 'opacity-100',
             ]"
           >
             <div
               class="self-start bg-indigo-800 aspect-square text-white size-8 rounded-full flex justify-center items-center"
             >
-              <div v-if="step.inputValue">
+              <div v-if="step.completed">
                 <IconsCheck color="white" />
               </div>
               <div v-else>

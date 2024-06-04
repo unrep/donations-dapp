@@ -11,5 +11,8 @@
 </template>
 
 <script lang="ts" setup>
-import { campaigns } from "~/data/mockCampaigns";
+import { type Campaign } from "~/types";
+defineProps({
+  campaigns: Array<Campaign>,
+});
 </script>

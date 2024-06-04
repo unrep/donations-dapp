@@ -13,13 +13,17 @@
         <div
           v-for="step in steps"
           :key="step.stepName"
-          class="w-full space-y-1"
+          :class="[
+            'w-full space-y-1',
+            step.stepName === 'Campaign filters' && 'z-9999',
+          ]"
         >
           <div class="font-medium">{{ step.stepName }}</div>
           <component
             :is="step.component"
             v-bind="step.props"
             @update:model-value="step.events?.onInput"
+            @update:select-item="step.events?.onSelect"
           />
           <CampaignCreateErrorMessage
             v-if="step.showErrorMessage"
@@ -167,10 +171,10 @@ function getInputCampaign() {
   return {
     id: "0",
     title: steps[0].inputValue,
-    image: URL.createObjectURL(steps[3].inputValue),
+    image: URL.createObjectURL(steps[4].inputValue),
     raised: "0",
     goal: steps[1].inputValue,
-    description: steps[2].inputValue,
+    description: steps[3].inputValue,
     createdAt: new Date(),
     donationsCount: 0,
   };

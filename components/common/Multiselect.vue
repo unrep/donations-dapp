@@ -3,7 +3,7 @@
     <div
       v-if="opened"
       ref="multiselectRef"
-      class="bg-white absolute -left-1 w-60 border rounded-xl overflow-y-auto shadow-sm mt-1 overflow-hidden"
+      class="z-9999 bg-white absolute -left-1 w-60 border rounded-xl overflow-y-auto shadow-sm mt-1 overflow-hidden"
     >
       <div class="w-full py-2 pl-3 pr-2 flex items-center gap-2 border-b">
         <IconsSearch />
