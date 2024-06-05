@@ -1,3 +1,5 @@
+import type { Address } from "viem";
+
 export type Hash = `0x${string}`;
 
 export type TokenPrice = number | undefined;
@@ -148,6 +150,12 @@ declare global {
   }
 }
 
+type Contribution = {
+  contributor: Address;
+  amount: number;
+  timestamp: Date;
+};
+
 export type Campaign = {
   id: string;
   title: string;
@@ -156,5 +164,7 @@ export type Campaign = {
   goal: string;
   description: string;
   createdAt?: Date;
-  donationsCount?: number;
+  isOpen: boolean;
+  filters: string[];
+  contributions: Contribution[];
 };

@@ -38,19 +38,26 @@ export function useWeb3Storage() {
     const dataToSend = [new File([object], "content")];
     if (image) dataToSend.push(new File([image], "image"));
 
-    return client?.uploadDirectory(dataToSend).then((res) => res.toString());
+    return client
+      ?.uploadDirectory(dataToSend)
+      .then((res) => res.toString() as string);
   }
 
-  function getContentByCid(cid: string) {
-    return fetch(createIPFSLink(cid))
-      .then((res) => res.json())
-      .catch(() => {
-        return {};
-      });
+  async function getContentByCid(cid: string) {
+    const content = await fetch(`${createIPFSLink(cid)}/content`).then((res) =>
+      res.json(),
+    );
+    const image = await fetch(`${createIPFSLink(cid)}/image`).then(
+      (res) => res.url,
+    );
+    return {
+      ...content,
+      image,
+    };
   }
 
   function createIPFSLink(cid: string) {
-    return `https://${cid}.ipfs.w3s.link/content`;
+    return `https://${cid}.ipfs.w3s.link`;
   }
 
   return {

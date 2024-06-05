@@ -209,6 +209,77 @@ export const fundraisingABI = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "_campaignId",
+        type: "uint256",
+      },
+    ],
+    name: "getCampaign",
+    outputs: [
+      {
+        internalType: "address",
+        name: "organizer",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "goalAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "createdAt",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "raisedAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "ipfsHash",
+        type: "string",
+      },
+      {
+        internalType: "bool",
+        name: "isOpen",
+        type: "bool",
+      },
+      {
+        internalType: "string[]",
+        name: "filters",
+        type: "string[]",
+      },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "contributor",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "timestamp",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Fundraising.Contribution[]",
+        name: "contributions",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256[]",
         name: "campaignIds",
         type: "uint256[]",
@@ -227,6 +298,11 @@ export const fundraisingABI = [
             internalType: "address",
             name: "organizer",
             type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "createdAt",
+            type: "uint256",
           },
           {
             internalType: "uint256",
@@ -250,8 +326,13 @@ export const fundraisingABI = [
           },
         ],
         internalType: "struct Fundraising.CampaignSummary[]",
-        name: "",
+        name: "summaries",
         type: "tuple[]",
+      },
+      {
+        internalType: "string[][]",
+        name: "allFilters",
+        type: "string[][]",
       },
     ],
     stateMutability: "view",

@@ -3,8 +3,6 @@
     <NavBar />
     <LandingHero />
 
-    <button @click="openModal">open MOdal</button>
-
     <div
       class="w-full bg-white flex flex-col justify-center items-center gap-10 pb-10"
     >
@@ -42,13 +40,21 @@
 </template>
 
 <script setup lang="ts">
-import { useOnboardStore } from "~/stores/onboard";
+import { fetchCampaigns } from "~/helpers/fetchCampaigns";
+import { useContractCampaignStore } from "~/stores/contract.campaign";
 
 import type { Campaign } from "~/types";
-
-const { openModal } = useOnboardStore();
 
 const filters = ref<{ text: string; selected: boolean }[]>([]);
 const campaigns = ref<Campaign[] | null>(null);
 const searchedCampaigns = ref<Campaign[] | null>(null);
+
+onMounted(async () => {
+  const { getLastCampaignIndex, searchCampaigns, getCampaignFilters } =
+    useContractCampaignStore();
+
+  const lastCampaignIndex = await getLastCampaignIndex();
+
+  campaigns.value = await fetchCampaigns(0, lastCampaignIndex);
+});
 </script>

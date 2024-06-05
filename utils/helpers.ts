@@ -1,3 +1,5 @@
+import { decimalToBigNumber } from "./formatters";
+
 export const isMobile = () => {
   return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
     navigator.userAgent,
@@ -26,6 +28,10 @@ export async function retry<T>(
   }
 }
 
+export function isOnlyZeroes(value: string) {
+  return value.replace(/0/g, "").replace(/\./g, "").length === 0;
+}
+
 export async function getTokenData(tokenAddress: string): Promise<
   {
     contractAddress: string;
@@ -41,7 +47,6 @@ export async function getTokenData(tokenAddress: string): Promise<
   const res = await fetch(
     `https://block-explorer-api.mainnet.zksync.io/api?module=token&action=tokeninfo&contractaddress=${tokenAddress}`,
   ).then((res) => res.json());
-
   return res.result;
 }
 const ethData = (await getTokenData(ETH_TOKEN.address))[0];
@@ -50,7 +55,7 @@ export function computeETHPrice(amount: string): string {
   if (!ethData) return "$0";
 
   return formatTokenPrice(
-    BigInt(amount),
+    decimalToBigNumber(amount, +ethData.tokenDecimal),
     ETH_TOKEN.decimals,
     +ethData.tokenPriceUSD,
   );

@@ -27,6 +27,8 @@ onMounted(() => {
   }
 
   campaign.value = campaigns.find((c) => c.id === route.query.id) ?? null;
+
+  // If campaign not fetched, redirect
 });
 </script>
 

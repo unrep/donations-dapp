@@ -160,22 +160,31 @@ export const useCampaignStore = defineStore("campaign", () => {
   }
 
   async function sendCampaign() {
+    const { createCampaign } = useContractCampaignStore();
+
+    if (!goalAmount.value || !selectedFilters.value) {
+      throw new Error("Required fields are empty");
+    }
+
     const resDataJSON = JSON.stringify({
       campaignName: campaignName.value,
-      goalAmount: goalAmount.value?.toString(),
       description: description.value,
     });
 
     // Call the uploadFile function from the IPFS helper
-    await uploadFile(resDataJSON, image.value)
-      ?.then((cid) => {
-        return cid;
-      })
-      .finally(() => {
-        // console.log("DONE");
-      });
+    const cid = await uploadFile(resDataJSON, image.value)?.then((cid) => {
+      return cid;
+    });
 
-    // await createCampaign("", cid, filters);
+    if (!cid) {
+      throw new Error("Failed to upload campaign data to ipfs");
+    }
+
+    const filtersToSend = selectedFilters.value.map((filter) =>
+      filter.text.replace(/\s/g, "_"),
+    );
+
+    await createCampaign(goalAmount.value, cid, filtersToSend);
   }
 
   return {

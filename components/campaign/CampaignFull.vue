@@ -63,7 +63,7 @@
         </div>
 
         <div class="text-xl text-black">
-          <span class="text-2xl">{{ campaign.donationsCount }}</span>
+          <span class="text-2xl">{{ donationsCount }}</span>
           donations in last 30 days
         </div>
       </div>
@@ -118,4 +118,6 @@ const raisedUSD = computed(() => computeETHPrice(campaign.raised));
 const raisedPercentage = computed(() =>
   Math.floor((+campaign.raised / +campaign.goal) * 100),
 );
+
+const donationsCount = 0;
 </script>
