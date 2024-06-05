@@ -8,11 +8,13 @@
       alt="campaign"
     />
     <div
-      class="z-0 overflow-hidden w-full group-hover:opacity-0 delay-200 group-hover:delay-0 flex flex-col items-start justify-center p-5 duration-500"
+      class="flex-grow z-0 overflow-hidden w-full group-hover:opacity-0 delay-200 group-hover:delay-0 flex flex-col items-start justify-between gap-6 p-5 duration-500"
     >
       <div class="text-xl font-bold">{{ title }}</div>
 
-      <CommonCampaignProgress :campaign="campaign" />
+      <div class="w-full">
+        <CommonCampaignProgress :campaign="campaign" />
+      </div>
     </div>
 
     <div
