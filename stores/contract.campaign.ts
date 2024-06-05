@@ -62,11 +62,9 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     filters: string[],
   ) {
     const contract = getReadContract();
-    return contract.read.searchCampaigns([
-      BigInt(startDate),
-      BigInt(endDate),
-      filters,
-    ]);
+    return contract.read
+      .searchCampaigns([BigInt(startDate), BigInt(endDate), filters])
+      .then((res) => prettifyCampaignArray(res));
   }
 
   async function createCampaign(
@@ -133,7 +131,7 @@ function prettifyCampaign(
   return {
     id,
     goalAmount: Number(campaign[1]),
-    createdAt: Number(campaign[2]),
+    createdAt: bigIntToDate(campaign[2]),
     raisedAmount: Number(campaign[3]),
     ipfsHash: campaign[4],
     isOpen: campaign[5],
@@ -162,11 +160,15 @@ function prettifyCampaignArray(
   return campaignsData.map((campaign, index) => ({
     id: Number(campaign.id),
     goalAmount: Number(campaign.goalAmount),
-    createdAt: Number(campaign.createdAt),
+    createdAt: bigIntToDate(campaign.createdAt),
     raisedAmount: Number(campaign.raisedAmount),
     isOpen: campaign.isOpen,
     ipfsHash: campaign.ipfsHash,
     filters: campaignsFilters[index],
     contributions: [],
   }));
+}
+
+function bigIntToDate(value: bigint) {
+  return Number(value) * 1000;
 }

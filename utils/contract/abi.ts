@@ -408,9 +408,51 @@ export const fundraisingABI = [
     name: "searchCampaigns",
     outputs: [
       {
-        internalType: "uint256[]",
-        name: "",
-        type: "uint256[]",
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "organizer",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "createdAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "goalAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "raisedAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "isOpen",
+            type: "bool",
+          },
+          {
+            internalType: "string",
+            name: "ipfsHash",
+            type: "string",
+          },
+        ],
+        internalType: "struct Fundraising.CampaignSummary[]",
+        name: "summaries",
+        type: "tuple[]",
+      },
+      {
+        internalType: "string[][]",
+        name: "allFilters",
+        type: "string[][]",
       },
     ],
     stateMutability: "view",

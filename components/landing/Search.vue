@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative text-gray-700 w-full max-w-xl flex flex-col justify-center items-center gap-3"
+    class="relative text-gray-700 w-full max-w-3xl flex flex-col justify-center items-center gap-3"
   >
     <div
       class="rounded-full bg-gray-100 w-full overflow-hidden py-3 px-5 max-w-xl flex items-center gap-3"
@@ -14,14 +14,20 @@
       />
     </div>
 
-    <CommonFiltersMultiselect class="w-full" :filters="props.filters" />
+    <CommonFiltersSelect
+      class="w-full justify-center"
+      :filters="filters"
+      @update:select-item="onFilterSelect"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-const props = defineProps({
-  filters: Array<{ text: string; selected: boolean }>,
-});
+import { useLandingStore } from "~/stores/landing";
+
+const { filters } = storeToRefs(useLandingStore());
+const { onFilterSelect, getFilters } = useLandingStore();
+onMounted(getFilters);
 </script>
 
 <style lang="scss" scoped>

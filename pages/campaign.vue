@@ -12,23 +12,33 @@
 import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
-import { campaigns } from "~/data/mockCampaigns";
+import { fetchCampaign } from "~/helpers/fetchCampaigns";
 
 import type { Campaign } from "~/types";
 
 const route = useRoute();
 const router = useRouter();
+const campaign = ref<Campaign | undefined>(undefined);
+const error = ref<Error | undefined>(undefined);
+const inProgress = ref<boolean>(false);
 
-const campaign = ref<Campaign | null>(null);
+onMounted(async () => {
+  const campaignId = Number(route.query.id);
 
-onMounted(() => {
-  if (!route.query.id) {
+  if (isNaN(campaignId)) {
     router.push("/");
+    return;
   }
 
-  campaign.value = campaigns.find((c) => c.id === route.query.id) ?? null;
+  const {
+    execute: getCampaign,
+    error,
+    inProgress,
+  } = usePromise(() => {
+    return fetchCampaign(campaignId);
+  });
 
-  // If campaign not fetched, redirect
+  campaign.value = await getCampaign();
 });
 </script>
 

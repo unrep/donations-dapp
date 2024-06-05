@@ -16,7 +16,10 @@
         </div>
       </div>
 
-      <LandingCardsCarousel v-if="campaigns" :campaigns="campaigns" />
+      <LandingCardsCarousel
+        v-if="previewCampaigns?.length"
+        :campaigns="previewCampaigns"
+      />
 
       <div
         id="searchElement"
@@ -28,7 +31,7 @@
         </div>
       </div>
 
-      <LandingSearch class="z-20 px-10" :filters="filters" />
+      <LandingSearch class="z-20 px-10" />
 
       <LandingCampaignSearchResultList
         v-if="searchedCampaigns"
@@ -40,21 +43,11 @@
 </template>
 
 <script setup lang="ts">
-import { fetchCampaigns } from "~/helpers/fetchCampaigns";
-import { useContractCampaignStore } from "~/stores/contract.campaign";
+import { useLandingStore } from "~/stores/landing";
 
-import type { Campaign } from "~/types";
+const { previewCampaigns, searchedCampaigns } = storeToRefs(useLandingStore());
 
-const filters = ref<{ text: string; selected: boolean }[]>([]);
-const campaigns = ref<Campaign[] | null>(null);
-const searchedCampaigns = ref<Campaign[] | null>(null);
-
-onMounted(async () => {
-  const { getLastCampaignIndex, searchCampaigns, getCampaignFilters } =
-    useContractCampaignStore();
-
-  const lastCampaignIndex = await getLastCampaignIndex();
-
-  campaigns.value = await fetchCampaigns(0, lastCampaignIndex);
+onMounted(() => {
+  useLandingStore().getPreviewCampaigns();
 });
 </script>
