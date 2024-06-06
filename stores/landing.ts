@@ -1,5 +1,8 @@
-import { fetchCampaignsArray, searchCampaigns } from "~/helpers/fetchCampaigns";
-import { fetchFilters } from "~/helpers/fetchFilters";
+import {
+  fetchCampaignsArray,
+  searchCampaigns,
+} from "~/utils/contract/fetchCampaigns";
+import { fetchFilters } from "~/utils/contract/fetchFilters";
 
 import { useContractCampaignStore } from "./contract.campaign";
 

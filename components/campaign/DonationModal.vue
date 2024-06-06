@@ -81,6 +81,7 @@
           <button
             class="disabled:bg-indigo-500 disabled:hover:scale-100 justify-self-end w-min bg-indigo-800 text-white text-lg font-medium px-8 py-2 rounded-xl hover:scale-105 duration-200 shadow-md"
             :disabled="!canDonate"
+            @click="contributeToCampaign"
           >
             Donate
           </button>
@@ -91,8 +92,14 @@
 </template>
 
 <script lang="ts" setup>
-const { isOpen } = defineProps({
+import { useContractCampaignStore } from "~/stores/contract.campaign";
+
+const { contributeCampaign: contributeCampaignContract } =
+  useContractCampaignStore();
+
+const { isOpen, campaignId } = defineProps({
   isOpen: Boolean,
+  campaignId: String,
 });
 
 const inputValue = ref<number | null>(null);
@@ -131,6 +138,11 @@ watch(
 );
 
 const closeModal = () => emit("update:isOpen", false);
+async function contributeToCampaign() {
+  if (campaignId === undefined || !canDonate || inputValue.value === null)
+    return;
+  await contributeCampaignContract(campaignId, inputValue.value.toString());
+}
 </script>
 
 <style lang="scss" scoped>

@@ -49,14 +49,14 @@ export async function getTokenData(tokenAddress: string): Promise<
   ).then((res) => res.json());
   return res.result;
 }
-const ethData = (await getTokenData(ETH_TOKEN.address))[0];
 
-export function computeETHPrice(amount: string): string {
-  if (!ethData) return "$0";
+export async function computeETHPrice(amount: string): Promise<string> {
+  const ethData = await getEthData();
+  if (!ethData.value) return "$0";
 
   return formatTokenPrice(
-    decimalToBigNumber(amount, +ethData.tokenDecimal),
+    decimalToBigNumber(amount, +ethData.value.tokenDecimal),
     ETH_TOKEN.decimals,
-    +ethData.tokenPriceUSD,
+    +ethData.value.tokenPriceUSD,
   );
 }

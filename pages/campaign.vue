@@ -12,7 +12,7 @@
 import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
-import { fetchCampaign } from "~/helpers/fetchCampaigns";
+import { fetchCampaign } from "~/utils/contract/fetchCampaigns";
 
 import type { Campaign } from "~/types";
 

@@ -89,6 +89,7 @@
 
   <CampaignDonationModal
     :is-open="modalOpened"
+    :campaign-id="campaign.id"
     @update:is-open="(value) => (modalOpened = value)"
   />
 </template>
@@ -112,12 +113,27 @@ const { campaign } = defineProps({
   },
 });
 
-const goalUSD = computed(() => computeETHPrice(campaign.goal));
-const raisedUSD = computed(() => computeETHPrice(campaign.raised));
+const { result: goalUSD, execute: getGoalUSD } = usePromise(() =>
+  computeETHPrice(campaign.goal),
+);
+const { result: raisedUSD, execute: getRaisedUSD } = usePromise(() =>
+  computeETHPrice(campaign.raised),
+);
 
 const raisedPercentage = computed(() =>
   Math.floor((+campaign.raised / +campaign.goal) * 100),
 );
 
-const donationsCount = 0;
+const donationsCount = computed(() => campaign.contributions?.length);
+
+onMounted(async () => {
+  await getGoalUSD();
+  await getRaisedUSD();
+});
 </script>
+
+<style lang="scss">
+.raised-percentage-width {
+  width: var(--raised-percentage);
+}
+</style>

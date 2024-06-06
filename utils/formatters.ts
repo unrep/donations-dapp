@@ -147,3 +147,7 @@ export function formatError(error?: Error) {
   }
   return error;
 }
+
+export function weiToNumber(tokenAmount: BigNumberish, decimals: number) {
+  return Number(tokenAmount) / 10 ** decimals;
+}

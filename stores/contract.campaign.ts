@@ -29,21 +29,27 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
       .then((res) => res.map((filter) => filter.replace(/_/g, " ")));
   }
 
-  function getCampaign(index: number) {
+  async function getCampaign(index: number) {
     const contract = getReadContract();
+    const ethData = await getEthData();
+    if (!ethData.value) return;
+    const decimals = ethData.value.tokenDecimal;
     return contract.read
       .getCampaign([BigInt(index)])
-      .then((res) => prettifyCampaign(index, res));
+      .then((res) => prettifyCampaign(index, res, +decimals));
   }
 
-  function getCampaigns(startIndex: number, endIndex: number) {
+  async function getCampaigns(startIndex: number, endIndex: number) {
     const contract = getReadContract();
+    const ethData = await getEthData();
+    if (!ethData.value) return;
+    const decimals = ethData.value.tokenDecimal;
     const indexArray = Array.from({ length: endIndex - startIndex }, (_, i) =>
       BigInt(i + startIndex),
     );
     return contract.read
       .getCampaignSummaries([indexArray])
-      .then((res) => prettifyCampaignArray(res));
+      .then((res) => prettifyCampaignArray(res, +decimals));
   }
 
   function getCampaignContributions(campaignIndex: number) {
@@ -56,15 +62,18 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     return contract.read.nextCampaignId().then((res) => Number(res));
   }
 
-  function searchCampaigns(
+  async function searchCampaigns(
     startDate: number,
     endDate: number,
     filters: string[],
   ) {
     const contract = getReadContract();
+    const ethData = await getEthData();
+    if (!ethData.value) return;
+    const decimals = ethData.value.tokenDecimal;
     return contract.read
       .searchCampaigns([BigInt(startDate), BigInt(endDate), filters])
-      .then((res) => prettifyCampaignArray(res));
+      .then((res) => prettifyCampaignArray(res, +decimals));
   }
 
   async function createCampaign(
@@ -73,11 +82,12 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     filters: string[],
   ) {
     const contract = await getWriteContract();
-    return contract.write.createCampaign([
-      BigInt(goalAmount),
-      ipfsHash,
-      filters,
-    ]);
+    const ethData = await getEthData();
+    if (!ethData.value) return;
+    const goalAmountInWei = BigInt(
+      decimalToBigNumber(goalAmount.toString(), +ethData.value.tokenDecimal),
+    );
+    return contract.write.createCampaign([goalAmountInWei, ipfsHash, filters]);
   }
 
   async function stopCampaign(campaignId: number) {
@@ -90,10 +100,13 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     return contract.write.withdrawFunds([BigInt(campaignId)]);
   }
 
-  async function contributeCampaign(campaignId: number) {
-    // How to pay here? Method is payable
+  async function contributeCampaign(campaignId: string, amount: string) {
     const contract = await getWriteContract();
-    return contract.write.contribute([BigInt(campaignId)]);
+    const ethData = await getEthData();
+    if (!ethData.value) return;
+    return contract.write.contribute([BigInt(campaignId)], {
+      value: BigInt(decimalToBigNumber(amount, +ethData.value.tokenDecimal)),
+    });
   }
 
   return {
@@ -127,12 +140,13 @@ function prettifyCampaign(
       timestamp: bigint;
     }[],
   ],
+  decimals: number,
 ) {
   return {
     id,
-    goalAmount: Number(campaign[1]),
+    goalAmount: weiToNumber(campaign[1], decimals),
     createdAt: bigIntToDate(campaign[2]),
-    raisedAmount: Number(campaign[3]),
+    raisedAmount: weiToNumber(campaign[3], decimals),
     ipfsHash: campaign[4],
     isOpen: campaign[5],
     filters: campaign[6],
@@ -153,15 +167,16 @@ function prettifyCampaignArray(
     }[],
     readonly (readonly string[])[],
   ],
+  decimals: number,
 ) {
   const campaignsData = campaigns[0];
   const campaignsFilters = campaigns[1];
 
   return campaignsData.map((campaign, index) => ({
     id: Number(campaign.id),
-    goalAmount: Number(campaign.goalAmount),
+    goalAmount: weiToNumber(campaign.goalAmount, decimals),
     createdAt: bigIntToDate(campaign.createdAt),
-    raisedAmount: Number(campaign.raisedAmount),
+    raisedAmount: weiToNumber(campaign.raisedAmount, decimals),
     isOpen: campaign.isOpen,
     ipfsHash: campaign.ipfsHash,
     filters: campaignsFilters[index],

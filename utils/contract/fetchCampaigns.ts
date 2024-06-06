@@ -1,6 +1,6 @@
 import { useContractCampaignStore } from "~/stores/contract.campaign";
 
-import { useWeb3Storage } from "./IPFS";
+import { useWeb3Storage } from "../../helpers/IPFS";
 
 import type { Campaign } from "~/types";
 
