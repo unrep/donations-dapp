@@ -151,3 +151,7 @@ export function formatError(error?: Error) {
 export function weiToNumber(tokenAmount: BigNumberish, decimals: number) {
   return Number(tokenAmount) / 10 ** decimals;
 }
+
+export function bigIntToDate(value: bigint) {
+  return Number(value) * 1000;
+}

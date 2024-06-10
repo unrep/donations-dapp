@@ -63,7 +63,7 @@
 
         <div class="w-full flex justify-center items-center gap-5">
           <NuxtLink
-            :to="`/campaign?id=${0}`"
+            :to="`/campaign?id=${campaignId}`"
             class="text-base py-3 px-5 shadow-xl bg-indigo-800 font-semibold rounded-xl text-white mlg:hover:scale-105 active:scale-105 duration-200"
           >
             Your campaign
@@ -134,10 +134,13 @@
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 import { useCampaignStore } from "~/stores/campaign";
+import { useContractCampaignStore } from "~/stores/contract.campaign";
 import { useOnboardStore } from "~/stores/onboard";
 
 import type { VNodeRef } from "vue";
 import type { Campaign } from "~/types";
+
+const { watchCampaignCreated } = useContractCampaignStore();
 
 const { openModal } = useOnboardStore();
 const { account } = storeToRefs(useOnboardStore());
@@ -171,10 +174,17 @@ const addTokenStep = computed(() => {
     key: "create-campaign",
     func: async () => {
       isCampaignSending.value = true;
-      await sendCampaign()?.finally(() => (isCampaignSending.value = false));
+      await sendCampaign()?.finally(() => {
+        isCampaignSending.value = false;
+      });
       campaignCreationStep.value++;
     },
   } as const;
+});
+
+watchCampaignCreated((logs) => {
+  if (logs[0].args.organizer !== account.value.address) return;
+  campaignId.value = Number(logs[0].args.campaignId).toString();
 });
 
 function onBack() {
@@ -184,9 +194,11 @@ function onBack() {
 
 const { checkAllStepsCompleted, sendCampaign, steps } = useCampaignStore();
 
+const campaignId = ref<string>("0");
+
 function getInputCampaign(): Campaign {
   return {
-    id: "0",
+    id: campaignId.value,
     title: steps[0].inputValue,
     image: URL.createObjectURL(steps[4].inputValue),
     raised: "0",

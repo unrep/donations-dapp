@@ -1,3 +1,7 @@
+import { waitForTransactionReceipt } from "@wagmi/core";
+
+import { wagmiConfig } from "~/data/wagmi";
+
 import { decimalToBigNumber } from "./formatters";
 
 export const isMobile = () => {
@@ -48,4 +52,9 @@ export async function convertUsdToEth(usdAmount: number): Promise<number> {
   if (!ethData.value) return 0;
 
   return usdAmount / +ethData.value.tokenPriceUSD;
+}
+
+export async function awaitTransactionResponse(fn: () => Promise<any>) {
+  const txHash = await fn();
+  return waitForTransactionReceipt(wagmiConfig, { hash: txHash });
 }

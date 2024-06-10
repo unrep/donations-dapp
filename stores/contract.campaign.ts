@@ -1,4 +1,4 @@
-import { waitForTransactionReceipt } from "@wagmi/core";
+import { watchContractEvent } from "@wagmi/core";
 import { getContract as getContractViem, type Address } from "viem";
 
 import { wagmiConfig } from "~/data/wagmi";
@@ -6,9 +6,9 @@ import { wagmiConfig } from "~/data/wagmi";
 import { useOnboardStore } from "./onboard";
 
 export const useContractCampaignStore = defineStore("contact_campaign", () => {
-  function getReadContract() {
-    const { getPublicClient } = useOnboardStore();
+  const { getPublicClient } = useOnboardStore();
 
+  function getReadContract() {
     return getContractViem({
       address: fundraisingContractConfig.address,
       abi: fundraisingContractConfig.abi,
@@ -16,7 +16,7 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     });
   }
   async function getWriteContract() {
-    const { getPublicClient, getWallet } = useOnboardStore();
+    const { getWallet } = useOnboardStore();
 
     return getContractViem({
       address: fundraisingContractConfig.address,
@@ -136,6 +136,33 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     );
   }
 
+  function watchCampaignCreated(onLogs: (logs: any) => void) {
+    return watchContractEvent(wagmiConfig, {
+      address: fundraisingContractConfig.address,
+      abi: fundraisingContractConfig.abi,
+      eventName: "CampaignCreated",
+      onLogs,
+    });
+  }
+
+  function watchContributions(onLogs: (logs: any) => void) {
+    return watchContractEvent(wagmiConfig, {
+      address: fundraisingContractConfig.address,
+      abi: fundraisingContractConfig.abi,
+      eventName: "ContributionReceived",
+      onLogs,
+    });
+  }
+
+  function watchCampaignCompleted(onLogs: (logs: any) => void) {
+    return watchContractEvent(wagmiConfig, {
+      address: fundraisingContractConfig.address,
+      abi: fundraisingContractConfig.abi,
+      eventName: "CampaignCompleted",
+      onLogs,
+    });
+  }
+
   return {
     getCampaign,
     getCampaigns,
@@ -150,6 +177,10 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     stopCampaign,
     withdrawCampaignFunds,
     contributeCampaign,
+
+    watchCampaignCreated,
+    watchContributions,
+    watchCampaignCompleted,
   };
 });
 
@@ -215,13 +246,4 @@ function prettifyCampaignArray(
     contributions: [],
     isWithdrawn: campaign.isWithdrawn,
   }));
-}
-
-function bigIntToDate(value: bigint) {
-  return Number(value) * 1000;
-}
-
-async function awaitTransactionResponse(fn: () => Promise<any>) {
-  const txHash = await fn();
-  return waitForTransactionReceipt(wagmiConfig, { hash: txHash });
 }
