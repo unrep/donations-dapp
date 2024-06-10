@@ -196,6 +196,7 @@ function getInputCampaign(): Campaign {
     filters: steps[2].inputValue,
     contributions: [],
     isOpen: true,
+    isWithdrawn: false,
   };
 }
 

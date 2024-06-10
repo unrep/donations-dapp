@@ -16,10 +16,18 @@
         </div>
       </div>
 
-      <LandingCardsCarousel
-        v-if="previewCampaigns?.length"
-        :campaigns="previewCampaigns"
-      />
+      <LandingCardsCarousel v-if="previewCampaigns?.length">
+        <template v-if="previewCampaignsInProgress">
+          <CampaignCardLoader v-for="(_, index) in Array(5)" :key="index" />
+        </template>
+        <template v-else>
+          <CampaignCard
+            v-for="campaign in previewCampaigns"
+            :key="campaign.id"
+            :campaign="campaign"
+          />
+        </template>
+      </LandingCardsCarousel>
 
       <div
         id="searchElement"
@@ -31,13 +39,36 @@
         </div>
       </div>
 
-      <LandingSearch class="z-20 px-10" />
+      <LandingSearch class="z-20 px-10">
+        <template #filters>
+          <template v-if="filtersInProgress">
+            <CommonFiltersLoader />
+          </template>
+          <template v-else>
+            <CommonFiltersSelect
+              class="w-full justify-center"
+              :filters="filters"
+              @update:select-item="onFilterSelect"
+            />
+          </template>
+        </template>
+      </LandingSearch>
 
       <LandingCampaignSearchResultList
         v-if="searchedCampaigns"
         class="z-10 -mt-2 px-10"
-        :campaigns="searchedCampaigns"
-      />
+      >
+        <template v-if="searchedCampaignsInProgress">
+          <CampaignCardLoader v-for="(_, index) in Array(5)" :key="index" />
+        </template>
+        <template v-else>
+          <CampaignCard
+            v-for="campaign in searchedCampaigns"
+            :key="campaign.title"
+            :campaign="campaign"
+          />
+        </template>
+      </LandingCampaignSearchResultList>
     </div>
   </div>
 </template>
@@ -45,9 +76,18 @@
 <script setup lang="ts">
 import { useLandingStore } from "~/stores/landing";
 
-const { previewCampaigns, searchedCampaigns } = storeToRefs(useLandingStore());
+const {
+  previewCampaigns,
+  searchedCampaigns,
+  previewCampaignsInProgress,
+  searchedCampaignsInProgress,
+  filters,
+  filtersInProgress,
+} = storeToRefs(useLandingStore());
+const { onFilterSelect, getFilters, getPreviewCampaigns } = useLandingStore();
 
 onMounted(() => {
-  useLandingStore().getPreviewCampaigns();
+  getPreviewCampaigns();
+  getFilters();
 });
 </script>

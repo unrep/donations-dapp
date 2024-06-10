@@ -3,8 +3,10 @@
     <div class="w-full flex flex-col items-center justify-center">
       <CommonBlobs />
       <NavBar />
+
+      <CampaignFullLoader v-if="campaignInProgress" />
       <CampaignFull
-        v-if="campaign"
+        v-else-if="campaign"
         :key="campaign?.id"
         :campaign="campaign"
         @refresh:campaign="setCampaign"
@@ -31,19 +33,21 @@ onMounted(async () => {
   await setCampaign();
 });
 
-async function setCampaign() {
-  if (campaignId.value === undefined || isNaN(campaignId.value)) {
-    router.push("/");
-    return;
-  }
+const { execute: setCampaign, inProgress: campaignInProgress } = usePromise(
+  async () => {
+    if (campaignId.value === undefined || isNaN(campaignId.value)) {
+      router.push("/");
+      return;
+    }
 
-  try {
-    campaign.value = undefined;
-    campaign.value = await fetchCampaign(campaignId.value);
-  } catch (error) {
-    router.push("/");
-  }
-}
+    try {
+      campaign.value = undefined;
+      campaign.value = await fetchCampaign(campaignId.value);
+    } catch (error) {
+      router.push("/");
+    }
+  },
+);
 </script>
 
 <style scoped lang="scss">

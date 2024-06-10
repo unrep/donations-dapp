@@ -80,10 +80,10 @@ export default <ResultType, ErrorType = Error>(
 
   // Reloads the promise if it is already in progress or has already been executed
   const reload = async () => {
-    if (promise || inProgress.value || error.value || result.value) {
-      reset();
-      await execute({ force: true });
-    }
+    // if (promise || inProgress.value || error.value || result.value) {
+    reset();
+    await execute({ force: true });
+    // }
   };
 
   return {

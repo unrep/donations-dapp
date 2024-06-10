@@ -14,21 +14,9 @@
       />
     </div>
 
-    <CommonFiltersSelect
-      class="w-full justify-center"
-      :filters="filters"
-      @update:select-item="onFilterSelect"
-    />
+    <slot name="filters" />
   </div>
 </template>
-
-<script lang="ts" setup>
-import { useLandingStore } from "~/stores/landing";
-
-const { filters } = storeToRefs(useLandingStore());
-const { onFilterSelect, getFilters } = useLandingStore();
-onMounted(getFilters);
-</script>
 
 <style lang="scss" scoped>
 .scale-in {
