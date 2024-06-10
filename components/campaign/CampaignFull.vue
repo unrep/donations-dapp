@@ -60,6 +60,13 @@
               />
             </div>
           </div>
+
+          <div class="w-full px-1">
+            <span class="text-xl font-semibold">
+              {{ Math.floor(+campaign.raised * 100) / 100 }} ETH
+            </span>
+            raised of {{ campaign.goal }} ETH
+          </div>
         </div>
 
         <div class="flex flex-col gap-2 p-2">
