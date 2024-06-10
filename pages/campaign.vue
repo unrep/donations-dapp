@@ -9,7 +9,7 @@
         v-else-if="campaign"
         :key="campaign?.id"
         :campaign="campaign"
-        @refresh:campaign="setCampaign"
+        @refresh:campaign="reloadCampaign"
       />
     </div>
   </div>
@@ -33,21 +33,23 @@ onMounted(async () => {
   await setCampaign();
 });
 
-const { execute: setCampaign, inProgress: campaignInProgress } = usePromise(
-  async () => {
-    if (campaignId.value === undefined || isNaN(campaignId.value)) {
-      router.push("/");
-      return;
-    }
+const {
+  execute: setCampaign,
+  reload: reloadCampaign,
+  inProgress: campaignInProgress,
+} = usePromise(async () => {
+  if (campaignId.value === undefined || isNaN(campaignId.value)) {
+    router.push("/");
+    return;
+  }
 
-    try {
-      campaign.value = undefined;
-      campaign.value = await fetchCampaign(campaignId.value);
-    } catch (error) {
-      router.push("/");
-    }
-  },
-);
+  try {
+    campaign.value = undefined;
+    campaign.value = await fetchCampaign(campaignId.value);
+  } catch (error) {
+    router.push("/");
+  }
+});
 </script>
 
 <style scoped lang="scss">

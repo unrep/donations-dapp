@@ -62,9 +62,27 @@
           </div>
         </div>
 
-        <div class="text-xl text-black">
-          <span class="text-2xl">{{ donationsCount }}</span>
-          donations in last 30 days
+        <div class="flex flex-col gap-2 p-2">
+          <span class="text-xl">{{ donationsCount }} donations</span>
+          <div class="w-full flex flex-wrap gap-2 text-sm">
+            <div
+              v-for="(donation, index) in campaign.contributions.slice(
+                0,
+                maxDonationsToShow,
+              )"
+              :key="index"
+              class="px-3 py-1 rounded-lg bg-indigo-200 bg-opacity-50"
+            >
+              {{ shortenAddress(donation.contributor) }} donated
+              <b>{{ floorEthDonationAmount(donation.amount) }} ETH</b>
+            </div>
+            <div
+              v-if="campaign.contributions.length > maxDonationsToShow"
+              class="px-3 py-1 rounded-lg bg-indigo-200 bg-opacity-50 font-bold"
+            >
+              ...
+            </div>
+          </div>
         </div>
       </div>
 
@@ -142,6 +160,12 @@ onMounted(async () => {
   await getGoalUSD();
   await getRaisedUSD();
 });
+
+const maxDonationsToShow = 7;
+
+function floorEthDonationAmount(amount: number) {
+  return Math.floor(weiToNumber(amount, 18) * 1000) / 1000;
+}
 </script>
 
 <style lang="scss">
