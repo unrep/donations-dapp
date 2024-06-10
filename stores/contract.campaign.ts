@@ -1,4 +1,4 @@
-import { watchContractEvent } from "@wagmi/core";
+import { getBlock, watchContractEvent } from "@wagmi/core";
 import { getContract as getContractViem, type Address } from "viem";
 
 import { wagmiConfig } from "~/data/wagmi";
@@ -163,6 +163,17 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     });
   }
 
+  async function getContributionEvents() {
+    const { number: currentBlockNumber } = await getBlock(wagmiConfig);
+    const blocksToFetch = 100n;
+    return getPublicClient().getContractEvents({
+      address: fundraisingContractConfig.address,
+      abi: fundraisingContractConfig.abi,
+      eventName: "ContributionReceived",
+      fromBlock: currentBlockNumber - blocksToFetch,
+    });
+  }
+
   return {
     getCampaign,
     getCampaigns,
@@ -181,6 +192,8 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     watchCampaignCreated,
     watchContributions,
     watchCampaignCompleted,
+
+    getContributionEvents,
   };
 });
 

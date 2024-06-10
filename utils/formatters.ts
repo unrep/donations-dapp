@@ -155,3 +155,7 @@ export function weiToNumber(tokenAmount: BigNumberish, decimals: number) {
 export function bigIntToDate(value: bigint) {
   return Number(value) * 1000;
 }
+
+export function floorEthAmount(amount: number, numbers = 3) {
+  return Math.floor(weiToNumber(amount, 18) * 10 ** numbers) / 10 ** numbers;
+}

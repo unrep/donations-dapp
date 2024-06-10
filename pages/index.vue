@@ -1,5 +1,6 @@
 <template>
   <div>
+    <CommonLatestContributionsSlider />
     <NavBar />
     <LandingHero />
 

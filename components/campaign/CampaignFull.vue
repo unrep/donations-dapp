@@ -75,16 +75,16 @@
             <div
               v-for="(donation, index) in campaign.contributions.slice(
                 0,
-                maxDonationsToShow,
+                MAX_DONATIONS_TO_SHOW,
               )"
               :key="index"
               class="px-3 py-1 rounded-lg bg-indigo-200 bg-opacity-50"
             >
               {{ shortenAddress(donation.contributor) }} donated
-              <b>{{ floorEthDonationAmount(donation.amount) }} ETH</b>
+              <b>{{ floorEthAmount(donation.amount) }} ETH</b>
             </div>
             <div
-              v-if="campaign.contributions.length > maxDonationsToShow"
+              v-if="campaign.contributions.length > MAX_DONATIONS_TO_SHOW"
               class="px-3 py-1 rounded-lg bg-indigo-200 bg-opacity-50 font-bold"
             >
               ...
@@ -168,11 +168,7 @@ onMounted(async () => {
   await getRaisedUSD();
 });
 
-const maxDonationsToShow = 7;
-
-function floorEthDonationAmount(amount: number) {
-  return Math.floor(weiToNumber(amount, 18) * 1000) / 1000;
-}
+const MAX_DONATIONS_TO_SHOW = 7;
 </script>
 
 <style lang="scss">

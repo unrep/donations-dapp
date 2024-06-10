@@ -2,6 +2,7 @@
   <div class="flex flex-col items-center justify-center">
     <div class="w-full flex flex-col items-center justify-center">
       <CommonBlobs />
+      <CommonLatestContributionsSlider />
       <NavBar />
 
       <CampaignFullLoader v-if="campaignInProgress" />
