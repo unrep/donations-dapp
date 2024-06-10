@@ -66,9 +66,6 @@ export const useOnboardStore = defineStore("onboard", () => {
     themeMode: "light",
   });
 
-  const web3ModalOpened = ref(false);
-  web3modal.subscribeState((state) => (web3ModalOpened.value = state.open));
-
   web3modal.subscribeState((state) => {
     if (!state.open && account.value.isConnecting) {
       // when user closes the modal after selecting one of the options to connect
@@ -172,7 +169,6 @@ export const useOnboardStore = defineStore("onboard", () => {
     walletWarningDisabled,
     walletNotSupported,
     openModal,
-    web3ModalOpened,
     disconnect,
 
     isCorrectNetworkSet,

@@ -10,81 +10,128 @@
       />
 
       <div
-        class="z-20 overflow-hidden p-7 w-11/12 mlg:w-full max-w-3xl absolute shadow-lg rounded-3xl bg-white flex flex-col mlg:grid grid-cols-2 items-center justify-center gap-10"
+        class="z-20 overflow-hidden p-7 w-11/12 mlg:w-full max-w-3xl absolute shadow-lg rounded-3xl bg-white"
         style="grid-template-columns: 1fr 2fr"
       >
-        <div class="self-start space-y-1 mlg:space-y-5">
-          <h1
-            class="text-4xl font-bold text-indigo-800 text-center mlg:text-left"
-          >
-            Donate to this campaign
-          </h1>
+        <div
+          v-if="isConnected"
+          class="w-full flex flex-col mlg:grid grid-cols-2 items-center justify-center gap-10"
+        >
+          <div class="self-start space-y-1 mlg:space-y-5">
+            <h1
+              class="text-4xl font-bold text-indigo-800 text-center mlg:text-left"
+            >
+              Donate to this campaign
+            </h1>
 
-          <p class="text-base text-gray-500 hidden mlg:block">
-            Your donation will help this campaign reach its goal.
-          </p>
+            <p class="text-base text-gray-500 hidden mlg:block">
+              Your donation will help this campaign reach its goal.
+            </p>
+          </div>
+
+          <div
+            class="self-start w-full grid grid-cols-3 gap-2 items-center justify-start"
+          >
+            <p class="text-lg col-span-3 mb-3">
+              You can choose a preset amount or enter a custom amount.
+            </p>
+            <button
+              v-for="(price, index) in presetPrices"
+              :key="index"
+              :class="['button-style', price.selected && 'active']"
+              @click="
+                () => {
+                  showEthInput = false;
+                  togglePresetPrice(index);
+                }
+              "
+            >
+              {{ price.priceValue }}$
+            </button>
+            <button
+              :class="['col-span-3 button-style', donateFullAmount && 'active']"
+              @click="
+                () => {
+                  showEthInput = false;
+                  donateFullAmount = !donateFullAmount;
+                }
+              "
+            >
+              Donate a full amount
+            </button>
+            <button
+              :class="['col-span-3 button-style', showEthInput && 'active']"
+              @click="
+                () => {
+                  showEthInput = !showEthInput;
+                  togglePresetPrice(null);
+                }
+              "
+            >
+              Custom amount
+            </button>
+
+            <Transition name="slide">
+              <div v-if="showEthInput" class="w-full col-span-3 mt-5">
+                <CommonETHInput
+                  :model-value="inputValue"
+                  @update:model-value="
+                    (newValue) => {
+                      inputValue = newValue;
+                    }
+                  "
+                />
+              </div>
+            </Transition>
+          </div>
+
+          <div class="w-full col-span-2 flex justify-between items-center">
+            <button
+              class="w-min bg-white border text-indigo-800 text-lg font-medium px-8 py-2 rounded-xl hover:scale-105 duration-200 shadow-md"
+              @click="closeModal"
+            >
+              Cancel
+            </button>
+
+            <CommonButton
+              v-if="campaign.isOpen"
+              :disabled="!donateAmount"
+              @click="contributeToCampaign()"
+            >
+              <transition v-bind="TransitionPrimaryButtonText" mode="out-in">
+                <span
+                  v-if="contributionInProgress"
+                  class="flex items-center justify-center px-5"
+                >
+                  <IconsLoadingDots width="1.5em" height="1.5em" />
+                </span>
+                <span v-else class="flex items-center justify-center">
+                  <span>Donate</span>
+                </span>
+              </transition>
+            </CommonButton>
+
+            <div v-else>
+              <span class="text-red-500">This campaign is closed</span>
+            </div>
+          </div>
         </div>
 
         <div
-          class="self-start w-full grid grid-cols-3 gap-2 items-center justify-start"
+          v-else
+          class="w-full flex flex-col justify-center items-center gap-5"
         >
-          <p class="text-lg col-span-3 mb-3">
-            You can choose a preset amount or enter a custom amount.
+          <h1 class="text-4xl font-bold text-indigo-800 text-center">
+            Connect your wallet
+          </h1>
+          <p class="text-gray-700">
+            You need to connect your wallet first to be able to donate
           </p>
-          <button
-            v-for="(price, index) in presetPrices"
-            :key="index"
-            :class="['button-style', price.selected && 'active']"
-            @click="
-              () => {
-                showEthInput = false;
-                togglePresetPrice(index);
-              }
-            "
-          >
-            {{ price.priceValue }}$
-          </button>
-          <button
-            :class="['col-span-3 button-style', showEthInput && 'active']"
-            @click="
-              () => {
-                showEthInput = !showEthInput;
-                togglePresetPrice(null);
-              }
-            "
-          >
-            Custom amount
-          </button>
-
-          <Transition name="slide">
-            <div v-if="showEthInput" class="w-full col-span-3 mt-5">
-              <CommonETHInput
-                :model-value="inputValue"
-                @update:model-value="
-                  (newValue) => {
-                    inputValue = newValue;
-                  }
-                "
-              />
-            </div>
-          </Transition>
-        </div>
-
-        <div class="w-full col-span-2 flex justify-between items-center">
-          <button
-            class="w-min bg-white border text-indigo-800 text-lg font-medium px-8 py-2 rounded-xl hover:scale-105 duration-200 shadow-md"
-            @click="closeModal"
-          >
-            Cancel
-          </button>
-
-          <button
-            class="disabled:bg-indigo-500 disabled:hover:scale-100 justify-self-end w-min bg-indigo-800 text-white text-lg font-medium px-8 py-2 rounded-xl hover:scale-105 duration-200 shadow-md"
-            :disabled="!canDonate"
-            @click="contributeToCampaign"
-          >
-            Donate
-          </button>
+          <CommonButton @click="openModal">
+            <span class="flex items-center justify-center">
+              <span>Connect Wallet</span>
+            </span>
+          </CommonButton>
         </div>
       </div>
     </div>
@@ -92,21 +139,34 @@
 </template>
 
 <script lang="ts" setup>
+import { computedAsync } from "@vueuse/core";
+
 import { useContractCampaignStore } from "~/stores/contract.campaign";
+import { useOnboardStore } from "~/stores/onboard";
+
+import type { Campaign } from "~/types";
 
 const { contributeCampaign: contributeCampaignContract } =
   useContractCampaignStore();
 
-const { isOpen, campaignId } = defineProps({
+const { isOpen, campaign } = defineProps({
   isOpen: Boolean,
-  campaignId: String,
+  campaign: {
+    type: Object as () => Campaign,
+    required: true,
+  },
 });
+
+const { openModal } = useOnboardStore();
+const { isConnected } = storeToRefs(useOnboardStore());
 
 const inputValue = ref<number | null>(null);
 const showEthInput = ref(false);
+const donateFullAmount = ref(false);
 
 const emit = defineEmits<{
   (eventName: "update:isOpen", value: boolean): void;
+  (eventName: "refresh:campaign"): void;
 }>();
 
 const presetPrices = ref<{ priceValue: number; selected: boolean }[]>([
@@ -125,24 +185,32 @@ function togglePresetPrice(index: number | null) {
   }
 }
 
-const canDonate = ref(false);
-
-watch(
-  [presetPrices, showEthInput, inputValue],
-  () => {
-    canDonate.value = showEthInput.value
-      ? !!inputValue.value
-      : presetPrices.value.some((p) => p.selected);
-  },
-  { deep: true },
-);
+const donateAmount = computedAsync(async () => {
+  let resultAmount = 0;
+  const selectedPrice = presetPrices.value.find((p) => p.selected)?.priceValue;
+  if (showEthInput.value) resultAmount = inputValue.value || 0;
+  else if (donateFullAmount.value)
+    resultAmount = +campaign.goal - +campaign.raised;
+  else if (selectedPrice) resultAmount = await convertUsdToEth(selectedPrice);
+  else resultAmount = 0;
+  return resultAmount;
+});
 
 const closeModal = () => emit("update:isOpen", false);
-async function contributeToCampaign() {
-  if (campaignId === undefined || !canDonate || inputValue.value === null)
-    return;
-  await contributeCampaignContract(campaignId, inputValue.value.toString());
-}
+const { execute: contributeToCampaign, inProgress: contributionInProgress } =
+  usePromise(async () => {
+    if (campaign.id === undefined || !donateAmount.value) return;
+    const amountToDonate = BigInt(
+      Math.ceil(decimalToBigNumber(donateAmount.value.toString(), 18)),
+    );
+
+    await contributeCampaignContract(campaign.id, amountToDonate).finally(
+      () => {
+        emit("update:isOpen", false);
+        emit("refresh:campaign");
+      },
+    );
+  });
 </script>
 
 <style lang="scss" scoped>

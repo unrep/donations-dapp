@@ -149,6 +149,11 @@ export const fundraisingABI = [
         type: "bool",
       },
       {
+        internalType: "bool",
+        name: "isWithdrawn",
+        type: "bool",
+      },
+      {
         internalType: "string",
         name: "ipfsHash",
         type: "string",
@@ -273,6 +278,11 @@ export const fundraisingABI = [
         name: "contributions",
         type: "tuple[]",
       },
+      {
+        internalType: "bool",
+        name: "isWithdrawn",
+        type: "bool",
+      },
     ],
     stateMutability: "view",
     type: "function",
@@ -324,6 +334,11 @@ export const fundraisingABI = [
             name: "ipfsHash",
             type: "string",
           },
+          {
+            internalType: "bool",
+            name: "isWithdrawn",
+            type: "bool",
+          },
         ],
         internalType: "struct Fundraising.CampaignSummary[]",
         name: "summaries",
@@ -333,6 +348,25 @@ export const fundraisingABI = [
         internalType: "string[][]",
         name: "allFilters",
         type: "string[][]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_organizer",
+        type: "address",
+      },
+    ],
+    name: "getCampaignsByOrganizer",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
       },
     ],
     stateMutability: "view",
@@ -443,6 +477,11 @@ export const fundraisingABI = [
             internalType: "string",
             name: "ipfsHash",
             type: "string",
+          },
+          {
+            internalType: "bool",
+            name: "isWithdrawn",
+            type: "bool",
           },
         ],
         internalType: "struct Fundraising.CampaignSummary[]",

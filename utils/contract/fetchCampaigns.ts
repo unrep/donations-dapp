@@ -40,6 +40,16 @@ export async function fetchCampaignsArray(
 ): Promise<Campaign[]> {
   const { getCampaigns } = useContractCampaignStore();
   const campaigns = await getCampaigns(startIndex, endIndex);
+  if (!campaigns) throw new Error("Campaigns not found");
+  return enrichCampaignData(campaigns);
+}
+
+export async function fetchIndexedCampaignsArray(
+  indexes: number[],
+): Promise<Campaign[]> {
+  const { getIndexedCampaigns } = useContractCampaignStore();
+  const campaigns = await getIndexedCampaigns(indexes);
+  if (!campaigns) throw new Error("Campaigns not found");
   return enrichCampaignData(campaigns);
 }
 
@@ -54,6 +64,8 @@ export async function searchCampaigns(
     endDate.getTime(),
     filters,
   );
+  if (!campaigns) throw new Error("Campaigns not found");
+
   return enrichCampaignData(campaigns);
 }
 
@@ -61,6 +73,8 @@ export async function fetchCampaign(id: number): Promise<Campaign> {
   const { getCampaign } = useContractCampaignStore();
 
   const campaign = await getCampaign(id);
+  if (!campaign || !campaign.goalAmount)
+    throw new Error(`Campaign with id ${id} not found`);
 
   const { getContentByCid } = useWeb3Storage();
 

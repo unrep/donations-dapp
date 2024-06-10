@@ -3,7 +3,12 @@
     <div class="w-full flex flex-col items-center justify-center">
       <CommonBlobs />
       <NavBar />
-      <CampaignFull v-if="campaign" :campaign="campaign" />
+      <CampaignFull
+        v-if="campaign"
+        :key="campaign?.id"
+        :campaign="campaign"
+        @refresh:campaign="setCampaign"
+      />
     </div>
   </div>
 </template>
@@ -19,27 +24,26 @@ import type { Campaign } from "~/types";
 const route = useRoute();
 const router = useRouter();
 const campaign = ref<Campaign | undefined>(undefined);
-const error = ref<Error | undefined>(undefined);
-const inProgress = ref<boolean>(false);
+const campaignId = ref<number | undefined>(undefined);
 
 onMounted(async () => {
-  const campaignId = Number(route.query.id);
+  campaignId.value = Number(route.query.id);
+  await setCampaign();
+});
 
-  if (isNaN(campaignId)) {
+async function setCampaign() {
+  if (campaignId.value === undefined || isNaN(campaignId.value)) {
     router.push("/");
     return;
   }
 
-  const {
-    execute: getCampaign,
-    error,
-    inProgress,
-  } = usePromise(() => {
-    return fetchCampaign(campaignId);
-  });
-
-  campaign.value = await getCampaign();
-});
+  try {
+    campaign.value = undefined;
+    campaign.value = await fetchCampaign(campaignId.value);
+  } catch (error) {
+    router.push("/");
+  }
+}
 </script>
 
 <style scoped lang="scss">

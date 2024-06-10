@@ -30,7 +30,7 @@ export const useLandingStore = defineStore("landing", () => {
           ? campaignsLength.value - campaignsToPreview.value
           : 0,
         campaignsLength.value,
-      );
+      ).then((res) => res.filter((campaign) => campaign.isOpen));
     },
   );
 
@@ -45,7 +45,7 @@ export const useLandingStore = defineStore("landing", () => {
       new Date(0),
       new Date(),
       selectedFilters.value,
-    );
+    ).then((res) => res.filter((campaign) => campaign.isOpen));
   }
 
   return {

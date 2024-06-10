@@ -1,4 +1,7 @@
+import { waitForTransactionReceipt } from "@wagmi/core";
 import { getContract as getContractViem, type Address } from "viem";
+
+import { wagmiConfig } from "~/data/wagmi";
 
 import { useOnboardStore } from "./onboard";
 
@@ -39,6 +42,11 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
       .then((res) => prettifyCampaign(index, res, +decimals));
   }
 
+  function getCampaignIdsByOrganizer(organizerAddress: Address) {
+    const contract = getReadContract();
+    return contract.read.getCampaignsByOrganizer([organizerAddress]);
+  }
+
   async function getCampaigns(startIndex: number, endIndex: number) {
     const contract = getReadContract();
     const ethData = await getEthData();
@@ -47,6 +55,17 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     const indexArray = Array.from({ length: endIndex - startIndex }, (_, i) =>
       BigInt(i + startIndex),
     );
+    return contract.read
+      .getCampaignSummaries([indexArray])
+      .then((res) => prettifyCampaignArray(res, +decimals));
+  }
+
+  async function getIndexedCampaigns(indexes: number[]) {
+    const contract = getReadContract();
+    const ethData = await getEthData();
+    if (!ethData.value) return;
+    const decimals = ethData.value.tokenDecimal;
+    const indexArray = indexes.map((index) => BigInt(index));
     return contract.read
       .getCampaignSummaries([indexArray])
       .then((res) => prettifyCampaignArray(res, +decimals));
@@ -87,35 +106,45 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     const goalAmountInWei = BigInt(
       decimalToBigNumber(goalAmount.toString(), +ethData.value.tokenDecimal),
     );
-    return contract.write.createCampaign([goalAmountInWei, ipfsHash, filters]);
+    return awaitTransactionResponse(() =>
+      contract.write.createCampaign([goalAmountInWei, ipfsHash, filters]),
+    );
   }
 
   async function stopCampaign(campaignId: number) {
     const contract = await getWriteContract();
-    return contract.write.stopCampaign([BigInt(campaignId)]);
+    return awaitTransactionResponse(() =>
+      contract.write.stopCampaign([BigInt(campaignId)]),
+    );
   }
 
   async function withdrawCampaignFunds(campaignId: number) {
     const contract = await getWriteContract();
-    return contract.write.withdrawFunds([BigInt(campaignId)]);
+    return awaitTransactionResponse(() =>
+      contract.write.withdrawFunds([BigInt(campaignId)]),
+    );
   }
 
-  async function contributeCampaign(campaignId: string, amount: string) {
+  async function contributeCampaign(campaignId: string, amount: bigint) {
     const contract = await getWriteContract();
     const ethData = await getEthData();
     if (!ethData.value) return;
-    return contract.write.contribute([BigInt(campaignId)], {
-      value: BigInt(decimalToBigNumber(amount, +ethData.value.tokenDecimal)),
-    });
+    return awaitTransactionResponse(() =>
+      contract.write.contribute([BigInt(campaignId)], {
+        value: amount,
+      }),
+    );
   }
 
   return {
     getCampaign,
     getCampaigns,
+    getIndexedCampaigns,
     searchCampaigns,
     getCampaignFilters,
     getCampaignContributions,
     getLastCampaignIndex,
+    getCampaignIdsByOrganizer,
 
     createCampaign,
     stopCampaign,
@@ -139,6 +168,7 @@ function prettifyCampaign(
       amount: bigint;
       timestamp: bigint;
     }[],
+    boolean,
   ],
   decimals: number,
 ) {
@@ -151,6 +181,7 @@ function prettifyCampaign(
     isOpen: campaign[5],
     filters: campaign[6],
     contributions: campaign[7],
+    isWithdrawn: campaign[8],
   };
 }
 
@@ -164,6 +195,7 @@ function prettifyCampaignArray(
       raisedAmount: bigint;
       isOpen: boolean;
       ipfsHash: string;
+      isWithdrawn: boolean;
     }[],
     readonly (readonly string[])[],
   ],
@@ -181,9 +213,15 @@ function prettifyCampaignArray(
     ipfsHash: campaign.ipfsHash,
     filters: campaignsFilters[index],
     contributions: [],
+    isWithdrawn: campaign.isWithdrawn,
   }));
 }
 
 function bigIntToDate(value: bigint) {
   return Number(value) * 1000;
+}
+
+async function awaitTransactionResponse(fn: () => Promise<any>) {
+  const txHash = await fn();
+  return waitForTransactionReceipt(wagmiConfig, { hash: txHash });
 }

@@ -69,6 +69,7 @@
       </div>
 
       <button
+        v-if="campaign.isOpen"
         to="/create-campaign"
         :class="[
           'self-end w-full text-2xl font-black bg-indigo-800 text-white text-center px-10 py-3 rounded-2xl duration-200 cursor-pointer hover:scale-105',
@@ -79,6 +80,12 @@
       >
         Donate
       </button>
+      <div
+        v-else
+        class="w-full text-center text-indigo-500 text-xl md:text-2xl font-black"
+      >
+        This campaign has ended
+      </div>
     </div>
 
     <div class="w-full flex flex-col justify-center items-start gap-5">
@@ -89,8 +96,9 @@
 
   <CampaignDonationModal
     :is-open="modalOpened"
-    :campaign-id="campaign.id"
+    :campaign="campaign"
     @update:is-open="(value) => (modalOpened = value)"
+    @refresh:campaign="emit('refresh:campaign')"
   />
 </template>
 
@@ -112,6 +120,10 @@ const { campaign } = defineProps({
     default: false,
   },
 });
+
+const emit = defineEmits<{
+  (eventName: "refresh:campaign"): void;
+}>();
 
 const { result: goalUSD, execute: getGoalUSD } = usePromise(() =>
   computeETHPrice(campaign.goal),

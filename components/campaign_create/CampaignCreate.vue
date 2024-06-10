@@ -137,6 +137,7 @@ import { useCampaignStore } from "~/stores/campaign";
 import { useOnboardStore } from "~/stores/onboard";
 
 import type { VNodeRef } from "vue";
+import type { Campaign } from "~/types";
 
 const { openModal } = useOnboardStore();
 const { account } = storeToRefs(useOnboardStore());
@@ -183,7 +184,7 @@ function onBack() {
 
 const { checkAllStepsCompleted, sendCampaign, steps } = useCampaignStore();
 
-function getInputCampaign() {
+function getInputCampaign(): Campaign {
   return {
     id: "0",
     title: steps[0].inputValue,
@@ -192,7 +193,9 @@ function getInputCampaign() {
     goal: steps[1].inputValue,
     description: steps[3].inputValue,
     createdAt: new Date(),
-    donationsCount: 0,
+    filters: steps[2].inputValue,
+    contributions: [],
+    isOpen: true,
   };
 }
 

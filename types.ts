@@ -165,6 +165,7 @@ export type Campaign = {
   description: string;
   createdAt?: Date;
   isOpen: boolean;
+  isWithdrawn: boolean;
   filters: string[];
   contributions: Contribution[];
 };

@@ -32,24 +32,6 @@ export function isOnlyZeroes(value: string) {
   return value.replace(/0/g, "").replace(/\./g, "").length === 0;
 }
 
-export async function getTokenData(tokenAddress: string): Promise<
-  {
-    contractAddress: string;
-    iconURL: string;
-    l1Address: string;
-    liquidity: string;
-    symbol: string;
-    tokenDecimal: string;
-    tokenName: string;
-    tokenPriceUSD: string;
-  }[]
-> {
-  const res = await fetch(
-    `https://block-explorer-api.mainnet.zksync.io/api?module=token&action=tokeninfo&contractaddress=${tokenAddress}`,
-  ).then((res) => res.json());
-  return res.result;
-}
-
 export async function computeETHPrice(amount: string): Promise<string> {
   const ethData = await getEthData();
   if (!ethData.value) return "$0";
@@ -59,4 +41,11 @@ export async function computeETHPrice(amount: string): Promise<string> {
     ETH_TOKEN.decimals,
     +ethData.value.tokenPriceUSD,
   );
+}
+
+export async function convertUsdToEth(usdAmount: number): Promise<number> {
+  const ethData = await getEthData();
+  if (!ethData.value) return 0;
+
+  return usdAmount / +ethData.value.tokenPriceUSD;
 }

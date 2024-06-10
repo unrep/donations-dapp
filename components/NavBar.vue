@@ -8,8 +8,9 @@
       <NuxtLink
         to="/"
         class="text-4xl font-black text-indigo-800 hidden md:block"
-        >Raise&Reach</NuxtLink
       >
+        Raise&Reach
+      </NuxtLink>
 
       <div class="text-4xl font-black text-indigo-800 block md:hidden">R&R</div>
 
@@ -24,6 +25,9 @@
         >
           Search
         </button>
+        <NuxtLink v-if="hasOwnCampaigns" to="/my-campaigns" class="nav-button">
+          Your campaigns
+        </NuxtLink>
       </div>
 
       <div class="flex items-center gap-5 lg:hidden">
@@ -60,12 +64,23 @@
       <button class="nav-button" @click="scrollToAnchor('#searchElement')">
         Search
       </button>
+      <NuxtLink v-if="hasOwnCampaigns" to="/my-campaigns" class="nav-button">
+        Your campaigns
+      </NuxtLink>
     </div>
   </Transition>
 </template>
 
 <script setup lang="ts">
-import { useElementSize, useWindowScroll, onClickOutside } from "@vueuse/core";
+import {
+  useElementSize,
+  useWindowScroll,
+  onClickOutside,
+  computedAsync,
+} from "@vueuse/core";
+
+import { useContractCampaignStore } from "~/stores/contract.campaign";
+import { useOnboardStore } from "~/stores/onboard";
 
 const navRef = ref<HTMLElement | null>(null);
 const { height: headerHeight } = useElementSize(navRef);
@@ -91,6 +106,15 @@ const scrollToAnchor = (anchor: string) => {
     behavior: "smooth",
   });
 };
+
+const { isConnected, account } = storeToRefs(useOnboardStore());
+const { getCampaignIdsByOrganizer } = useContractCampaignStore();
+
+const hasOwnCampaigns = computedAsync(async () => {
+  if (!isConnected || !account.value.address) return false;
+  const campaignIds = await getCampaignIdsByOrganizer(account.value.address);
+  return !!campaignIds.length;
+});
 </script>
 
 <style lang="scss" scoped>
