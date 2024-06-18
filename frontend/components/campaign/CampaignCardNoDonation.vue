@@ -20,12 +20,9 @@
         v-if="!campaign.isWithdrawn"
         class="w-full flex flex-wrap gap-5 items-center justify-center"
       >
-        <CommonButton
-          :class="[
-            'px-0 w-full ',
-            campaign.isOpen ? 'bg-red-500' : ' bg-green-500',
-          ]"
-          @click="stopCampaign"
+        <button
+          class="px-2 py-1 border border-gray-400 rounded-lg hover:scale-105 duration-200 cursor-pointer"
+          @click="stopCampaign()"
         >
           <transition v-bind="TransitionPrimaryButtonText" mode="out-in">
             <span
@@ -36,20 +33,22 @@
             </span>
             <span
               v-else-if="campaign.isOpen"
-              class="flex items-center justify-center"
+              class="flex items-center justify-center gap-1"
             >
+              <IconsPause color="black" />
               <span>Stop</span>
             </span>
-            <span v-else class="flex items-center justify-center">
+            <span v-else class="flex items-center justify-center gap-1">
+              <IconsResume color="black" />
               <span>Resume</span>
             </span>
           </transition>
-        </CommonButton>
+        </button>
 
-        <CommonButton
+        <button
           :disabled="campaign.isOpen || +campaign.goal - +campaign.raised !== 0"
-          class="px-0 w-full"
-          @click="withdrawCampaign"
+          class="px-2 py-1 border border-gray-400 rounded-lg hover:scale-105 duration-200 cursor-pointer"
+          @click="withdrawCampaign()"
         >
           <transition v-bind="TransitionPrimaryButtonText" mode="out-in">
             <span
@@ -58,11 +57,12 @@
             >
               <IconsLoadingDots width="1.5em" height="1.5em" />
             </span>
-            <span v-else class="flex items-center justify-center">
+            <span v-else class="flex items-center justify-center gap-1">
+              <IconsArrowBold class="rotate-180" size="1.2rem" color="black" />
               <span>Withdraw</span>
             </span>
           </transition>
-        </CommonButton>
+        </button>
       </div>
       <div v-else class="w-full text-center text-indigo-500 text-lg">
         Campaign withdrawn
@@ -72,9 +72,9 @@
 </template>
 
 <script setup lang="ts">
-import { useContractCampaignStore } from "~/stores/contract.campaign";
-
 import type { Campaign } from "~/types";
+
+import { useContractCampaignStore } from "~/stores/contract.campaign";
 
 const { campaign } = defineProps<{
   campaign: Campaign;

@@ -1,8 +1,8 @@
 <template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    :width="`${size}em`"
-    :height="`${size}em`"
+    :width="size"
+    :height="size"
     viewBox="0 0 24 24"
   >
     <path
@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 defineProps({
-  size: { type: Number, default: 1.5 },
+  size: { type: String, default: "1.5rem" },
   color: { type: String, default: "rgb(79 70 229)" },
 });
 </script>

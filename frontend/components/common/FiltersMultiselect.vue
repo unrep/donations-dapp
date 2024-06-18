@@ -14,7 +14,7 @@
           class="pl-2 pr-2.5 h-full flex items-center justify-center"
           @click="filter.selected = false"
         >
-          <IconsCross :size="1.25" />
+          <IconsCross :size="'1.25rem'" />
         </button>
       </div>
     </TransitionGroup>

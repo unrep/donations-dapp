@@ -1,11 +1,10 @@
 <template>
   <!-- Desktop -->
   <div
-    class="w-full h-full max-h-screen hidden mlg:flex flex-col items-center justify-center bg-none mlg:slide-in mlg:p-10 mlg:py-10"
+    class="w-full h-full hidden mlg:flex flex-col items-center justify-center bg-none mlg:slide-in mlg:p-10 mlg:py-10"
   >
     <div
-      ref="container"
-      class="scroll-smooth overflow-y-auto w-full h-full p-10 flex flex-col items-center justify-center bg-white bg-opacity-90 backdrop-blur-3xl input-container rounded-3xl"
+      class="w-full h-full p-10 flex flex-col items-center justify-center bg-white bg-opacity-90 backdrop-blur-3xl input-container rounded-3xl"
     >
       <div
         :class="[
@@ -30,18 +29,6 @@
 const { limitSize } = defineProps<{
   limitSize: boolean;
 }>();
-
-const container = ref<HTMLDivElement | null>(null);
-
-const scrollUp = () => {
-  if (container.value) {
-    container.value.scrollTop = 0;
-  }
-};
-
-defineExpose({
-  scrollUp,
-});
 </script>
 
 <style lang="scss">

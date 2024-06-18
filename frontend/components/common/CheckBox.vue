@@ -5,7 +5,7 @@
       checked ? 'bg-indigo-800 border-indigo-800' : 'bg-white border-gray-300',
     ]"
   >
-    <IconsCheck :size="0.85" color="#fff" />
+    <IconsCheck :size="'0.85rem'" color="#fff" />
 
     <input
       v-model="checked"

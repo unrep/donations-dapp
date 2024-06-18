@@ -2,7 +2,6 @@
   <div class="flex flex-col items-center justify-center">
     <div class="w-full flex flex-col items-center justify-center">
       <CommonBlobs />
-      <CommonLatestContributionsSlider />
       <NavBar />
 
       <CampaignFullLoader v-if="campaignInProgress" />
@@ -20,9 +19,9 @@
 import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
-import { fetchCampaign } from "~/utils/contract/fetchCampaigns";
-
 import type { Campaign } from "~/types";
+
+import { fetchCampaign } from "~/utils/contract/fetchCampaigns";
 
 const route = useRoute();
 const router = useRouter();

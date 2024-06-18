@@ -1,7 +1,7 @@
 <template>
   <!-- Desktop -->
   <div
-    class="relative hidden mlg:grid grid-rows-3 h-full w-full justify-between p-10"
+    class="sticky top-0 left-0 hidden mlg:grid grid-rows-3 h-full max-h-screen w-full justify-between p-10"
   >
     <CommonBlobs />
 

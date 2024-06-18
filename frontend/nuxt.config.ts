@@ -19,7 +19,7 @@ export default defineNuxtConfig({
       "@nuxtjs/google-fonts",
       {
         families: {
-          Quicksand: "300..700",
+          Inter: "300..700",
         },
       },
     ],

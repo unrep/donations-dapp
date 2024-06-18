@@ -3,7 +3,7 @@
     ref="navRef"
     class="z-50 sticky top-0 left-0 w-full bg-white/70 backdrop-blur-lg flex items-center justify-center border-b shadow shadow-black/5"
   >
-    <!-- Mobile -->
+    <!-- Desktop -->
     <div class="w-full p-5 max-w-7xl flex justify-between items-center">
       <NuxtLink
         to="/"
@@ -28,6 +28,8 @@
         <NuxtLink v-if="hasOwnCampaigns" to="/my-campaigns" class="nav-button">
           Your campaigns
         </NuxtLink>
+
+        <CommonW3ModalButton />
       </div>
 
       <div class="flex items-center gap-5 lg:hidden">
@@ -67,6 +69,10 @@
       <NuxtLink v-if="hasOwnCampaigns" to="/my-campaigns" class="nav-button">
         Your campaigns
       </NuxtLink>
+
+      <div class="py-2 px-5">
+        <CommonW3ModalButton />
+      </div>
     </div>
   </Transition>
 </template>
@@ -81,6 +87,8 @@ import {
 
 import { useContractCampaignStore } from "~/stores/contract.campaign";
 import { useOnboardStore } from "~/stores/onboard";
+
+const { openModal } = useOnboardStore();
 
 const navRef = ref<HTMLElement | null>(null);
 const { height: headerHeight } = useElementSize(navRef);

@@ -47,10 +47,31 @@
         </div>
 
         <div class="w-full">
-          <div class="w-full text-2xl font-semibold px-1">
-            {{ raisedUSD }}
-            <span class="font-normal text-base">raised of {{ goalUSD }}</span>
-          </div>
+          <button
+            class="overflow-hidden"
+            @click="
+              () => (showCurrency = showCurrency === 'eth' ? 'usd' : 'eth')
+            "
+          >
+            <transition v-bind="TransitionPrimaryButtonText" mode="out-in">
+              <div
+                :key="showCurrency"
+                class="w-full text-2xl font-semibold px-1"
+              >
+                {{
+                  showCurrency === "usd"
+                    ? raisedUSD
+                    : `${Math.floor(+campaign.raised * 100) / 100}ETH`
+                }}
+                <span class="font-normal text-base"
+                  >raised of
+                  {{
+                    showCurrency === "usd" ? goalUSD : `${campaign.goal}ETH`
+                  }}</span
+                >
+              </div>
+            </transition>
+          </button>
 
           <div class="w-full text-center">
             <div class="w-full rounded-full overflow-hidden h-3 bg-gray-300">
@@ -59,13 +80,6 @@
                 :style="{ '--raised-percentage': `${raisedPercentage}%` }"
               />
             </div>
-          </div>
-
-          <div class="w-full px-1">
-            <span class="text-xl font-semibold">
-              {{ Math.floor(+campaign.raised * 100) / 100 }} ETH
-            </span>
-            raised of {{ campaign.goal }} ETH
           </div>
         </div>
 
@@ -131,6 +145,8 @@
 import { formatDate } from "@vueuse/core";
 
 import { type Campaign } from "~/types";
+
+const showCurrency = ref<"eth" | "usd">("usd");
 
 const modalOpened = ref(false);
 
