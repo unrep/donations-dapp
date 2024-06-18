@@ -1,6 +1,8 @@
 pragma solidity ^0.8.0;
 
-contract Fundraising {
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
+contract Fundraising is ReentrancyGuard {
     struct Contribution {
         address contributor;
         uint amount;
@@ -54,14 +56,6 @@ contract Fundraising {
 
     function getAllCampaignFilters() public view returns (string[] memory) {
         return campaignFilters;
-    }
-
-    bool private locked;
-    modifier noReentrancy() {
-        require(!locked, "No reentrancy");
-        locked = true;
-        _;
-        locked = false;
     }
 
     uint public nextCampaignId = 0;
@@ -171,7 +165,7 @@ contract Fundraising {
         uint _goalAmount,
         string memory _ipfsHash,
         string[] memory _filters
-    ) public noReentrancy {
+    ) public nonReentrant {
         require(validateFilters(_filters), "One or more filters are invalid");
 
         campaigns[nextCampaignId] = Campaign({
@@ -190,7 +184,7 @@ contract Fundraising {
         nextCampaignId++;
     }
 
-    function contribute(uint _campaignId) public payable noReentrancy {
+    function contribute(uint _campaignId) public payable nonReentrant {
         Campaign storage campaign = campaigns[_campaignId];
         require(campaign.isOpen, "Campaign is not open for contributions");
 
@@ -216,7 +210,7 @@ contract Fundraising {
         }
     }
 
-    function withdrawFunds(uint _campaignId) public noReentrancy {
+    function withdrawFunds(uint _campaignId) public nonReentrant {
         Campaign storage campaign = campaigns[_campaignId];
         require(
             msg.sender == campaign.organizer,
@@ -235,7 +229,7 @@ contract Fundraising {
         campaign.isWithdrawn = true;
     }
 
-    function stopCampaign(uint _campaignId) public noReentrancy {
+    function stopCampaign(uint _campaignId) public nonReentrant {
         Campaign storage campaign = campaigns[_campaignId];
         require(
             msg.sender == campaign.organizer,
@@ -319,11 +313,9 @@ contract Fundraising {
         return (summaries, allFilters);
     }
 
-    function getCampaignsByOrganizer(address _organizer)
-        public
-        view
-        returns (uint[] memory)
-    {
+    function getCampaignsByOrganizer(
+        address _organizer
+    ) public view returns (uint[] memory) {
         uint[] memory tempIds = new uint[](nextCampaignId);
         uint count = 0;
 
