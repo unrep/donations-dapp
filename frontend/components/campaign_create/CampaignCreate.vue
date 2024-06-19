@@ -51,30 +51,36 @@
 
       <template v-else-if="campaignCreationStep === 'done'">
         <div />
-        <div
-          class="w-full text-center text-4xl mlg:text-5xl font-bold text-indigo-800"
-        >
-          Campaign created successfully!
-        </div>
-
-        <div class="w-full flex justify-center items-center gap-5">
-          <NuxtLink
-            :to="`/campaign?id=${campaignId}`"
-            class="text-base py-3 px-5 shadow-xl bg-indigo-800 font-semibold rounded-xl text-white mlg:hover:scale-105 active:scale-105 duration-200"
+        <div class="flex flex-col justify-center items-center gap-10">
+          <div
+            class="w-full text-center text-4xl mlg:text-5xl font-bold text-indigo-800"
           >
-            Your campaign
-          </NuxtLink>
+            Campaign created successfully!
+          </div>
 
-          <NuxtLink
-            to="/"
-            class="text-base py-3 px-10 shadow-xl bg-indigo-800 font-semibold rounded-xl text-white mlg:hover:scale-105 active:scale-105 duration-200"
-          >
-            Home
-          </NuxtLink>
+          <div class="w-full flex justify-center items-center gap-5">
+            <NuxtLink
+              :to="`/campaign?id=${campaignId}`"
+              class="text-base py-3 px-5 shadow-xl bg-indigo-800 font-semibold rounded-xl text-white mlg:hover:scale-105 active:scale-105 duration-200"
+            >
+              Your campaign
+            </NuxtLink>
+
+            <NuxtLink
+              to="/"
+              class="text-base py-3 px-10 shadow-xl bg-indigo-800 font-semibold rounded-xl text-white mlg:hover:scale-105 active:scale-105 duration-200"
+            >
+              Home
+            </NuxtLink>
+          </div>
         </div>
+        <div />
       </template>
 
-      <div class="flex justify-center items-center gap-5 w-full">
+      <div
+        v-if="campaignCreationStep !== 'done'"
+        class="flex justify-center items-center gap-5 w-full"
+      >
         <button
           v-if="campaignCreationStep !== 'initial'"
           ontouchstart=""
@@ -159,6 +165,7 @@ const buttonState = computed(() => {
       isCampaignSending.value = true;
       await sendCampaign()?.finally(() => {
         isCampaignSending.value = false;
+        navigateTo(`/campaign?id=${campaignId.value}`);
       });
       campaignCreationStep.value = "done";
     },

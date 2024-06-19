@@ -22,9 +22,7 @@
     >
       <div class="text-xl font-bold">{{ title }}</div>
 
-      <div class="overflow-hidden line-clamp-[7]">
-        {{ description }}
-      </div>
+      <CommonRichViewer :content="description" />
 
       <div
         class="w-full translate-y-[200%] group-hover:translate-y-0 delay-[400ms] duration-200"
