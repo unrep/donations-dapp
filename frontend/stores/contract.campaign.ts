@@ -1,9 +1,9 @@
 import { getBlock, watchContractEvent } from "@wagmi/core";
 import { getContract as getContractViem, type Address } from "viem";
 
-import { wagmiConfig } from "~/data/wagmi";
-
 import { useOnboardStore } from "./onboard";
+
+import { wagmiConfig } from "~/data/wagmi";
 
 export const useContractCampaignStore = defineStore("contact_campaign", () => {
   const { getPublicClient } = useOnboardStore();
@@ -224,7 +224,10 @@ function prettifyCampaign(
     ipfsHash: campaign[4],
     isOpen: campaign[5],
     filters: campaign[6],
-    contributions: campaign[7],
+    contributions: campaign[7].map((contribution) => ({
+      ...contribution,
+      timestamp: new Date(bigIntToDate(contribution.timestamp)),
+    })),
     isWithdrawn: campaign[8],
   };
 }

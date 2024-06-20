@@ -1,10 +1,10 @@
+import { useContractCampaignStore } from "./contract.campaign";
+
 import {
   fetchCampaignsArray,
   searchCampaigns,
 } from "~/utils/contract/fetchCampaigns";
 import { fetchFilters } from "~/utils/contract/fetchFilters";
-
-import { useContractCampaignStore } from "./contract.campaign";
 
 export const useLandingStore = defineStore("landing", () => {
   const { getLastCampaignIndex } = useContractCampaignStore();

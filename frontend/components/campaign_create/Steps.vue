@@ -5,7 +5,7 @@
   >
     <CommonBlobs />
 
-    <div class="text-4xl font-black text-indigo-800 text-left w-full">
+    <div class="text-4xl font-bold text-indigo-800 text-left w-full">
       <NuxtLink
         to="/"
         class="mb-5 w-full flex items-center justify-center gap-2 text-lg text-indigo-800 hover:scale-105 duration-200"
@@ -57,7 +57,7 @@
 
   <!-- Mobile -->
   <div
-    class="mlg:hidden flex flex-col items-center justify-center gap-5 bg-indigo-800 w-full py-5 font-black text-white duration-200"
+    class="mlg:hidden flex flex-col items-center justify-center gap-5 bg-indigo-800 w-full py-5 font-bold text-white duration-200"
   >
     <div
       class="w-full flex flex-col justify-center items-center px-10 pb-3 pt-1 gap-5"

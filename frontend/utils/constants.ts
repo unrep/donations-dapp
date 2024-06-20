@@ -1,7 +1,7 @@
-import { fundraisingABI } from "~/utils/contract/abi";
-
 import type { Address } from "viem";
 import type { Token } from "~/types";
+
+import { fundraisingABI } from "~/utils/contract/abi";
 
 const appConfig = useAppConfig();
 

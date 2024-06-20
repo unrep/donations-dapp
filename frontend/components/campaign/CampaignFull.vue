@@ -30,88 +30,85 @@
 
     <div
       :class="[
-        'h-full w-full shadow-md bg-opacity-40 backdrop-blur-sm bg-white rounded-3xl py-5 px-5 gap-10 flex flex-col justify-center items-center',
+        'h-full w-full shadow-md bg-opacity-40 backdrop-blur-sm bg-white rounded-3xl py-5 px-5 gap-3 flex flex-col justify-between items-center',
         preview ? '2xl:items-start' : 'lg:items-start',
       ]"
     >
-      <div
-        class="gap-5 w-full h-full flex flex-col items-start justify-start px-2 pt-2"
-      >
-        <div class="text-xl">
-          Started at
-          {{
-            campaign?.createdAt
-              ? formatDate(campaign?.createdAt, "Do MMM YYYY")
-              : ""
-          }}
-        </div>
+      <div class="text-xl">
+        Started at
+        {{
+          campaign?.createdAt
+            ? formatDate(campaign?.createdAt, "Do MMM YYYY")
+            : ""
+        }}
+      </div>
 
-        <div class="w-full">
-          <button
-            class="overflow-hidden"
-            @click="
-              () => (showCurrency = showCurrency === 'eth' ? 'usd' : 'eth')
-            "
-          >
-            <transition v-bind="TransitionPrimaryButtonText" mode="out-in">
-              <div
-                :key="showCurrency"
-                class="w-full text-2xl font-semibold px-1"
-              >
+      <div class="w-full">
+        <button
+          class="overflow-hidden"
+          @click="() => (showCurrency = showCurrency === 'eth' ? 'usd' : 'eth')"
+        >
+          <Transition v-bind="TransitionPrimaryButtonText" mode="out-in">
+            <div :key="showCurrency" class="w-full text-2xl font-semibold px-1">
+              {{
+                showCurrency === "usd"
+                  ? raisedUSD
+                  : `${Math.floor(+campaign.raised * 100) / 100}ETH`
+              }}
+              <span class="font-normal text-base"
+                >raised of
                 {{
-                  showCurrency === "usd"
-                    ? raisedUSD
-                    : `${Math.floor(+campaign.raised * 100) / 100}ETH`
-                }}
-                <span class="font-normal text-base"
-                  >raised of
-                  {{
-                    showCurrency === "usd" ? goalUSD : `${campaign.goal}ETH`
-                  }}</span
-                >
-              </div>
-            </transition>
-          </button>
-
-          <div class="w-full text-center">
-            <div class="w-full rounded-full overflow-hidden h-3 bg-gray-300">
-              <div
-                class="raised-percentage-width h-full bg-indigo-800 rounded-full"
-                :style="{ '--raised-percentage': `${raisedPercentage}%` }"
-              />
+                  showCurrency === "usd" ? goalUSD : `${campaign.goal}ETH`
+                }}</span
+              >
             </div>
+          </Transition>
+        </button>
+
+        <div class="w-full text-center">
+          <div class="w-full rounded-full overflow-hidden h-3 bg-gray-300">
+            <div
+              class="raised-percentage-width h-full bg-indigo-800 rounded-full"
+              :style="{ '--raised-percentage': `${raisedPercentage}%` }"
+            />
           </div>
         </div>
+      </div>
 
-        <div class="flex flex-col gap-2 p-2">
-          <span class="text-xl">{{ donationsCount }} donations</span>
-          <div class="w-full flex flex-wrap gap-2 text-sm">
+      <div class="flex-grow h-full w-full flex flex-col justify-end gap-2 p-2">
+        <div
+          class="w-full max-h-72 sm:max-h-40 lg:max-h-72 flex flex-row-reverse flex-wrap-reverse items-start justify-end gap-2 overflow-y-auto"
+        >
+          <TransitionGroup
+            v-bind="TransitionPrimaryButtonTextReverse"
+            mode="out-in"
+          >
             <div
-              v-for="(donation, index) in campaign.contributions.slice(
-                0,
-                MAX_DONATIONS_TO_SHOW,
-              )"
-              :key="index"
-              class="px-3 py-1 rounded-lg bg-indigo-200 bg-opacity-50"
+              v-for="donation in campaign.contributions
+                .slice()
+                .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())"
+              :key="donation.contributor + donation.timestamp.getTime()"
+              class="w-max h-max text-center px-3 py-1 text-sm rounded-lg bg-opacity-50 duration-200 flex gap-1 items-center"
             >
-              {{ shortenAddress(donation.contributor) }} donated
-              <b>{{ floorEthAmount(donation.amount) }} ETH</b>
+              <CommonAccountView :address="donation.contributor" size="xs" />
+              <span>
+                donated
+                <b>{{ floorEthAmount(donation.amount) }} ETH</b>
+                {{ formatDateAgo(donation.timestamp) }}
+              </span>
             </div>
-            <div
-              v-if="campaign.contributions.length > MAX_DONATIONS_TO_SHOW"
-              class="px-3 py-1 rounded-lg bg-indigo-200 bg-opacity-50 font-bold"
-            >
-              ...
-            </div>
-          </div>
+          </TransitionGroup>
         </div>
+        <span class="text-lg text-center w-full"
+          >{{ donationsCount }} donations in total</span
+        >
       </div>
 
       <button
         v-if="campaign.isOpen"
         to="/create-campaign"
         :class="[
-          'self-end w-full text-2xl font-black bg-indigo-800 text-white text-center px-10 py-3 rounded-2xl duration-200 cursor-pointer hover:scale-105',
+          'self-end w-full text-2xl font-bold bg-indigo-800 text-white text-center px-10 py-3 rounded-2xl duration-200 cursor-pointer hover:scale-105',
           preview ? 'xl:w-max 2xl:w-full' : 'md:w-max lg:w-full',
         ]"
         :disabled="preview"
@@ -119,9 +116,10 @@
       >
         Donate
       </button>
+
       <div
         v-else
-        class="w-full text-center text-indigo-500 text-xl md:text-2xl font-black"
+        class="w-full text-center text-indigo-500 text-xl md:text-2xl font-bold"
       >
         This campaign has ended
       </div>
@@ -183,8 +181,6 @@ onMounted(async () => {
   await getGoalUSD();
   await getRaisedUSD();
 });
-
-const MAX_DONATIONS_TO_SHOW = 7;
 </script>
 
 <style lang="scss">

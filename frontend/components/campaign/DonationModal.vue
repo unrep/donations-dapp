@@ -42,6 +42,7 @@
               @click="
                 () => {
                   showEthInput = false;
+                  donateFullAmount = false;
                   togglePresetPrice(index);
                 }
               "
@@ -53,6 +54,7 @@
               @click="
                 () => {
                   showEthInput = false;
+                  togglePresetPrice(null);
                   donateFullAmount = !donateFullAmount;
                 }
               "
@@ -64,6 +66,7 @@
               @click="
                 () => {
                   showEthInput = !showEthInput;
+                  donateFullAmount = false;
                   togglePresetPrice(null);
                 }
               "
@@ -141,10 +144,10 @@
 <script lang="ts" setup>
 import { computedAsync } from "@vueuse/core";
 
+import type { Campaign } from "~/types";
+
 import { useContractCampaignStore } from "~/stores/contract.campaign";
 import { useOnboardStore } from "~/stores/onboard";
-
-import type { Campaign } from "~/types";
 
 const { contributeCampaign: contributeCampaignContract } =
   useContractCampaignStore();
@@ -163,6 +166,10 @@ const { isConnected } = storeToRefs(useOnboardStore());
 const inputValue = ref<number | null>(null);
 const showEthInput = ref(false);
 const donateFullAmount = ref(false);
+
+watch({ inputValue, showEthInput, donateFullAmount }, () => {
+  if (inputValue.value || showEthInput.value) donateFullAmount.value = false;
+});
 
 const emit = defineEmits<{
   (eventName: "update:isOpen", value: boolean): void;

@@ -1,8 +1,8 @@
 import { waitForTransactionReceipt } from "@wagmi/core";
 
-import { wagmiConfig } from "~/data/wagmi";
-
 import { decimalToBigNumber } from "./formatters";
+
+import { wagmiConfig } from "~/data/wagmi";
 
 export const isMobile = () => {
   return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(

@@ -6,9 +6,7 @@
       <div
         class="w-full h-full flex flex-col items-center justify-center gap-8 sm:px-10"
       >
-        <div
-          class="text-4xl md:text-5xl font-black text-indigo-800 text-center"
-        >
+        <div class="text-4xl md:text-5xl font-bold text-indigo-800 text-center">
           A crypto powered fundraising service
         </div>
         <div

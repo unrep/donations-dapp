@@ -4,6 +4,19 @@
       <CommonBlobs />
       <NavBar />
 
+      <button
+        @click="
+          () =>
+            campaign?.contributions.push({
+              amount: 1,
+              contributor: '0xa61464658AfeAf65CccaaFD3a512b69A83B77618',
+              timestamp: new Date(),
+            })
+        "
+      >
+        click me
+      </button>
+
       <CampaignFullLoader v-if="campaignInProgress" />
       <CampaignFull
         v-else-if="campaign"

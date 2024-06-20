@@ -4,8 +4,47 @@ import { BaseError } from "viem";
 
 import { isOnlyZeroes } from "./helpers";
 
+const ONE_MINUTE = 1000 * 60;
+const ONE_HOUR = ONE_MINUTE * 60;
+const ONE_DAY = ONE_HOUR * 24;
+
+const dateBreakpoints = {
+  "just now": 0,
+  "1 min": ONE_MINUTE,
+  "5 min": ONE_MINUTE * 5,
+  "15 min": ONE_MINUTE * 15,
+  "30 min": ONE_MINUTE * 30,
+  "1 hr": ONE_HOUR,
+  "6 hr": ONE_HOUR * 6,
+  "12 hr": ONE_HOUR * 12,
+  "1 d": ONE_DAY,
+  "1 week": ONE_DAY * 7,
+  "1 month": ONE_DAY * 30,
+  "1 year": ONE_DAY * 365,
+};
+
+export function formatDateAgo(date: Date) {
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  let lastKey = "just now"; // Initialize lastKey with the smallest interval
+  // let result = lastKey;
+
+  for (const [key, value] of Object.entries(dateBreakpoints)) {
+    if (diff < value) {
+      return lastKey === "just now" ? lastKey : `${lastKey} ago`;
+    }
+    lastKey = key; // Update lastKey at the end of each loop iteration
+  }
+
+  return lastKey;
+}
+
 export function shortenAddress(address: string, chars = 3): string {
   return `${address.slice(0, chars + 2)}...${address.slice(-3)}`;
+}
+
+export function shortenAddressWithout0x(address: string, chars = 3): string {
+  return `${address.slice(2, chars)}...${address.slice(-2)}`;
 }
 
 export function parseTokenAmount(
