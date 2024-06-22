@@ -1,6 +1,6 @@
-import { BigNumber, type BigNumberish } from "ethers";
-import { formatUnits, getAddress } from "ethers/lib/utils";
-import { BaseError } from "viem";
+// import { BigNumber, type bigint } from "ethers";
+// import { formatUnits, getAddress } from "ethers/lib/utils";
+import { BaseError, formatUnits, getAddress } from "viem";
 
 import { isOnlyZeroes } from "./helpers";
 
@@ -47,23 +47,20 @@ export function shortenAddressWithout0x(address: string, chars = 3): string {
   return `${address.slice(2, chars)}...${address.slice(-2)}`;
 }
 
-export function parseTokenAmount(
-  amount: BigNumberish,
-  decimals: number,
-): string {
-  const result = formatUnits(amount.toString(), decimals).toString();
+export function parseTokenAmount(amount: bigint, decimals: number): string {
+  const result = formatUnits(amount, decimals).toString();
   if (result.endsWith(".0")) {
     return result.slice(0, -2);
   }
   return result;
 }
 
-export function decimalToBigNumber(amount: string, decimals: number) {
-  return +amount * 10 ** decimals;
+export function decimalToBigNumber(amount: number, decimals: number): bigint {
+  return BigInt(amount * 10 ** decimals);
 }
 
 export function formatRawTokenPrice(
-  amount: BigNumberish,
+  amount: bigint,
   decimals: number,
   price: number,
 ): number {
@@ -79,7 +76,7 @@ export function formatPricePretty(price: number): string {
   return "$" + price.toFixed(2);
 }
 export function formatTokenPrice(
-  amount: BigNumberish,
+  amount: bigint,
   decimals: number,
   price: number,
 ): string {
@@ -88,7 +85,7 @@ export function formatTokenPrice(
 
 /* Might return value like "0.0000" */
 export function removeSmallAmount(
-  amount: BigNumberish,
+  amount: bigint,
   decimals: number,
   price: number,
   minTokenValue = 0.001,
@@ -124,13 +121,13 @@ export function removeSmallAmount(
 
 /* Fixes value like "0.0000" with "<0.0001" */
 export function removeSmallAmountPretty(
-  amount: BigNumberish,
+  amount: bigint,
   decimals: number,
   price: number,
   minTokenValue?: number,
   maxChars?: number,
 ): string {
-  if (BigNumber.from(amount).isZero()) {
+  if (!amount) {
     return "0";
   }
   const withoutSmallAmount = removeSmallAmount(
@@ -147,7 +144,7 @@ export function removeSmallAmountPretty(
 }
 
 export function checksumAddress(address: string) {
-  return getAddress(address);
+  return getAddress(address.toLowerCase());
 }
 
 export function formatError(error?: Error) {
@@ -187,7 +184,7 @@ export function formatError(error?: Error) {
   return error;
 }
 
-export function weiToNumber(tokenAmount: BigNumberish, decimals: number) {
+export function weiToNumber(tokenAmount: bigint, decimals: number) {
   return Number(tokenAmount) / 10 ** decimals;
 }
 
@@ -195,6 +192,6 @@ export function bigIntToDate(value: bigint) {
   return Number(value) * 1000;
 }
 
-export function floorEthAmount(amount: number, numbers = 3) {
+export function floorEthAmount(amount: bigint, numbers = 3) {
   return Math.floor(weiToNumber(amount, 18) * 10 ** numbers) / 10 ** numbers;
 }

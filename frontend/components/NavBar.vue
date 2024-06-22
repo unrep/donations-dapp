@@ -88,8 +88,6 @@ import {
 import { useContractCampaignStore } from "~/stores/contract.campaign";
 import { useOnboardStore } from "~/stores/onboard";
 
-const { openModal } = useOnboardStore();
-
 const navRef = ref<HTMLElement | null>(null);
 const { height: headerHeight } = useElementSize(navRef);
 const { y: windowScrollTop } = useWindowScroll();

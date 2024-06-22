@@ -1,8 +1,8 @@
-import { useContractCampaignStore } from "~/stores/contract.campaign";
-
 import { useWeb3Storage } from "../../helpers/IPFS";
 
 import type { Campaign } from "~/types";
+
+import { useContractCampaignStore } from "~/stores/contract.campaign";
 
 function enrichCampaignData(
   campaigns: {
@@ -83,10 +83,10 @@ export async function fetchCampaign(id: number): Promise<Campaign> {
   return {
     ...campaign,
     ...ipfsData,
-    id: Number(campaign.id),
+    id: campaign.id,
     title: ipfsData.campaignName,
-    goal: Number(campaign.goalAmount),
-    raised: Number(campaign.raisedAmount),
-    createdAt: new Date(Number(campaign.createdAt)),
+    goal: campaign.goalAmount,
+    raised: campaign.raisedAmount,
+    createdAt: new Date(campaign.createdAt),
   };
 }

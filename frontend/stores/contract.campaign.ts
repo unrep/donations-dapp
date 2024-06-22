@@ -103,8 +103,9 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     const contract = await getWriteContract();
     const ethData = await getEthData();
     if (!ethData.value) return;
-    const goalAmountInWei = BigInt(
-      decimalToBigNumber(goalAmount.toString(), +ethData.value.tokenDecimal),
+    const goalAmountInWei = decimalToBigNumber(
+      goalAmount,
+      +ethData.value.tokenDecimal,
     );
     return awaitTransactionResponse(() =>
       contract.write.createCampaign([goalAmountInWei, ipfsHash, filters]),

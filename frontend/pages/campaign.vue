@@ -4,64 +4,57 @@
       <CommonBlobs />
       <NavBar />
 
-      <button
-        @click="
-          () =>
-            campaign?.contributions.push({
-              amount: 1,
-              contributor: '0xa61464658AfeAf65CccaaFD3a512b69A83B77618',
-              timestamp: new Date(),
-            })
-        "
-      >
-        click me
-      </button>
-
-      <CampaignFullLoader v-if="campaignInProgress" />
+      <CampaignFullLoader v-if="!campaign && campaignInProgress" />
       <CampaignFull
         v-else-if="campaign"
         :key="campaign?.id"
         :campaign="campaign"
-        @refresh:campaign="reloadCampaign"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
-import type { Campaign } from "~/types";
-
-import { fetchCampaign } from "~/utils/contract/fetchCampaigns";
+import { useContractCampaignStore } from "~/stores/contract.campaign";
+import { fetchCampaign as fetchCampaignFromContract } from "~/utils/contract/fetchCampaigns";
 
 const route = useRoute();
 const router = useRouter();
-const campaign = ref<Campaign | undefined>(undefined);
 const campaignId = ref<number | undefined>(undefined);
 
-onMounted(async () => {
-  campaignId.value = Number(route.query.id);
-  await setCampaign();
+const {
+  result: campaign,
+  execute: fetchCampaign,
+  inProgress: campaignInProgress,
+} = usePromise(() => fetchCampaignFromContract(campaignId.value!), {
+  cache: false,
 });
 
-const {
-  execute: setCampaign,
-  reload: reloadCampaign,
-  inProgress: campaignInProgress,
-} = usePromise(async () => {
-  if (campaignId.value === undefined || isNaN(campaignId.value)) {
-    router.push("/");
-    return;
-  }
+watch(
+  () => route.query.id,
+  async (id) => {
+    campaignId.value = Number(id);
+    if (campaignId.value === undefined || isNaN(campaignId.value)) {
+      return router.push("/");
+    }
+    await fetchCampaign();
+  },
+  { immediate: true },
+);
 
-  try {
-    campaign.value = undefined;
-    campaign.value = await fetchCampaign(campaignId.value);
-  } catch (error) {
-    router.push("/");
-  }
+const { watchContributions } = useContractCampaignStore();
+
+watchContributions((logs) => {
+  if (
+    !campaign.value?.id &&
+    Number(logs[0].args.campaignId) !== Number(campaign.value?.id)
+  )
+    return;
+
+  fetchCampaign();
 });
 </script>
 

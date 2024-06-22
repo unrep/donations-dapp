@@ -152,7 +152,7 @@ declare global {
 
 type Contribution = {
   contributor: Address;
-  amount: number;
+  amount: bigint;
   timestamp: Date;
 };
 
@@ -160,8 +160,8 @@ export type Campaign = {
   id: string;
   title: string;
   image: string;
-  raised: string;
-  goal: string;
+  raised: number;
+  goal: number;
   description: string;
   createdAt?: Date;
   isOpen: boolean;

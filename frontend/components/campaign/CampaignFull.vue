@@ -79,10 +79,7 @@
         <div
           class="w-full max-h-72 sm:max-h-40 lg:max-h-72 flex flex-row-reverse flex-wrap-reverse items-start justify-end gap-2 overflow-y-auto"
         >
-          <TransitionGroup
-            v-bind="TransitionPrimaryButtonTextReverse"
-            mode="out-in"
-          >
+          <TransitionGroup v-bind="TransitionPrimaryButtonTextReverse">
             <div
               v-for="donation in campaign.contributions
                 .slice()
@@ -93,7 +90,11 @@
               <CommonAccountView :address="donation.contributor" size="xs" />
               <span>
                 donated
-                <b>{{ floorEthAmount(donation.amount) }} ETH</b>
+                <b>{{
+                  computeETHPrice(
+                    +parseTokenAmount(donation.amount, ETH_TOKEN.decimals),
+                  )
+                }}</b>
                 {{ formatDateAgo(donation.timestamp) }}
               </span>
             </div>
@@ -135,7 +136,6 @@
     :is-open="modalOpened"
     :campaign="campaign"
     @update:is-open="(value) => (modalOpened = value)"
-    @refresh:campaign="emit('refresh:campaign')"
   />
 </template>
 
@@ -148,7 +148,7 @@ const showCurrency = ref<"eth" | "usd">("usd");
 
 const modalOpened = ref(false);
 
-const { campaign } = defineProps({
+const props = defineProps({
   campaign: {
     type: Object as () => Campaign,
     required: true,
@@ -160,27 +160,14 @@ const { campaign } = defineProps({
   },
 });
 
-const emit = defineEmits<{
-  (eventName: "refresh:campaign"): void;
-}>();
-
-const { result: goalUSD, execute: getGoalUSD } = usePromise(() =>
-  computeETHPrice(campaign.goal),
-);
-const { result: raisedUSD, execute: getRaisedUSD } = usePromise(() =>
-  computeETHPrice(campaign.raised),
-);
+const goalUSD = computed(() => computeETHPrice(props.campaign.goal));
+const raisedUSD = computed(() => computeETHPrice(props.campaign.raised));
 
 const raisedPercentage = computed(() =>
-  Math.floor((+campaign.raised / +campaign.goal) * 100),
+  Math.floor((+props.campaign.raised / +props.campaign.goal) * 100),
 );
 
-const donationsCount = computed(() => campaign.contributions?.length);
-
-onMounted(async () => {
-  await getGoalUSD();
-  await getRaisedUSD();
-});
+const donationsCount = computed(() => props.campaign.contributions?.length);
 </script>
 
 <style lang="scss">

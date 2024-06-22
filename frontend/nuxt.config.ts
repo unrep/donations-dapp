@@ -49,5 +49,14 @@ export default defineNuxtConfig({
       address: process.env.FUNDRAISING_CONTRACT_ADRESS,
     },
   },
+  vite: {
+    // Make listed envs public and accessible in the runtime
+    define: Object.fromEntries(
+      ["FUNDRAISING_CONTRACT_ADRESS"].map((key) => [
+        `process.env.${key}`,
+        JSON.stringify(process.env[key]),
+      ]),
+    ),
+  },
   devtools: { enabled: false },
 });

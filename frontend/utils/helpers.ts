@@ -36,8 +36,7 @@ export function isOnlyZeroes(value: string) {
   return value.replace(/0/g, "").replace(/\./g, "").length === 0;
 }
 
-export async function computeETHPrice(amount: string): Promise<string> {
-  const ethData = await getEthData();
+export function computeETHPrice(amount: number): string {
   if (!ethData.value) return "$0";
 
   return formatTokenPrice(

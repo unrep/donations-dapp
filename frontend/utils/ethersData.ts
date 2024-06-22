@@ -1,4 +1,4 @@
-const ethData = ref<{
+export const ethData = ref<{
   contractAddress: string;
   iconURL: string;
   l1Address: string;

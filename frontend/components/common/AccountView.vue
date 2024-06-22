@@ -6,15 +6,15 @@
 </template>
 
 <script setup lang="ts">
-import { withDefaults } from "vue";
-
-type Props = {
-  address: string;
-  size: "xs" | "md";
-};
-
-const props = withDefaults(defineProps<Props>(), {
-  size: "md",
+const props = defineProps({
+  address: {
+    type: String,
+    required: true,
+  },
+  size: {
+    type: String as PropType<"xs" | "default">,
+    default: "default",
+  },
 });
 
 const shortenFunction =

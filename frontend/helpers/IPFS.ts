@@ -1,9 +1,9 @@
+import { Buffer } from "buffer";
 import { CarReader } from "@ipld/car";
 import { importDAG } from "@ucanto/core/delegation";
 import * as Signer from "@ucanto/principal/ed25519";
 import * as Client from "@web3-storage/w3up-client";
 import { StoreMemory } from "@web3-storage/w3up-client/stores/memory";
-import { Buffer } from "buffer";
 
 let client: Client.Client | null = null;
 

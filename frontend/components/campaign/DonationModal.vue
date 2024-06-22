@@ -167,13 +167,12 @@ const inputValue = ref<number | null>(null);
 const showEthInput = ref(false);
 const donateFullAmount = ref(false);
 
-watch({ inputValue, showEthInput, donateFullAmount }, () => {
+watch([inputValue, showEthInput, donateFullAmount], () => {
   if (inputValue.value || showEthInput.value) donateFullAmount.value = false;
 });
 
 const emit = defineEmits<{
   (eventName: "update:isOpen", value: boolean): void;
-  (eventName: "refresh:campaign"): void;
 }>();
 
 const presetPrices = ref<{ priceValue: number; selected: boolean }[]>([
@@ -197,7 +196,7 @@ const donateAmount = computedAsync(async () => {
   const selectedPrice = presetPrices.value.find((p) => p.selected)?.priceValue;
   if (showEthInput.value) resultAmount = inputValue.value || 0;
   else if (donateFullAmount.value)
-    resultAmount = +campaign.goal - +campaign.raised;
+    resultAmount = campaign.goal - campaign.raised;
   else if (selectedPrice) resultAmount = await convertUsdToEth(selectedPrice);
   else resultAmount = 0;
   return resultAmount;
@@ -207,16 +206,14 @@ const closeModal = () => emit("update:isOpen", false);
 const { execute: contributeToCampaign, inProgress: contributionInProgress } =
   usePromise(async () => {
     if (campaign.id === undefined || !donateAmount.value) return;
-    const amountToDonate = BigInt(
-      Math.ceil(decimalToBigNumber(donateAmount.value.toString(), 18)),
-    );
+    const amountToDonate = donateAmount.value;
 
-    await contributeCampaignContract(campaign.id, amountToDonate).finally(
-      () => {
-        emit("update:isOpen", false);
-        emit("refresh:campaign");
-      },
-    );
+    await contributeCampaignContract(
+      campaign.id,
+      decimalToBigNumber(amountToDonate, ETH_TOKEN.decimals),
+    ).finally(() => {
+      emit("update:isOpen", false);
+    });
   });
 </script>
 

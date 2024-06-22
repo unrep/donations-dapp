@@ -3,8 +3,6 @@ import type { Token } from "~/types";
 
 import { fundraisingABI } from "~/utils/contract/abi";
 
-const appConfig = useAppConfig();
-
 export const ETH_TOKEN: Token = {
   address: "0x000000000000000000000000000000000000800A",
   l1Address: "0x0000000000000000000000000000000000000000",
@@ -15,6 +13,6 @@ export const ETH_TOKEN: Token = {
 };
 
 export const fundraisingContractConfig = {
-  address: appConfig.contract.address as Address,
+  address: process.env.FUNDRAISING_CONTRACT_ADRESS as Address,
   abi: fundraisingABI,
 } as const;
