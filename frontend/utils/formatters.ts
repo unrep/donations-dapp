@@ -184,14 +184,14 @@ export function formatError(error?: Error) {
   return error;
 }
 
-export function weiToNumber(tokenAmount: bigint, decimals: number) {
-  return Number(tokenAmount) / 10 ** decimals;
+export function weiToNumber(tokenAmount: bigint) {
+  return Number(tokenAmount) / 10 ** ETH_TOKEN.decimals;
 }
 
 export function bigIntToDate(value: bigint) {
-  return Number(value) * 1000;
+  return new Date(Number(value) * 1000);
 }
 
 export function floorEthAmount(amount: bigint, numbers = 3) {
-  return Math.floor(weiToNumber(amount, 18) * 10 ** numbers) / 10 ** numbers;
+  return Math.floor(weiToNumber(amount) * 10 ** numbers) / 10 ** numbers;
 }

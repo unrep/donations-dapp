@@ -9,25 +9,61 @@
       <div
         class="text-gray-700 p-10 pb-0 w-full flex flex-col items-start md:items-center justify-center gap-2"
       >
-        <div class="text-4xl font-semibold">Trending Campaigns</div>
+        <div class="text-4xl font-semibold">Latest events</div>
         <div class="text-lg">
           Explore active campaigns and support community-driven efforts that
           make a real difference
         </div>
       </div>
 
-      <LandingCardsCarousel v-if="previewCampaigns?.length">
-        <template v-if="previewCampaignsInProgress">
+      <LandingCampaignSearchResultList
+        v-if="campaigns"
+        class="z-10 -mt-2 px-10"
+      >
+        <template v-if="campaignsInProgress">
           <CampaignCardLoader v-for="(_, index) in Array(5)" :key="index" />
         </template>
         <template v-else>
-          <CampaignCard
-            v-for="campaign in previewCampaigns"
-            :key="campaign.id"
-            :campaign="campaign"
-          />
+          <div
+            v-for="campaign in campaigns"
+            :key="campaign.title"
+            class="flex flex-col gap-2 items-center justify-between"
+          >
+            <div
+              v-if="campaign.createdAt && campaign.eventType === 'created'"
+              class="flex-grow flex items-center justify-center gap-2"
+            >
+              <CommonAccountView :address="campaign.organizer" />
+              <div class="text-sm">created campaign</div>
+              {{ formatDateAgo(campaign.createdAt) }}
+            </div>
+            <div
+              v-else-if="campaign.eventType === 'contributed'"
+              class="flex-grow flex flex-col justify-center items-center gap-0"
+            >
+              <div class="flex items-center gap-2">
+                <CommonAccountView
+                  :address="getCampaignLatestContribution(campaign).contributor"
+                />
+                <div class="text-sm">contributed to campaign</div>
+              </div>
+              <div>
+                {{
+                  computeETHPriceBigint(
+                    getCampaignLatestContribution(campaign).amount,
+                  )
+                }}
+                {{
+                  formatDateAgo(
+                    getCampaignLatestContribution(campaign).timestamp,
+                  )
+                }}
+              </div>
+            </div>
+            <CampaignCard :campaign="campaign" />
+          </div>
         </template>
-      </LandingCardsCarousel>
+      </LandingCampaignSearchResultList>
 
       <div
         id="searchElement"
@@ -75,19 +111,78 @@
 
 <script setup lang="ts">
 import { useLandingStore } from "~/stores/landing";
+import type { CampaignWEvents } from "~/types";
+import {
+  formatCampaignWEvents,
+  getCampaignLatestContribution,
+} from "~/utils/contract/campaignHelpers";
 
 const {
-  previewCampaigns,
   searchedCampaigns,
-  previewCampaignsInProgress,
   searchedCampaignsInProgress,
   filters,
   filtersInProgress,
+  latestCreatedCampaigns,
+  latestCreatedCampaignsInProgress,
+  latestContributedCampaigns,
+  latestContributedCampaignsInProgress,
 } = storeToRefs(useLandingStore());
-const { onFilterSelect, getFilters, getPreviewCampaigns } = useLandingStore();
+const {
+  onFilterSelect,
+  getFilters,
+  getPreviewCampaigns,
+  getLatestCreatedCampaigns,
+  getLatestContributedCampaigns,
+} = useLandingStore();
 
 onMounted(() => {
   getPreviewCampaigns();
   getFilters();
+  getLatestCreatedCampaigns();
+  getLatestContributedCampaigns();
 });
+
+const campaigns = computed(() => {
+  const createdCamapaigns =
+    latestCreatedCampaigns.value?.map((campaign) =>
+      formatCampaignWEvents(campaign, "created"),
+    ) || [];
+
+  const contributedCamapaigns =
+    latestContributedCampaigns.value?.map((campaign) =>
+      formatCampaignWEvents(campaign, "contributed"),
+    ) || [];
+
+  const mergedCampaigns: CampaignWEvents[] = [
+    ...createdCamapaigns,
+    ...contributedCamapaigns,
+  ];
+
+  // Reduce the merged array to only unique campaigns based on campaignId, taking the latest
+  return Object.values(
+    mergedCampaigns.reduce(
+      (acc: { [key: string]: CampaignWEvents }, campaign: CampaignWEvents) => {
+        const campaignKey = campaign.id;
+        if (acc[campaignKey]) {
+          if (
+            new Date(acc[campaignKey].eventTime) < new Date(campaign.eventTime)
+          ) {
+            acc[campaignKey] = campaign;
+          }
+        } else {
+          acc[campaignKey] = campaign;
+        }
+        return acc;
+      },
+      {},
+    ),
+  ).sort(
+    (a, b) => new Date(b.eventTime).getTime() - new Date(a.eventTime).getTime(),
+  );
+});
+const campaignsInProgress = computed(
+  () =>
+    latestContributedCampaignsInProgress.value &&
+    latestCreatedCampaignsInProgress.value,
+);
 </script>

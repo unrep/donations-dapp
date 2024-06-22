@@ -156,16 +156,22 @@ type Contribution = {
   timestamp: Date;
 };
 
-export type Campaign = {
+export interface Campaign {
   id: string;
   title: string;
   image: string;
   raised: number;
   goal: number;
   description: string;
-  createdAt?: Date;
+  createdAt: Date;
   isOpen: boolean;
   isWithdrawn: boolean;
   filters: string[];
   contributions: Contribution[];
-};
+  organizer: Address;
+}
+
+export interface CampaignWEvents extends Campaign {
+  eventType: "created" | "contributed";
+  eventTime: Date;
+}

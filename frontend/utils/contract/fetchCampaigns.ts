@@ -8,12 +8,16 @@ function enrichCampaignData(
   campaigns: {
     id: number;
     goalAmount: number;
-    createdAt: number;
+    createdAt: Date;
     raisedAmount: number;
     isOpen: boolean;
     ipfsHash: string;
     filters: readonly string[];
-    contributions: never[];
+    contributions: readonly {
+      contributor: `0x${string}`;
+      amount: bigint;
+      timestamp: Date;
+    }[];
   }[],
 ) {
   const { getContentByCid } = useWeb3Storage();
@@ -29,6 +33,7 @@ function enrichCampaignData(
         title: ipfsData.campaignName,
         goal: Number(campaign.goalAmount),
         raised: Number(campaign.raisedAmount),
+        contributions: campaign.contributions,
       };
     }),
   );

@@ -2,12 +2,14 @@ import { useContractCampaignStore } from "./contract.campaign";
 
 import {
   fetchCampaignsArray,
+  fetchIndexedCampaignsArray,
   searchCampaigns,
 } from "~/utils/contract/fetchCampaigns";
 import { fetchFilters } from "~/utils/contract/fetchFilters";
 
 export const useLandingStore = defineStore("landing", () => {
-  const { getLastCampaignIndex } = useContractCampaignStore();
+  const { getLastCampaignIndex, getCreationEvents, getContributionEvents } =
+    useContractCampaignStore();
   const campaignsToPreview = ref(20);
 
   const {
@@ -51,6 +53,32 @@ export const useLandingStore = defineStore("landing", () => {
     );
   });
 
+  const {
+    result: latestCreatedCampaigns,
+    reload: getLatestCreatedCampaigns,
+    inProgress: latestCreatedCampaignsInProgress,
+  } = usePromise(async () => {
+    const campaignIds = await getCreationEvents().then((res) =>
+      res.map((event) => Number(event.campaignId)),
+    );
+    return fetchIndexedCampaignsArray(campaignIds).then((res) =>
+      res.filter((campaign) => campaign.isOpen),
+    );
+  });
+
+  const {
+    result: latestContributedCampaigns,
+    reload: getLatestContributedCampaigns,
+    inProgress: latestContributedCampaignsInProgress,
+  } = usePromise(async () => {
+    const campaignIds = await getContributionEvents().then((res) =>
+      res.map((event) => Number(event.campaignId)),
+    );
+    return fetchIndexedCampaignsArray(campaignIds).then((res) =>
+      res.filter((campaign) => campaign.isOpen),
+    );
+  });
+
   return {
     filters,
     getFilters,
@@ -63,6 +91,12 @@ export const useLandingStore = defineStore("landing", () => {
     getPreviewCampaigns,
     searchedCampaigns,
     searchedCampaignsInProgress,
+    latestCreatedCampaigns,
+    getLatestCreatedCampaigns,
+    latestCreatedCampaignsInProgress,
+    latestContributedCampaigns,
+    getLatestContributedCampaigns,
+    latestContributedCampaignsInProgress,
 
     onFilterSelect: ({
       filterIndex,

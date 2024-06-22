@@ -46,6 +46,16 @@ export function computeETHPrice(amount: number): string {
   );
 }
 
+export function computeETHPriceBigint(amount: bigint): string {
+  if (!ethData.value) return "$0";
+
+  return formatTokenPrice(
+    amount,
+    ETH_TOKEN.decimals,
+    +ethData.value.tokenPriceUSD,
+  );
+}
+
 export async function convertUsdToEth(usdAmount: number): Promise<number> {
   const ethData = await getEthData();
   if (!ethData.value) return 0;

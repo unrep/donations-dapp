@@ -4,6 +4,10 @@ import { getContract as getContractViem, type Address } from "viem";
 import { useOnboardStore } from "./onboard";
 
 import { wagmiConfig } from "~/data/wagmi";
+import {
+  prettifyCampaign,
+  prettifyCampaignArray,
+} from "~/utils/contract/campaignHelpers";
 
 export const useContractCampaignStore = defineStore("contact_campaign", () => {
   const { getPublicClient } = useOnboardStore();
@@ -32,14 +36,11 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
       .then((res) => res.map((filter) => filter.replace(/_/g, " ")));
   }
 
-  async function getCampaign(index: number) {
+  function getCampaign(index: number) {
     const contract = getReadContract();
-    const ethData = await getEthData();
-    if (!ethData.value) return;
-    const decimals = ethData.value.tokenDecimal;
     return contract.read
       .getCampaign([BigInt(index)])
-      .then((res) => prettifyCampaign(index, res, +decimals));
+      .then((res) => prettifyCampaign(index, res));
   }
 
   function getCampaignIdsByOrganizer(organizerAddress: Address) {
@@ -47,28 +48,14 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     return contract.read.getCampaignsByOrganizer([organizerAddress]);
   }
 
-  async function getCampaigns(startIndex: number, endIndex: number) {
+  function getCampaigns(startIndex: number, endIndex: number) {
     const contract = getReadContract();
-    const ethData = await getEthData();
-    if (!ethData.value) return;
-    const decimals = ethData.value.tokenDecimal;
     const indexArray = Array.from({ length: endIndex - startIndex }, (_, i) =>
       BigInt(i + startIndex),
     );
     return contract.read
       .getCampaignSummaries([indexArray])
-      .then((res) => prettifyCampaignArray(res, +decimals));
-  }
-
-  async function getIndexedCampaigns(indexes: number[]) {
-    const contract = getReadContract();
-    const ethData = await getEthData();
-    if (!ethData.value) return;
-    const decimals = ethData.value.tokenDecimal;
-    const indexArray = indexes.map((index) => BigInt(index));
-    return contract.read
-      .getCampaignSummaries([indexArray])
-      .then((res) => prettifyCampaignArray(res, +decimals));
+      .then((res) => prettifyCampaignArray(res));
   }
 
   function getCampaignContributions(campaignIndex: number) {
@@ -76,23 +63,36 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     return contract.read.getContributions([BigInt(campaignIndex)]);
   }
 
+  function getIndexedCampaigns(indexes: number[]) {
+    const contract = getReadContract();
+    const indexArray = indexes.map((index) => BigInt(index));
+    return contract.read
+      .getCampaignSummaries([indexArray])
+      .then(async (res) => {
+        const campaigns = await Promise.all(
+          res[0].map(async (campaign) => ({
+            ...campaign,
+            contributions: await getCampaignContributions(Number(campaign.id)),
+          })),
+        );
+        return prettifyCampaignArray([campaigns, res[1]]);
+      });
+  }
+
   function getLastCampaignIndex() {
     const contract = getReadContract();
     return contract.read.nextCampaignId().then((res) => Number(res));
   }
 
-  async function searchCampaigns(
+  function searchCampaigns(
     startDate: number,
     endDate: number,
     filters: string[],
   ) {
     const contract = getReadContract();
-    const ethData = await getEthData();
-    if (!ethData.value) return;
-    const decimals = ethData.value.tokenDecimal;
     return contract.read
       .searchCampaigns([BigInt(startDate), BigInt(endDate), filters])
-      .then((res) => prettifyCampaignArray(res, +decimals));
+      .then((res) => prettifyCampaignArray(res));
   }
 
   async function createCampaign(
@@ -167,12 +167,38 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
   async function getContributionEvents() {
     const { number: currentBlockNumber } = await getBlock(wagmiConfig);
     const blocksToFetch = 100n;
-    return getPublicClient().getContractEvents({
-      address: fundraisingContractConfig.address,
-      abi: fundraisingContractConfig.abi,
-      eventName: "ContributionReceived",
-      fromBlock: currentBlockNumber - blocksToFetch,
-    });
+    const fromBlock =
+      currentBlockNumber - blocksToFetch > 0n
+        ? currentBlockNumber - blocksToFetch
+        : 0n;
+
+    return getPublicClient()
+      .getContractEvents({
+        address: fundraisingContractConfig.address,
+        abi: fundraisingContractConfig.abi,
+        eventName: "ContributionReceived",
+        fromBlock,
+      })
+      .then((res) => res.map((event) => event.args));
+  }
+
+  async function getCreationEvents() {
+    const { number: currentBlockNumber } = await getBlock(wagmiConfig);
+    const blocksToFetch = 100n;
+
+    const fromBlock =
+      currentBlockNumber - blocksToFetch > 0n
+        ? currentBlockNumber - blocksToFetch
+        : 0n;
+
+    return getPublicClient()
+      .getContractEvents({
+        address: fundraisingContractConfig.address,
+        abi: fundraisingContractConfig.abi,
+        eventName: "CampaignCreated",
+        fromBlock,
+      })
+      .then((res) => res.map((event) => event.args));
   }
 
   return {
@@ -195,72 +221,6 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     watchCampaignCompleted,
 
     getContributionEvents,
+    getCreationEvents,
   };
 });
-
-function prettifyCampaign(
-  id: number,
-  campaign: readonly [
-    Address,
-    bigint,
-    bigint,
-    bigint,
-    string,
-    boolean,
-    readonly string[],
-    readonly {
-      contributor: Address;
-      amount: bigint;
-      timestamp: bigint;
-    }[],
-    boolean,
-  ],
-  decimals: number,
-) {
-  return {
-    id,
-    goalAmount: weiToNumber(campaign[1], decimals),
-    createdAt: bigIntToDate(campaign[2]),
-    raisedAmount: weiToNumber(campaign[3], decimals),
-    ipfsHash: campaign[4],
-    isOpen: campaign[5],
-    filters: campaign[6],
-    contributions: campaign[7].map((contribution) => ({
-      ...contribution,
-      timestamp: new Date(bigIntToDate(contribution.timestamp)),
-    })),
-    isWithdrawn: campaign[8],
-  };
-}
-
-function prettifyCampaignArray(
-  campaigns: readonly [
-    readonly {
-      id: bigint;
-      organizer: `0x${string}`;
-      createdAt: bigint;
-      goalAmount: bigint;
-      raisedAmount: bigint;
-      isOpen: boolean;
-      ipfsHash: string;
-      isWithdrawn: boolean;
-    }[],
-    readonly (readonly string[])[],
-  ],
-  decimals: number,
-) {
-  const campaignsData = campaigns[0];
-  const campaignsFilters = campaigns[1];
-
-  return campaignsData.map((campaign, index) => ({
-    id: Number(campaign.id),
-    goalAmount: weiToNumber(campaign.goalAmount, decimals),
-    createdAt: bigIntToDate(campaign.createdAt),
-    raisedAmount: weiToNumber(campaign.raisedAmount, decimals),
-    isOpen: campaign.isOpen,
-    ipfsHash: campaign.ipfsHash,
-    filters: campaignsFilters[index],
-    contributions: [],
-    isWithdrawn: campaign.isWithdrawn,
-  }));
-}
