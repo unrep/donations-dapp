@@ -2,7 +2,7 @@
   <div
     class="relative text-gray-700 w-full max-w-3xl flex flex-col justify-center items-center gap-3"
   >
-    <div
+    <!-- <div
       class="rounded-full bg-gray-100 w-full overflow-hidden py-3 px-5 max-w-xl flex items-center gap-3"
     >
       <IconsSearch />
@@ -12,7 +12,7 @@
         placeholder=" Search for campaigns"
         class="w-full bg-transparent hide-scrollbar outline-none caret-indigo-800"
       />
-    </div>
+    </div> -->
 
     <slot name="filters" />
   </div>

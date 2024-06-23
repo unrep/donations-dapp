@@ -4,13 +4,13 @@
     <LandingHero />
 
     <div
-      class="w-full bg-white flex flex-col justify-center items-center gap-10 pb-10"
+      class="w-full bg-white flex flex-col justify-center items-center gap-16 pb-10"
     >
       <div
-        class="text-gray-700 p-10 pb-0 w-full flex flex-col items-start md:items-center justify-center gap-2"
+        class="text-gray-700 p-16 pb-0 w-full flex flex-col items-start md:items-center justify-center gap-4"
       >
         <div class="text-4xl font-semibold">Latest events</div>
-        <div class="text-lg">
+        <div class="text-base text-neutral-600">
           Explore active campaigns and support community-driven efforts that
           make a real difference
         </div>
@@ -39,26 +39,26 @@
         id="searchElement"
         class="text-gray-700 w-full flex flex-col items-start md:items-center justify-center gap-2 px-10"
       >
-        <div class="text-4xl font-semibold">Search Campaigns</div>
-        <div class="text-lg">
-          Search campaigns by name or categories to find the one you need
+        <div class="text-4xl font-semibold">View all campaigns</div>
+        <div class="text-base text-neutral-600">
+          Search campaigns by categories to find the one you need
         </div>
-      </div>
 
-      <LandingSearch class="z-20 px-10">
-        <template #filters>
-          <template v-if="filtersInProgress">
-            <CommonFiltersLoader />
+        <LandingSearch class="z-20 px-10 pt-4">
+          <template #filters>
+            <template v-if="filtersInProgress">
+              <CommonFiltersLoader />
+            </template>
+            <template v-else>
+              <CommonFiltersSelect
+                class="w-full justify-center"
+                :filters="filters"
+                @update:select-item="onFilterSelect"
+              />
+            </template>
           </template>
-          <template v-else>
-            <CommonFiltersSelect
-              class="w-full justify-center"
-              :filters="filters"
-              @update:select-item="onFilterSelect"
-            />
-          </template>
-        </template>
-      </LandingSearch>
+        </LandingSearch>
+      </div>
 
       <LandingCampaignSearchResultList
         v-if="searchedCampaigns"
