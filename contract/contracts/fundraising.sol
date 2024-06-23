@@ -3,18 +3,11 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 contract Fundraising is ReentrancyGuard {
-    struct Contribution {
-        address contributor;
-        uint amount;
-        uint timestamp;
-    }
-
     struct Campaign {
         address payable organizer;
         uint goalAmount;
         uint createdAt;
         uint raisedAmount;
-        Contribution[] contributions;
         bool isOpen;
         bool isWithdrawn;
         string ipfsHash;
@@ -61,7 +54,6 @@ contract Fundraising is ReentrancyGuard {
     uint public nextCampaignId = 0;
     mapping(uint => Campaign) public campaigns;
 
-    // Events for logging
     event CampaignCreated(uint campaignId, address organizer);
     event ContributionReceived(
         uint campaignId,
@@ -86,7 +78,6 @@ contract Fundraising is ReentrancyGuard {
             string memory ipfsHash,
             bool isOpen,
             string[] memory filters,
-            Contribution[] memory contributions,
             bool isWithdrawn
         )
     {
@@ -99,7 +90,6 @@ contract Fundraising is ReentrancyGuard {
             campaign.ipfsHash,
             campaign.isOpen,
             campaign.filters,
-            campaign.contributions,
             campaign.isWithdrawn
         );
     }
@@ -132,12 +122,6 @@ contract Fundraising is ReentrancyGuard {
             allFilters[i] = campaign.filters;
         }
         return (summaries, allFilters);
-    }
-
-    function getContributions(
-        uint _campaignId
-    ) public view returns (Contribution[] memory) {
-        return campaigns[_campaignId].contributions;
     }
 
     function validateFilters(
@@ -173,7 +157,6 @@ contract Fundraising is ReentrancyGuard {
             goalAmount: _goalAmount,
             createdAt: block.timestamp,
             raisedAmount: 0,
-            contributions: new Contribution[](0),
             isOpen: true,
             isWithdrawn: false,
             ipfsHash: _ipfsHash,
@@ -189,13 +172,6 @@ contract Fundraising is ReentrancyGuard {
         require(campaign.isOpen, "Campaign is not open for contributions");
 
         campaign.raisedAmount += msg.value;
-        campaign.contributions.push(
-            Contribution({
-                contributor: msg.sender,
-                amount: msg.value,
-                timestamp: block.timestamp
-            })
-        );
 
         emit ContributionReceived(
             _campaignId,
