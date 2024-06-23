@@ -27,7 +27,7 @@
           <div
             v-for="campaign in campaigns"
             :key="campaign.title"
-            class="flex flex-col gap-2 items-center justify-between"
+            class="flex flex-col gap-4 items-center justify-between"
           >
             <CampaignEvent :campaign="campaign" />
             <CampaignCard :campaign="campaign" />
@@ -76,6 +76,8 @@
         </template>
       </LandingCampaignSearchResultList>
     </div>
+
+    <LandingFooter />
   </div>
 </template>
 

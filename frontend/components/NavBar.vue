@@ -1,7 +1,12 @@
 <template>
   <div
     ref="navRef"
-    class="z-50 sticky top-0 left-0 w-full bg-white/70 backdrop-blur-lg flex items-center justify-center border-b shadow shadow-black/5"
+    :class="[
+      'z-50 sticky top-0 left-0 w-full  backdrop-blur-lg flex items-center justify-center border-b shadow shadow-black/5 duration-200',
+      windowScrollTop > (navRef?.clientHeight || 0)
+        ? 'bg-white/70'
+        : 'bg-white/30',
+    ]"
   >
     <!-- Desktop -->
     <div class="w-full p-5 max-w-7xl flex justify-between items-center">
