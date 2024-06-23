@@ -51,7 +51,9 @@ const minInputValue = 0;
 const maxInputValue = 100000;
 
 const inputtedUSD = computed(() => {
-  return computeETHPrice(BigInt(inputted.value || 0));
+  return computeETHPrice(
+    decimalToBigNumber(inputted.value || 0, ETH_TOKEN.decimals),
+  );
 });
 
 const isFocused = ref(false);

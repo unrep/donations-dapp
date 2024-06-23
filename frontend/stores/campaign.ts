@@ -184,7 +184,11 @@ export const useCampaignStore = defineStore("campaign", () => {
       filter.text.replace(/\s/g, "_"),
     );
 
-    await createCampaign(goalAmount.value, cid, filtersToSend);
+    await createCampaign(
+      decimalToBigNumber(goalAmount.value, ETH_TOKEN.decimals),
+      cid,
+      filtersToSend,
+    );
   }
 
   return {

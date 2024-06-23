@@ -121,7 +121,7 @@ import { useCampaignStore } from "~/stores/campaign";
 import { useContractCampaignStore } from "~/stores/contract.campaign";
 import { useOnboardStore } from "~/stores/onboard";
 
-const { watchCampaignCreated } = useContractCampaignStore();
+const { getLastCampaignIndex } = useContractCampaignStore();
 
 const { openModal } = useOnboardStore();
 const { account } = storeToRefs(useOnboardStore());
@@ -163,8 +163,11 @@ const buttonState = computed(() => {
     text: "Create campaign",
     func: async () => {
       isCampaignSending.value = true;
-      await sendCampaign()?.finally(() => {
+      await sendCampaign()?.finally(async () => {
         isCampaignSending.value = false;
+        campaignId.value = await getLastCampaignIndex().then((res) =>
+          (res - 1).toString(),
+        );
         navigateTo(`/campaign?id=${campaignId.value}`);
       });
       campaignCreationStep.value = "done";
@@ -174,11 +177,6 @@ const buttonState = computed(() => {
 
 watch(campaignCreationStep, () => {
   windowScrollTop.value = 0;
-});
-
-watchCampaignCreated((logs) => {
-  if (logs[0].args.organizer !== account.value.address) return;
-  campaignId.value = Number(logs[0].args.campaignId).toString();
 });
 
 function onBack() {
@@ -198,7 +196,7 @@ function getInputCampaign(): Campaign {
     title: steps[0].inputValue,
     image: URL.createObjectURL(steps[4].inputValue),
     raised: 0n,
-    goal: BigInt(steps[1].inputValue),
+    goal: decimalToBigNumber(steps[1].inputValue, ETH_TOKEN.decimals),
     description: steps[3].inputValue,
     // Mocking the date format as it is on chain
     createdAt: BigInt(Math.floor(new Date().getTime() / 1000)),

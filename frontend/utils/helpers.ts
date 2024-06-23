@@ -38,7 +38,7 @@ export function computeETHPrice(amount: bigint): string {
   if (!ethData.value) return "$0";
 
   return formatTokenPrice(
-    decimalToBigNumber(Number(amount), ETH_TOKEN.decimals),
+    amount,
     ETH_TOKEN.decimals,
     +ethData.value.tokenPriceUSD,
   );

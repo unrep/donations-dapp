@@ -46,11 +46,17 @@
         >
           <Transition v-bind="TransitionPrimaryButtonText" mode="out-in">
             <div :key="showCurrency" class="w-full text-2xl font-semibold px-1">
-              {{ showCurrency === "usd" ? raisedUSD : `${campaign.raised}ETH` }}
+              {{
+                showCurrency === "usd"
+                  ? raisedUSD
+                  : `${formatUnits(campaign.raised, ETH_TOKEN.decimals)}ETH`
+              }}
               <span class="font-normal text-base"
                 >raised of
                 {{
-                  showCurrency === "usd" ? goalUSD : `${campaign.goal}ETH`
+                  showCurrency === "usd"
+                    ? goalUSD
+                    : `${formatUnits(campaign.goal, ETH_TOKEN.decimals)}ETH`
                 }}</span
               >
             </div>
@@ -69,7 +75,9 @@
 
       <div class="flex-grow h-full w-full flex flex-col justify-end gap-2 p-2">
         <div
-          v-if="campaignContributions && campaignContributions.length"
+          v-if="
+            campaignContributions && campaignContributions.length && !preview
+          "
           class="w-full max-h-72 sm:max-h-40 lg:max-h-72 flex flex-row-reverse flex-wrap-reverse items-start justify-end gap-2 overflow-y-auto"
         >
           <TransitionGroup v-bind="TransitionPrimaryButtonTextReverse">
@@ -128,6 +136,7 @@
 
 <script setup lang="ts">
 import { formatDate } from "@vueuse/core";
+import { formatUnits } from "viem";
 import { useLandingStore } from "~/stores/landing";
 
 import { type Campaign, type Contribution } from "~/types";
