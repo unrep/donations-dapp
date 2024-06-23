@@ -25,21 +25,12 @@ const { campaign } = defineProps<{
   campaign: Campaign;
 }>();
 
-const { result: goalUSD, execute: getGoalUSD } = usePromise(() =>
-  computeETHPrice(campaign.goal),
-);
-const { result: raisedUSD, execute: getRaisedUSD } = usePromise(() =>
-  computeETHPrice(campaign.raised),
-);
+const goalUSD = computed(() => computeETHPrice(campaign.goal));
+const raisedUSD = computed(() => computeETHPrice(campaign.raised));
 
 const raisedPercentage = computed(() =>
-  Math.floor((+campaign.raised / +campaign.goal) * 100),
+  Math.floor((Number(campaign.raised) / Number(campaign.goal)) * 100),
 );
-
-onMounted(async () => {
-  await getGoalUSD();
-  await getRaisedUSD();
-});
 </script>
 
 <style scoped lang="scss">

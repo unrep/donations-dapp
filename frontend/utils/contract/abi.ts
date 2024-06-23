@@ -257,28 +257,6 @@ export const fundraisingABI = [
         type: "string[]",
       },
       {
-        components: [
-          {
-            internalType: "address",
-            name: "contributor",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "amount",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "timestamp",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct Fundraising.Contribution[]",
-        name: "contributions",
-        type: "tuple[]",
-      },
-      {
         internalType: "bool",
         name: "isWithdrawn",
         type: "bool",
@@ -367,42 +345,6 @@ export const fundraisingABI = [
         internalType: "uint256[]",
         name: "",
         type: "uint256[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_campaignId",
-        type: "uint256",
-      },
-    ],
-    name: "getContributions",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "address",
-            name: "contributor",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "amount",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "timestamp",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct Fundraising.Contribution[]",
-        name: "",
-        type: "tuple[]",
       },
     ],
     stateMutability: "view",

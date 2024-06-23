@@ -9,6 +9,8 @@ import {
   prettifyCampaignArray,
 } from "~/utils/contract/campaignHelpers";
 
+const BLOCKS_TO_FETCH = BigInt(100);
+
 export const useContractCampaignStore = defineStore("contact_campaign", () => {
   const { getPublicClient } = useOnboardStore();
 
@@ -21,7 +23,6 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
   }
   async function getWriteContract() {
     const { getWallet } = useOnboardStore();
-
     return getContractViem({
       address: fundraisingContractConfig.address,
       abi: fundraisingContractConfig.abi,
@@ -40,7 +41,7 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     const contract = getReadContract();
     return contract.read
       .getCampaign([BigInt(index)])
-      .then((res) => prettifyCampaign(index, res));
+      .then((res) => prettifyCampaign(BigInt(index), res));
   }
 
   function getCampaignIdsByOrganizer(organizerAddress: Address) {
@@ -59,8 +60,11 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
   }
 
   function getCampaignContributions(campaignIndex: number) {
-    const contract = getReadContract();
-    return contract.read.getContributions([BigInt(campaignIndex)]);
+    getContributionEvents().then((res) =>
+      res.filter(
+        (contribution) => contribution.campaignId === BigInt(campaignIndex),
+      ),
+    );
   }
 
   function getIndexedCampaigns(indexes: number[]) {
@@ -96,19 +100,13 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
   }
 
   async function createCampaign(
-    goalAmount: number,
+    goalAmount: bigint,
     ipfsHash: string,
     filters: string[],
   ) {
     const contract = await getWriteContract();
-    const ethData = await getEthData();
-    if (!ethData.value) return;
-    const goalAmountInWei = decimalToBigNumber(
-      goalAmount,
-      +ethData.value.tokenDecimal,
-    );
     return awaitTransactionResponse(() =>
-      contract.write.createCampaign([goalAmountInWei, ipfsHash, filters]),
+      contract.write.createCampaign([goalAmount, ipfsHash, filters]),
     );
   }
 
@@ -126,7 +124,7 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     );
   }
 
-  async function contributeCampaign(campaignId: string, amount: bigint) {
+  async function contributeCampaign(campaignId: bigint, amount: bigint) {
     const contract = await getWriteContract();
     const ethData = await getEthData();
     if (!ethData.value) return;
@@ -151,7 +149,10 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
       address: fundraisingContractConfig.address,
       abi: fundraisingContractConfig.abi,
       eventName: "ContributionReceived",
-      onLogs,
+      onLogs: (logs) => {
+        // push contribution to contribution events array
+        onLogs(logs);
+      },
     });
   }
 
@@ -166,10 +167,9 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
 
   async function getContributionEvents() {
     const { number: currentBlockNumber } = await getBlock(wagmiConfig);
-    const blocksToFetch = 100n;
     const fromBlock =
-      currentBlockNumber - blocksToFetch > 0n
-        ? currentBlockNumber - blocksToFetch
+      currentBlockNumber - BLOCKS_TO_FETCH > 0n
+        ? currentBlockNumber - BLOCKS_TO_FETCH
         : 0n;
 
     return getPublicClient()
@@ -184,11 +184,10 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
 
   async function getCreationEvents() {
     const { number: currentBlockNumber } = await getBlock(wagmiConfig);
-    const blocksToFetch = 100n;
 
     const fromBlock =
-      currentBlockNumber - blocksToFetch > 0n
-        ? currentBlockNumber - blocksToFetch
+      currentBlockNumber - BLOCKS_TO_FETCH > 0n
+        ? currentBlockNumber - BLOCKS_TO_FETCH
         : 0n;
 
     return getPublicClient()

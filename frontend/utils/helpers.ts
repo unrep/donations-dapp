@@ -1,7 +1,5 @@
 import { waitForTransactionReceipt } from "@wagmi/core";
 
-import { decimalToBigNumber } from "./formatters";
-
 import { wagmiConfig } from "~/data/wagmi";
 
 export const isMobile = () => {
@@ -36,21 +34,11 @@ export function isOnlyZeroes(value: string) {
   return value.replace(/0/g, "").replace(/\./g, "").length === 0;
 }
 
-export function computeETHPrice(amount: number): string {
+export function computeETHPrice(amount: bigint): string {
   if (!ethData.value) return "$0";
 
   return formatTokenPrice(
-    decimalToBigNumber(amount, +ethData.value.tokenDecimal),
-    ETH_TOKEN.decimals,
-    +ethData.value.tokenPriceUSD,
-  );
-}
-
-export function computeETHPriceBigint(amount: bigint): string {
-  if (!ethData.value) return "$0";
-
-  return formatTokenPrice(
-    amount,
+    decimalToBigNumber(Number(amount), ETH_TOKEN.decimals),
     ETH_TOKEN.decimals,
     +ethData.value.tokenPriceUSD,
   );

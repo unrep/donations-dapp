@@ -34,13 +34,9 @@
         preview ? '2xl:items-start' : 'lg:items-start',
       ]"
     >
-      <div class="text-xl">
+      <div v-if="campaign?.createdAt" class="text-xl">
         Started at
-        {{
-          campaign?.createdAt
-            ? formatDate(campaign?.createdAt, "Do MMM YYYY")
-            : ""
-        }}
+        {{ formatDate(bigIntToDate(campaign?.createdAt), "Do MMM YYYY") }}
       </div>
 
       <div class="w-full">
@@ -50,11 +46,7 @@
         >
           <Transition v-bind="TransitionPrimaryButtonText" mode="out-in">
             <div :key="showCurrency" class="w-full text-2xl font-semibold px-1">
-              {{
-                showCurrency === "usd"
-                  ? raisedUSD
-                  : `${Math.floor(+campaign.raised * 100) / 100}ETH`
-              }}
+              {{ showCurrency === "usd" ? raisedUSD : `${campaign.raised}ETH` }}
               <span class="font-normal text-base"
                 >raised of
                 {{
@@ -77,31 +69,26 @@
 
       <div class="flex-grow h-full w-full flex flex-col justify-end gap-2 p-2">
         <div
+          v-if="campaignContributions && campaignContributions.length"
           class="w-full max-h-72 sm:max-h-40 lg:max-h-72 flex flex-row-reverse flex-wrap-reverse items-start justify-end gap-2 overflow-y-auto"
         >
           <TransitionGroup v-bind="TransitionPrimaryButtonTextReverse">
             <div
-              v-for="donation in campaign.contributions
-                .slice()
-                .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())"
-              :key="donation.contributor + donation.timestamp.getTime()"
+              v-for="donation in campaignContributions"
+              :key="donation.contributor! + donation.timestamp!"
               class="w-max h-max text-center px-3 py-1 text-sm rounded-lg bg-opacity-50 duration-200 flex gap-1 items-center"
             >
               <CommonAccountView :address="donation.contributor" size="xs" />
               <span>
                 donated
-                <b>{{
-                  computeETHPrice(
-                    +parseTokenAmount(donation.amount, ETH_TOKEN.decimals),
-                  )
-                }}</b>
-                {{ formatDateAgo(donation.timestamp) }}
+                <b>{{ computeETHPrice(donation.amount) }}</b>
+                {{ formatDateAgo(bigIntToDate(donation.timestamp)) }}
               </span>
             </div>
           </TransitionGroup>
         </div>
         <span class="text-lg text-center w-full"
-          >{{ donationsCount }} donations in total</span
+          >{{ campaignContributions?.length || 0 }} donations in total</span
         >
       </div>
 
@@ -141,12 +128,9 @@
 
 <script setup lang="ts">
 import { formatDate } from "@vueuse/core";
+import { useLandingStore } from "~/stores/landing";
 
-import { type Campaign } from "~/types";
-
-const showCurrency = ref<"eth" | "usd">("usd");
-
-const modalOpened = ref(false);
+import { type Campaign, type Contribution } from "~/types";
 
 const props = defineProps({
   campaign: {
@@ -160,14 +144,35 @@ const props = defineProps({
   },
 });
 
+const showCurrency = ref<"eth" | "usd">("usd");
+const modalOpened = ref(false);
+
 const goalUSD = computed(() => computeETHPrice(props.campaign.goal));
 const raisedUSD = computed(() => computeETHPrice(props.campaign.raised));
 
 const raisedPercentage = computed(() =>
-  Math.floor((+props.campaign.raised / +props.campaign.goal) * 100),
+  Math.floor(
+    (Number(props.campaign.raised) / Number(props.campaign.goal)) * 100,
+  ),
 );
 
-const donationsCount = computed(() => props.campaign.contributions?.length);
+const { contributionEvents } = storeToRefs(useLandingStore());
+
+const campaignContributions = computed(() =>
+  contributionEvents.value
+    ?.reduce((acc, event) => {
+      if (
+        event.campaignId === props.campaign.id &&
+        event.timestamp &&
+        event.contributor &&
+        event.amount
+      ) {
+        acc.push(event as Contribution);
+      }
+      return acc;
+    }, [] as Contribution[])
+    .sort((a, b) => (b.timestamp - a.timestamp > 0n ? 1 : -1)),
+);
 </script>
 
 <style lang="scss">

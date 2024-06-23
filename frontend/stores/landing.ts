@@ -1,3 +1,4 @@
+import { computedAsync } from "@vueuse/core";
 import { useContractCampaignStore } from "./contract.campaign";
 
 import {
@@ -8,8 +9,11 @@ import {
 import { fetchFilters } from "~/utils/contract/fetchFilters";
 
 export const useLandingStore = defineStore("landing", () => {
-  const { getLastCampaignIndex, getCreationEvents, getContributionEvents } =
-    useContractCampaignStore();
+  const {
+    getLastCampaignIndex,
+    getCreationEvents,
+    getContributionEvents: getContributionEventsFromContract,
+  } = useContractCampaignStore();
   const campaignsToPreview = ref(20);
 
   const {
@@ -66,18 +70,25 @@ export const useLandingStore = defineStore("landing", () => {
     );
   });
 
-  const {
-    result: latestContributedCampaigns,
-    reload: getLatestContributedCampaigns,
-    inProgress: latestContributedCampaignsInProgress,
-  } = usePromise(async () => {
-    const campaignIds = await getContributionEvents().then((res) =>
-      res.map((event) => Number(event.campaignId)),
-    );
-    return fetchIndexedCampaignsArray(campaignIds).then((res) =>
-      res.filter((campaign) => campaign.isOpen),
-    );
+  const latestContributedCampaignsInProgress = ref(false);
+
+  const latestContributedCampaigns = computedAsync(() => {
+    latestContributedCampaignsInProgress.value = true;
+    const campaignIds = contributionEvents.value?.reduce((acc, event) => {
+      event.campaignId && acc.push(Number(event.campaignId));
+      return acc;
+    }, [] as number[]);
+
+    if (!campaignIds) return [];
+    return fetchIndexedCampaignsArray(campaignIds)
+      .then((res) => res.filter((campaign) => campaign.isOpen))
+      .finally(() => {
+        latestContributedCampaignsInProgress.value = false;
+      });
   });
+
+  const { result: contributionEvents, execute: getContributionEvents } =
+    usePromise(getContributionEventsFromContract);
 
   return {
     filters,
@@ -95,8 +106,9 @@ export const useLandingStore = defineStore("landing", () => {
     getLatestCreatedCampaigns,
     latestCreatedCampaignsInProgress,
     latestContributedCampaigns,
-    getLatestContributedCampaigns,
     latestContributedCampaignsInProgress,
+    contributionEvents,
+    getContributionEvents,
 
     onFilterSelect: ({
       filterIndex,

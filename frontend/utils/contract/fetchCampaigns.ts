@@ -6,18 +6,13 @@ import { useContractCampaignStore } from "~/stores/contract.campaign";
 
 function enrichCampaignData(
   campaigns: {
-    id: number;
-    goalAmount: number;
-    createdAt: Date;
-    raisedAmount: number;
+    id: bigint;
+    goal: bigint;
+    createdAt: bigint;
+    raised: bigint;
     isOpen: boolean;
     ipfsHash: string;
     filters: readonly string[];
-    contributions: readonly {
-      contributor: `0x${string}`;
-      amount: bigint;
-      timestamp: Date;
-    }[];
   }[],
 ) {
   const { getContentByCid } = useWeb3Storage();
@@ -31,9 +26,8 @@ function enrichCampaignData(
         ...ipfsData,
         id: Number(campaign.id),
         title: ipfsData.campaignName,
-        goal: Number(campaign.goalAmount),
-        raised: Number(campaign.raisedAmount),
-        contributions: campaign.contributions,
+        goal: Number(campaign.goal),
+        raised: Number(campaign.raised),
       };
     }),
   );
@@ -78,7 +72,7 @@ export async function fetchCampaign(id: number): Promise<Campaign> {
   const { getCampaign } = useContractCampaignStore();
 
   const campaign = await getCampaign(id);
-  if (!campaign || !campaign.goalAmount)
+  if (!campaign || !campaign.goal)
     throw new Error(`Campaign with id ${id} not found`);
 
   const { getContentByCid } = useWeb3Storage();
@@ -90,8 +84,8 @@ export async function fetchCampaign(id: number): Promise<Campaign> {
     ...ipfsData,
     id: campaign.id,
     title: ipfsData.campaignName,
-    goal: campaign.goalAmount,
-    raised: campaign.raisedAmount,
-    createdAt: new Date(campaign.createdAt),
+    goal: campaign.goal,
+    raised: campaign.raised,
+    createdAt: campaign.createdAt,
   };
 }

@@ -150,24 +150,24 @@ declare global {
   }
 }
 
-type Contribution = {
+export type Contribution = {
+  campaignId: bigint;
   contributor: Address;
   amount: bigint;
-  timestamp: Date;
+  timestamp: bigint;
 };
 
 export interface Campaign {
-  id: string;
+  id: bigint;
   title: string;
   image: string;
-  raised: number;
-  goal: number;
+  raised: bigint;
+  goal: bigint;
   description: string;
-  createdAt: Date;
+  createdAt: bigint;
   isOpen: boolean;
   isWithdrawn: boolean;
   filters: string[];
-  contributions: Contribution[];
   organizer: Address;
 }
 

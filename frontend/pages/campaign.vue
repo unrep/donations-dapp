@@ -7,7 +7,7 @@
       <CampaignFullLoader v-if="!campaign && campaignInProgress" />
       <CampaignFull
         v-else-if="campaign"
-        :key="campaign?.id"
+        :key="campaign?.id.toString()"
         :campaign="campaign"
       />
     </div>
@@ -37,7 +37,7 @@ watch(
   () => route.query.id,
   async (id) => {
     campaignId.value = Number(id);
-    if (campaignId.value === undefined || isNaN(campaignId.value)) {
+    if (isNaN(campaignId.value)) {
       return router.push("/");
     }
     await fetchCampaign();

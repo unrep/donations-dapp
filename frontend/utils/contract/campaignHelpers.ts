@@ -1,26 +1,30 @@
 import type { Address } from "viem";
 import type { Campaign, CampaignWEvents } from "~/types";
 
-export function getCampaignLatestContribution(campaign: Campaign) {
-  return campaign.contributions[campaign.contributions.length - 1];
-}
+// export function getCampaignLatestContribution(campaign: Campaign) {
+//   return campaign.contributions[campaign.contributions.length - 1];
+// }
 
 export function formatCampaignWEvents(
   campaign: Campaign,
   eventType: "created" | "contributed",
+  contributions: { contributor: Address; amount: bigint; timestamp: bigint }[],
 ): CampaignWEvents {
+  if (eventType === "contributed" && contributions.length === 0) {
+    throw new Error("Contributions array is empty");
+  }
   return {
     ...campaign,
     eventType,
     eventTime:
       eventType === "created"
-        ? campaign.createdAt
-        : getCampaignLatestContribution(campaign).timestamp,
+        ? bigIntToDate(campaign.createdAt)
+        : bigIntToDate(contributions[contributions.length - 1].timestamp),
   };
 }
 
 export function prettifyCampaign(
-  id: number,
+  id: bigint,
   campaign: readonly [
     Address,
     bigint,
@@ -29,28 +33,19 @@ export function prettifyCampaign(
     string,
     boolean,
     readonly string[],
-    readonly {
-      contributor: Address;
-      amount: bigint;
-      timestamp: bigint;
-    }[],
     boolean,
   ],
 ) {
   return {
     id,
-    goalAmount: weiToNumber(campaign[1]),
-    createdAt: bigIntToDate(campaign[2]),
-    raisedAmount: weiToNumber(campaign[3]),
+    organizer: campaign[0],
+    goal: campaign[1],
+    createdAt: campaign[2],
+    raised: campaign[3],
     ipfsHash: campaign[4],
     isOpen: campaign[5],
-    filters: campaign[6],
-    contributions: campaign[7].map((contribution) => ({
-      ...contribution,
-      timestamp: new Date(bigIntToDate(contribution.timestamp)),
-    })),
-    isWithdrawn: campaign[8],
-    organizer: campaign[0],
+    filters: campaign[6] as string[],
+    isWithdrawn: campaign[7],
   };
 }
 
@@ -65,11 +60,6 @@ export function prettifyCampaignArray(
       isOpen: boolean;
       ipfsHash: string;
       isWithdrawn: boolean;
-      contributions?: readonly {
-        contributor: `0x${string}`;
-        amount: bigint;
-        timestamp: bigint;
-      }[];
     }[],
     readonly (readonly string[])[],
   ],
@@ -78,19 +68,14 @@ export function prettifyCampaignArray(
   const campaignsFilters = campaigns[1];
 
   return campaignsData.map((campaign, index) => ({
-    id: Number(campaign.id),
+    id: campaign.id,
     organizer: campaign.organizer,
-    goalAmount: weiToNumber(campaign.goalAmount),
-    createdAt: bigIntToDate(campaign.createdAt),
-    raisedAmount: weiToNumber(campaign.raisedAmount),
+    goal: campaign.goalAmount,
+    createdAt: campaign.createdAt,
+    raised: campaign.raisedAmount,
     isOpen: campaign.isOpen,
     ipfsHash: campaign.ipfsHash,
     filters: campaignsFilters[index],
-    contributions:
-      campaign.contributions?.map((contribution) => ({
-        ...contribution,
-        timestamp: bigIntToDate(contribution.timestamp),
-      })) || [],
     isWithdrawn: campaign.isWithdrawn,
   }));
 }

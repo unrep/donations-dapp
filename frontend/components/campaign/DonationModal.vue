@@ -196,7 +196,7 @@ const donateAmount = computedAsync(async () => {
   const selectedPrice = presetPrices.value.find((p) => p.selected)?.priceValue;
   if (showEthInput.value) resultAmount = inputValue.value || 0;
   else if (donateFullAmount.value)
-    resultAmount = campaign.goal - campaign.raised;
+    resultAmount = Number(campaign.goal - campaign.raised);
   else if (selectedPrice) resultAmount = await convertUsdToEth(selectedPrice);
   else resultAmount = 0;
   return resultAmount;

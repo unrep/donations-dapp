@@ -194,17 +194,18 @@ const campaignId = ref<string>("0");
 
 function getInputCampaign(): Campaign {
   return {
-    id: campaignId.value,
+    id: BigInt(campaignId.value),
     title: steps[0].inputValue,
     image: URL.createObjectURL(steps[4].inputValue),
-    raised: "0",
-    goal: steps[1].inputValue,
+    raised: 0n,
+    goal: BigInt(steps[1].inputValue),
     description: steps[3].inputValue,
-    createdAt: new Date(),
+    // Mocking the date format as it is on chain
+    createdAt: BigInt(Math.floor(new Date().getTime() / 1000)),
     filters: steps[2].inputValue,
-    contributions: [],
     isOpen: true,
     isWithdrawn: false,
+    organizer: account.value.address || "0x0",
   };
 }
 

@@ -35,7 +35,7 @@
             >
               <CommonAccountView :address="campaign.organizer" />
               <div class="text-sm">created campaign</div>
-              {{ formatDateAgo(campaign.createdAt) }}
+              {{ formatDateAgo(bigIntToDate(campaign.createdAt)) }}
             </div>
             <div
               v-else-if="campaign.eventType === 'contributed'"
@@ -49,7 +49,7 @@
               </div>
               <div>
                 {{
-                  computeETHPriceBigint(
+                  computeETHPrice(
                     getCampaignLatestContribution(campaign).amount,
                   )
                 }}
@@ -112,10 +112,7 @@
 <script setup lang="ts">
 import { useLandingStore } from "~/stores/landing";
 import type { CampaignWEvents } from "~/types";
-import {
-  formatCampaignWEvents,
-  getCampaignLatestContribution,
-} from "~/utils/contract/campaignHelpers";
+import { formatCampaignWEvents } from "~/utils/contract/campaignHelpers";
 
 const {
   searchedCampaigns,
@@ -132,25 +129,25 @@ const {
   getFilters,
   getPreviewCampaigns,
   getLatestCreatedCampaigns,
-  getLatestContributedCampaigns,
+  getContributionEvents,
 } = useLandingStore();
 
 onMounted(() => {
   getPreviewCampaigns();
   getFilters();
   getLatestCreatedCampaigns();
-  getLatestContributedCampaigns();
+  getContributionEvents();
 });
 
 const campaigns = computed(() => {
   const createdCamapaigns =
     latestCreatedCampaigns.value?.map((campaign) =>
-      formatCampaignWEvents(campaign, "created"),
+      formatCampaignWEvents(campaign, "created", []),
     ) || [];
 
   const contributedCamapaigns =
     latestContributedCampaigns.value?.map((campaign) =>
-      formatCampaignWEvents(campaign, "contributed"),
+      formatCampaignWEvents(campaign, "contributed", []),
     ) || [];
 
   const mergedCampaigns: CampaignWEvents[] = [
@@ -163,14 +160,15 @@ const campaigns = computed(() => {
     mergedCampaigns.reduce(
       (acc: { [key: string]: CampaignWEvents }, campaign: CampaignWEvents) => {
         const campaignKey = campaign.id;
-        if (acc[campaignKey]) {
+        if (acc[campaignKey.toString()]) {
           if (
-            new Date(acc[campaignKey].eventTime) < new Date(campaign.eventTime)
+            new Date(acc[campaignKey.toString()].eventTime) <
+            new Date(campaign.eventTime)
           ) {
-            acc[campaignKey] = campaign;
+            acc[campaignKey.toString()] = campaign;
           }
         } else {
-          acc[campaignKey] = campaign;
+          acc[campaignKey.toString()] = campaign;
         }
         return acc;
       },

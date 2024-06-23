@@ -29,8 +29,6 @@
 </template>
 
 <script setup lang="ts">
-import { computedAsync } from "@vueuse/core";
-
 const props = defineProps({
   modelValue: {
     type: [Number, null] as any,
@@ -52,9 +50,9 @@ const inputted = computed({
 const minInputValue = 0;
 const maxInputValue = 100000;
 
-const inputtedUSD = computedAsync(() =>
-  computeETHPrice(inputted.value?.toString() || "0"),
-);
+const inputtedUSD = computed(() => {
+  return computeETHPrice(BigInt(inputted.value || 0));
+});
 
 const isFocused = ref(false);
 
