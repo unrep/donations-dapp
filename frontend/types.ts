@@ -174,4 +174,5 @@ export interface Campaign {
 export interface CampaignWEvents extends Campaign {
   eventType: "created" | "contributed";
   eventTime: Date;
+  latestContribution?: Contribution;
 }

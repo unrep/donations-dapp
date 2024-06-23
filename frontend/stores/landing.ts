@@ -1,4 +1,3 @@
-import { computedAsync } from "@vueuse/core";
 import { useContractCampaignStore } from "./contract.campaign";
 
 import {
@@ -7,6 +6,7 @@ import {
   searchCampaigns,
 } from "~/utils/contract/fetchCampaigns";
 import { fetchFilters } from "~/utils/contract/fetchFilters";
+import type { Campaign, Contribution } from "~/types";
 
 export const useLandingStore = defineStore("landing", () => {
   const {
@@ -71,24 +71,40 @@ export const useLandingStore = defineStore("landing", () => {
   });
 
   const latestContributedCampaignsInProgress = ref(false);
-
-  const latestContributedCampaigns = computedAsync(() => {
-    latestContributedCampaignsInProgress.value = true;
-    const campaignIds = contributionEvents.value?.reduce((acc, event) => {
-      event.campaignId && acc.push(Number(event.campaignId));
-      return acc;
-    }, [] as number[]);
-
-    if (!campaignIds) return [];
-    return fetchIndexedCampaignsArray(campaignIds)
-      .then((res) => res.filter((campaign) => campaign.isOpen))
-      .finally(() => {
-        latestContributedCampaignsInProgress.value = false;
-      });
-  });
+  const latestContributedCampaigns = ref<Campaign[]>([]);
 
   const { result: contributionEvents, execute: getContributionEvents } =
-    usePromise(getContributionEventsFromContract);
+    usePromise(() =>
+      getContributionEventsFromContract().then(
+        (res) =>
+          res.reduce((acc, event) => {
+            if (event.timestamp && event.contributor && event.amount) {
+              acc.push(event as Contribution);
+            }
+            return acc;
+          }, [] as Contribution[]) || [],
+      ),
+    );
+
+  watch(
+    () => contributionEvents.value,
+    async () => {
+      latestContributedCampaignsInProgress.value = true;
+      const campaignIds = contributionEvents.value?.reduce((acc, event) => {
+        event.campaignId && acc.push(Number(event.campaignId));
+        return acc;
+      }, [] as number[]);
+
+      if (!campaignIds) return [];
+      latestContributedCampaigns.value = await fetchIndexedCampaignsArray(
+        campaignIds,
+      )
+        .then((res) => res.filter((campaign) => campaign.isOpen))
+        .finally(() => {
+          latestContributedCampaignsInProgress.value = false;
+        });
+    },
+  );
 
   return {
     filters,

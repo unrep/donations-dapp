@@ -38,24 +38,24 @@
               {{ formatDateAgo(bigIntToDate(campaign.createdAt)) }}
             </div>
             <div
-              v-else-if="campaign.eventType === 'contributed'"
-              class="flex-grow flex flex-col justify-center items-center gap-0"
+              v-else-if="
+                campaign.eventType === 'contributed' &&
+                campaign.latestContribution
+              "
+              class="flex-grow flex flex-wrap justify-center items-center gap-1"
             >
-              <div class="flex items-center gap-2">
-                <CommonAccountView
-                  :address="getCampaignLatestContribution(campaign).contributor"
-                />
-                <div class="text-sm">contributed to campaign</div>
+              <CommonAccountView
+                :address="campaign.latestContribution.contributor"
+              />
+              <div class="text-sm">donated</div>
+
+              <div>
+                {{ computeETHPrice(campaign.latestContribution.amount) }}
               </div>
               <div>
                 {{
-                  computeETHPrice(
-                    getCampaignLatestContribution(campaign).amount,
-                  )
-                }}
-                {{
                   formatDateAgo(
-                    getCampaignLatestContribution(campaign).timestamp,
+                    bigIntToDate(campaign.latestContribution.timestamp),
                   )
                 }}
               </div>
@@ -112,7 +112,10 @@
 <script setup lang="ts">
 import { useLandingStore } from "~/stores/landing";
 import type { CampaignWEvents } from "~/types";
-import { formatCampaignWEvents } from "~/utils/contract/campaignHelpers";
+import {
+  formatCampaignWEvents,
+  getCampaignLatestContribution,
+} from "~/utils/contract/campaignHelpers";
 
 const {
   searchedCampaigns,
@@ -123,6 +126,7 @@ const {
   latestCreatedCampaignsInProgress,
   latestContributedCampaigns,
   latestContributedCampaignsInProgress,
+  contributionEvents,
 } = storeToRefs(useLandingStore());
 const {
   onFilterSelect,
@@ -142,13 +146,17 @@ onMounted(() => {
 const campaigns = computed(() => {
   const createdCamapaigns =
     latestCreatedCampaigns.value?.map((campaign) =>
-      formatCampaignWEvents(campaign, "created", []),
+      formatCampaignWEvents(campaign, "created"),
     ) || [];
 
-  const contributedCamapaigns =
-    latestContributedCampaigns.value?.map((campaign) =>
-      formatCampaignWEvents(campaign, "contributed", []),
-    ) || [];
+  const contributedCamapaigns = latestContributedCampaigns.value?.map(
+    (campaign) => {
+      const latestContribution =
+        contributionEvents.value &&
+        getCampaignLatestContribution(campaign.id, contributionEvents.value);
+      return formatCampaignWEvents(campaign, "contributed", latestContribution);
+    },
+  );
 
   const mergedCampaigns: CampaignWEvents[] = [
     ...createdCamapaigns,
@@ -178,9 +186,11 @@ const campaigns = computed(() => {
     (a, b) => new Date(b.eventTime).getTime() - new Date(a.eventTime).getTime(),
   );
 });
-const campaignsInProgress = computed(
-  () =>
-    latestContributedCampaignsInProgress.value &&
-    latestCreatedCampaignsInProgress.value,
-);
+
+const campaignsInProgress = computed(() => {
+  return (
+    latestCreatedCampaignsInProgress.value ||
+    latestContributedCampaignsInProgress.value
+  );
+});
 </script>

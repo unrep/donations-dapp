@@ -1,25 +1,32 @@
 import type { Address } from "viem";
-import type { Campaign, CampaignWEvents } from "~/types";
+import type { Campaign, CampaignWEvents, Contribution } from "~/types";
 
-// export function getCampaignLatestContribution(campaign: Campaign) {
-//   return campaign.contributions[campaign.contributions.length - 1];
-// }
+export function getCampaignLatestContribution(
+  campaignId: bigint,
+  contributions: Contribution[],
+) {
+  return contributions
+    .filter((contribution) => contribution.campaignId === BigInt(campaignId))
+    .sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1))
+    .pop();
+}
 
 export function formatCampaignWEvents(
   campaign: Campaign,
   eventType: "created" | "contributed",
-  contributions: { contributor: Address; amount: bigint; timestamp: bigint }[],
+  latestContribution?: Contribution,
 ): CampaignWEvents {
-  if (eventType === "contributed" && contributions.length === 0) {
-    throw new Error("Contributions array is empty");
-  }
   return {
     ...campaign,
     eventType,
     eventTime:
       eventType === "created"
         ? bigIntToDate(campaign.createdAt)
-        : bigIntToDate(contributions[contributions.length - 1].timestamp),
+        : bigIntToDate(
+            latestContribution?.timestamp ||
+              BigInt(Math.floor(Date.now() / 1000)),
+          ),
+    latestContribution,
   };
 }
 

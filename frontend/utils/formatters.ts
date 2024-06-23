@@ -49,7 +49,6 @@ export function shortenAddressWithout0x(address: string, chars = 3): string {
 
 export function parseTokenAmount(amount: bigint, decimals: number): string {
   const result = formatUnits(amount, decimals).toString();
-  console.log({ amount, result });
   if (result.endsWith(".0")) {
     return result.slice(0, -2);
   }
