@@ -74,16 +74,18 @@ export const useLandingStore = defineStore("landing", () => {
   const latestContributedCampaigns = ref<Campaign[]>([]);
 
   const { result: contributionEvents, execute: getContributionEvents } =
-    usePromise(() =>
-      getContributionEventsFromContract().then(
-        (res) =>
-          res.reduce((acc, event) => {
-            if (event.timestamp && event.contributor && event.amount) {
-              acc.push(event as Contribution);
-            }
-            return acc;
-          }, [] as Contribution[]) || [],
-      ),
+    usePromise(
+      () =>
+        getContributionEventsFromContract().then(
+          (res) =>
+            res.reduce((acc, event) => {
+              if (event.timestamp && event.contributor && event.amount) {
+                acc.push(event as Contribution);
+              }
+              return acc;
+            }, [] as Contribution[]) || [],
+        ),
+      { cache: false },
     );
 
   watch(

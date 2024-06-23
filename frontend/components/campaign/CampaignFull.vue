@@ -49,14 +49,14 @@
               {{
                 showCurrency === "usd"
                   ? raisedUSD
-                  : `${formatUnits(campaign.raised, ETH_TOKEN.decimals)}ETH`
+                  : `${floorEthAmount(campaign.raised, 3)}ETH`
               }}
               <span class="font-normal text-base"
                 >raised of
                 {{
                   showCurrency === "usd"
                     ? goalUSD
-                    : `${formatUnits(campaign.goal, ETH_TOKEN.decimals)}ETH`
+                    : `${floorEthAmount(campaign.goal, 3)}ETH`
                 }}</span
               >
             </div>
@@ -136,7 +136,6 @@
 
 <script setup lang="ts">
 import { formatDate } from "@vueuse/core";
-import { formatUnits } from "viem";
 import { useLandingStore } from "~/stores/landing";
 
 import { type Campaign, type Contribution } from "~/types";

@@ -19,6 +19,7 @@ import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 import { useContractCampaignStore } from "~/stores/contract.campaign";
+import { useLandingStore } from "~/stores/landing";
 import { fetchCampaign as fetchCampaignFromContract } from "~/utils/contract/fetchCampaigns";
 
 const route = useRoute();
@@ -41,11 +42,13 @@ watch(
       return router.push("/");
     }
     await fetchCampaign();
+    await getContributionEvents();
   },
   { immediate: true },
 );
 
 const { watchContributions } = useContractCampaignStore();
+const { getContributionEvents } = useLandingStore();
 
 watchContributions((logs) => {
   if (
@@ -54,7 +57,9 @@ watchContributions((logs) => {
   )
     return;
 
-  fetchCampaign();
+  setTimeout(() => {
+    fetchCampaign().then(() => getContributionEvents());
+  }, 2000);
 });
 </script>
 
