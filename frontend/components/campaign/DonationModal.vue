@@ -139,6 +139,20 @@
       </div>
     </div>
   </Transition>
+
+  <div
+    class="z-9999 fixed bottom-0 right-0 md:-translate-x-1/2 lg:translate-x-0 lg:right-0 xl:right-[5%] w-full md:w-1/2 lg:w-1/3 h-screen pointer-events-none"
+  >
+    <ClientOnly>
+      <Vue3Lottie
+        ref="confettiElement"
+        :animation-data="Confetti"
+        :auto-play="false"
+        :loop="1"
+        @on-complete="() => confettiElement.stop()"
+      />
+    </ClientOnly>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -148,7 +162,9 @@ import type { Campaign } from "~/types";
 
 import { useContractCampaignStore } from "~/stores/contract.campaign";
 import { useOnboardStore } from "~/stores/onboard";
+import Confetti from "~/assets/animations/Confetti.json";
 
+const confettiElement = ref<any>();
 const { contributeCampaign: contributeCampaignContract } =
   useContractCampaignStore();
 
@@ -213,6 +229,7 @@ const { execute: contributeToCampaign, inProgress: contributionInProgress } =
       decimalToBigNumber(amountToDonate, ETH_TOKEN.decimals),
     ).finally(() => {
       emit("update:isOpen", false);
+      confettiElement.value?.play();
     });
   });
 </script>
