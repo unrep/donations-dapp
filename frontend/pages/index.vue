@@ -35,41 +35,71 @@
         </template>
       </LandingCampaignSearchResultList>
 
-      <div
-        id="searchElement"
-        class="text-gray-700 w-full flex flex-col items-start md:items-center justify-center gap-2 px-10"
+      <button
+        :class="[
+          'px-4 py-2 duration-200 border rounded-full text-sm shadow-sm hover:scale-105',
+          showAllCampaigns
+            ? 'bg-indigo-800 text-white'
+            : 'bg-white text-gray-500',
+        ]"
+        @click="showAllCampaigns = !showAllCampaigns"
       >
-        <div class="text-4xl font-semibold">View all campaigns</div>
-        <div class="text-base text-neutral-600">
-          Search campaigns by categories to find the one you need
-        </div>
+        View all campaigns
+      </button>
 
-        <LandingSearch class="z-20 px-10 pt-4">
-          <template #filters>
-            <template v-if="filtersInProgress">
-              <CommonFiltersLoader />
+      <Transition
+        name="slide"
+        @after-enter="
+          () => (searchElementHeight = searchElement?.clientHeight || 0)
+        "
+      >
+        <div
+          v-if="showAllCampaigns"
+          id="searchElement"
+          ref="searchElement"
+          :style="{
+            '--slide-height': searchElementHeight + 'px',
+          }"
+          class="text-gray-700 w-full flex flex-col items-start md:items-center justify-center gap-2 px-10"
+        >
+          <div class="text-4xl font-semibold">View all campaigns</div>
+          <div class="text-base text-neutral-600">
+            Search campaigns by categories to find the one you need
+          </div>
+
+          <LandingSearch class="z-20 px-10 pt-4">
+            <template #filters>
+              <template v-if="filtersInProgress">
+                <CommonFiltersLoader />
+              </template>
+              <template v-else>
+                <CommonFiltersSelect
+                  class="w-full justify-center"
+                  :filters="filters"
+                  @update:select-item="onFilterSelect"
+                />
+              </template>
             </template>
-            <template v-else>
-              <CommonFiltersSelect
-                class="w-full justify-center"
-                :filters="filters"
-                @update:select-item="onFilterSelect"
-              />
-            </template>
-          </template>
-        </LandingSearch>
-      </div>
+          </LandingSearch>
+        </div>
+      </Transition>
 
       <LandingCampaignSearchResultList
-        v-if="searchedCampaigns"
+        v-if="showAllCampaigns"
         class="z-10 -mt-2 px-10"
       >
-        <template v-if="searchedCampaignsInProgress">
-          <CampaignCardLoader v-for="(_, index) in Array(5)" :key="index" />
+        <template
+          v-if="
+            allCampaignsInProgress ||
+            searchedCampaignsInProgress ||
+            previewCampaignsInProgress
+          "
+        >
+          <CampaignCardLoader v-for="(_, index) in Array(3)" :key="index" />
         </template>
-        <template v-else>
+        <template v-else-if="allCampaigns">
           <CampaignCard
-            v-for="campaign in searchedCampaigns"
+            v-for="campaign in allCampaigns"
             :key="campaign.title"
             :campaign="campaign"
           />
@@ -83,11 +113,15 @@
 
 <script setup lang="ts">
 import { useLandingStore } from "~/stores/landing";
-import type { CampaignWEvents } from "~/types";
+import type { Campaign, CampaignWEvents } from "~/types";
 import {
   formatCampaignWEvents,
   getCampaignLatestContribution,
 } from "~/utils/contract/campaignHelpers";
+
+const showAllCampaigns = ref(false);
+const searchElement = ref<HTMLElement | null>(null);
+const searchElementHeight = ref(200);
 
 const {
   searchedCampaigns,
@@ -99,6 +133,8 @@ const {
   latestContributedCampaigns,
   latestContributedCampaignsInProgress,
   contributionEvents,
+  previewCampaigns,
+  previewCampaignsInProgress,
 } = storeToRefs(useLandingStore());
 const {
   onFilterSelect,
@@ -114,6 +150,32 @@ onMounted(() => {
   getLatestCreatedCampaigns();
   getContributionEvents();
 });
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+const allCampaigns = ref<Campaign[] | undefined>(undefined);
+const allCampaignsInProgress = ref(false);
+
+watch(
+  [filters, previewCampaigns, searchedCampaigns],
+  async () => {
+    allCampaignsInProgress.value = true;
+    let res: Campaign[] | undefined = previewCampaigns.value;
+    if (filters.value?.some((filter) => filter.selected)) {
+      res = searchedCampaigns.value;
+    }
+
+    allCampaigns.value = res?.filter((campaign) => !!campaign);
+
+    // Using a delay, to make ui not flicker
+    await delay(300).finally(() => {
+      allCampaignsInProgress.value = false;
+    });
+  },
+  { immediate: true },
+);
 
 const campaigns = computed(() => {
   const createdCamapaigns =
