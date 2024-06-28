@@ -163,13 +163,16 @@ const buttonState = computed(() => {
     text: "Create campaign",
     func: async () => {
       isCampaignSending.value = true;
-      await sendCampaign()?.finally(async () => {
-        isCampaignSending.value = false;
-        campaignId.value = await getLastCampaignIndex().then((res) =>
-          (res - 1).toString(),
-        );
-        navigateTo(`/campaign?id=${campaignId.value}`);
-      });
+      await sendCampaign()
+        ?.then(async () => {
+          campaignId.value = await getLastCampaignIndex().then((res) =>
+            (res - 1).toString(),
+          );
+          navigateTo(`/campaign?id=${campaignId.value}`);
+        })
+        .finally(() => {
+          isCampaignSending.value = false;
+        });
       campaignCreationStep.value = "done";
     },
   } as const;
