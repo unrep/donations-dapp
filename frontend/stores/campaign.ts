@@ -172,7 +172,6 @@ export const useCampaignStore = defineStore("campaign", () => {
     const ipfsHash = await pinDirectoryToIPFS(resDataJSON, image.value)?.then(
       (res) => res?.IpfsHash,
     );
-    console.log({ ipfsHash });
 
     if (!ipfsHash) {
       throw new Error("Failed to upload campaign data to ipfs");

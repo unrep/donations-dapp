@@ -76,6 +76,7 @@
                 <CommonFiltersSelect
                   class="w-full justify-center"
                   :filters="filters"
+                  :shorten="true"
                   @update:select-item="onFilterSelect"
                 />
               </template>

@@ -1,10 +1,7 @@
 <template>
   <div class="w-full flex items-center justify-start flex-wrap gap-2">
     <button
-      v-for="(filter, index) in filters?.slice(
-        0,
-        isExpanded ? filters.length : 4,
-      )"
+      v-for="(filter, index) in filtersToShow"
       :key="filter.text"
       :class="[
         'px-4 py-2 capitalize font-semibold duration-200 border rounded-full text-sm shadow-sm hover:scale-105',
@@ -21,6 +18,7 @@
     </button>
 
     <button
+      v-if="props.shorten"
       class="px-4 py-2 capitalize font-semibold duration-200 border rounded-full text-sm shadow-sm hover:scale-105"
       @click="isExpanded = !isExpanded"
     >
@@ -30,8 +28,17 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
+const props = defineProps({
   filters: Array<any>,
+  shorten: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const filtersToShow = computed(() => {
+  if (!props.shorten) return props.filters;
+  return props.filters?.slice(0, isExpanded.value ? props.filters.length : 4);
 });
 
 const emit = defineEmits<{
