@@ -13,7 +13,6 @@
     "@headlessui/vue": "^1.7.19",
     "@pinia/nuxt": "^0.5.1",
     "@vueuse/core": "^10.9.0",
-    "@web3-storage/w3up-client": "^12.5.0",
     "buffer": "^6.0.3",
     "date-fns": "^3.6.0",
     "nuxt": "^3.11.1",
@@ -29,16 +28,17 @@
     "@toast-ui/editor": "^3.2.2",
     "@typescript-eslint/parser": "^7.3.1",
     "@vue/eslint-config-prettier": "^9.0.0",
-    "@wagmi/core": "^2.10.5",
-    "@web3modal/wagmi": "^4.2.3",
+    "@wagmi/core": "^2.11.5",
+    "@web3modal/wagmi": "^5.0.3",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.23.0",
     "sass": "^1.72.0",
     "typescript": "^5.4.2",
     "typescript-eslint": "^7.3.1",
-    "viem": "^2.12.5",
+    "viem": "^2.10.3",
     "vue-tsc": "^1",
     "vue3-lottie": "^3.3.0",
+    "wagmi": "^2.9.10",
     "web3-avatar-vue": "^1.0.0"
   }
 }

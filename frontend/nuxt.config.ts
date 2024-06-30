@@ -40,6 +40,7 @@ export default defineNuxtConfig({
       ipfs: {
         KEY: process.env.IPFS_KEY,
         PROOF: process.env.IPFS_PROOF,
+        TOKEN: process.env.IPFS_TOKEN,
       },
     },
   },

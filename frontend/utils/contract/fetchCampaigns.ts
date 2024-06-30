@@ -1,8 +1,7 @@
-import { useWeb3Storage } from "../../helpers/IPFS";
-
 import type { Campaign } from "~/types";
 
 import { useContractCampaignStore } from "~/stores/contract.campaign";
+import { getContentByCid } from "~/helpers/IPFS";
 
 function enrichCampaignData(
   campaigns: {
@@ -15,8 +14,6 @@ function enrichCampaignData(
     filters: readonly string[];
   }[],
 ) {
-  const { getContentByCid } = useWeb3Storage();
-
   return Promise.all(
     campaigns.map(async (campaign) => {
       const ipfsData = await getContentByCid(campaign.ipfsHash);
@@ -74,8 +71,6 @@ export async function fetchCampaign(id: number): Promise<Campaign> {
   const campaign = await getCampaign(id);
   if (!campaign || !campaign.goal)
     throw new Error(`Campaign with id ${id} not found`);
-
-  const { getContentByCid } = useWeb3Storage();
 
   const ipfsData = await getContentByCid(campaign.ipfsHash);
 

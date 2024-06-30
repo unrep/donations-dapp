@@ -1,5 +1,4 @@
 import { useContractCampaignStore } from "./contract.campaign";
-
 import {
   CommonLineInput,
   CommonRichEditor,
@@ -7,9 +6,7 @@ import {
   CampaignCreateFileUpload,
   CommonFiltersSelect,
 } from "#components";
-import { useWeb3Storage } from "~/helpers/IPFS";
-
-const { uploadFile } = useWeb3Storage();
+import { pinDirectoryToIPFS } from "~/helpers/IPFS";
 
 export const useCampaignStore = defineStore("campaign", () => {
   const campaignName = ref<string | null>(null);
@@ -172,11 +169,12 @@ export const useCampaignStore = defineStore("campaign", () => {
     });
 
     // Call the uploadFile function from the IPFS helper
-    const cid = await uploadFile(resDataJSON, image.value)?.then((cid) => {
-      return cid;
-    });
+    const ipfsHash = await pinDirectoryToIPFS(resDataJSON, image.value)?.then(
+      (res) => res?.IpfsHash,
+    );
+    console.log({ ipfsHash });
 
-    if (!cid) {
+    if (!ipfsHash) {
       throw new Error("Failed to upload campaign data to ipfs");
     }
 
@@ -186,7 +184,7 @@ export const useCampaignStore = defineStore("campaign", () => {
 
     await createCampaign(
       decimalToBigNumber(goalAmount.value, ETH_TOKEN.decimals),
-      cid,
+      ipfsHash,
       filtersToSend,
     );
   }
