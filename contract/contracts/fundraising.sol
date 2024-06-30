@@ -199,7 +199,8 @@ contract Fundraising is ReentrancyGuard {
         require(campaign.isOpen == false, "Campaign is still open");
 
         uint amount = campaign.raisedAmount;
-        campaign.organizer.transfer(amount);
+        (bool success, ) = campaign.organizer.call{value: amount}("");
+        require(success, "Transfer failed");
 
         emit FundsWithdrawn(_campaignId, amount);
         campaign.isWithdrawn = true;
