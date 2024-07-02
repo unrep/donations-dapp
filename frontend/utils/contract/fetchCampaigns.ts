@@ -3,7 +3,7 @@ import type { Campaign } from "~/types";
 import { useContractCampaign } from "~/composables/contract.campaign";
 import { getContentByCid } from "~/helpers/IPFS";
 
-function enrichCampaignData(
+async function enrichCampaignData(
   campaigns: {
     id: bigint;
     goal: bigint;
@@ -13,21 +13,27 @@ function enrichCampaignData(
     ipfsHash: string;
     filters: readonly string[];
   }[],
-) {
-  return Promise.all(
-    campaigns.map(async (campaign) => {
-      const ipfsData = await getContentByCid(campaign.ipfsHash);
+): Promise<Campaign[]> {
+  const res = await Promise.all(
+    campaigns.map(async (campaign): Promise<Campaign | null> => {
+      try {
+        const ipfsData = await getContentByCid(campaign.ipfsHash);
 
-      return {
-        ...campaign,
-        ...ipfsData,
-        id: Number(campaign.id),
-        title: ipfsData.campaignName,
-        goal: Number(campaign.goal),
-        raised: Number(campaign.raised),
-      };
+        return {
+          ...campaign,
+          ...ipfsData,
+          id: Number(campaign.id),
+          title: ipfsData.campaignName,
+          goal: Number(campaign.goal),
+          raised: Number(campaign.raised),
+        };
+      } catch (error) {
+        return null;
+      }
     }),
   );
+
+  return res.filter((campaign) => campaign) as Campaign[];
 }
 
 export async function fetchCampaignsArray(
