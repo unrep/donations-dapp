@@ -120,6 +120,7 @@ import type { Campaign } from "~/types";
 import { useCampaignStore } from "~/stores/campaign";
 import { useContractCampaignStore } from "~/stores/contract.campaign";
 import { useOnboardStore } from "~/stores/onboard";
+import { saveCampaignToLS } from "~/helpers/saveCampaignToLS";
 
 const { getLastCampaignIndex } = useContractCampaignStore();
 
@@ -168,6 +169,7 @@ const buttonState = computed(() => {
           campaignId.value = await getLastCampaignIndex().then((res) =>
             (res - 1).toString(),
           );
+          saveCampaignToLS(getInputCampaign());
           navigateTo(`/campaign?id=${campaignId.value}`);
         })
         .finally(() => {
@@ -190,8 +192,7 @@ function onBack() {
 }
 
 const { checkAllStepsCompleted, sendCampaign, steps } = useCampaignStore();
-
-const campaignId = ref<string>("0");
+const { campaignId } = storeToRefs(useCampaignStore());
 
 function getInputCampaign(): Campaign {
   return {

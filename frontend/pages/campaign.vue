@@ -17,6 +17,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { getCampaignFromLS } from "~/helpers/saveCampaignToLS";
 
 import { useContractCampaignStore } from "~/stores/contract.campaign";
 import { useLandingStore } from "~/stores/landing";
@@ -40,6 +41,14 @@ watch(
     campaignId.value = Number(id);
     if (isNaN(campaignId.value)) {
       return router.push("/");
+    }
+    try {
+      const lsCampaign = getCampaignFromLS();
+      if (lsCampaign && Number(lsCampaign.id) === campaignId.value) {
+        campaign.value = lsCampaign;
+      }
+    } catch (e) {
+      console.log(e);
     }
     await fetchCampaign();
     await getContributionEvents();

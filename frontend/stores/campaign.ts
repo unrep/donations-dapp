@@ -9,6 +9,7 @@ import {
 import { pinDirectoryToIPFS } from "~/helpers/IPFS";
 
 export const useCampaignStore = defineStore("campaign", () => {
+  const campaignId = ref<string>("0");
   const campaignName = ref<string | null>(null);
   const goalAmount = ref<number | null>(null);
   const description = ref<string | null>(null);
@@ -189,6 +190,7 @@ export const useCampaignStore = defineStore("campaign", () => {
   }
 
   return {
+    campaignId,
     campaignName,
     goalAmount,
     description,
