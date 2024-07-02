@@ -207,13 +207,18 @@ function togglePresetPrice(index: number | null) {
   }
 }
 
+const selectedPrice = computed(
+  () => presetPrices.value.find((p) => p.selected)?.priceValue,
+);
+
 const donateAmount = computedAsync(async () => {
   let resultAmount = 0;
-  const selectedPrice = presetPrices.value.find((p) => p.selected)?.priceValue;
   if (showEthInput.value) resultAmount = inputValue.value || 0;
   else if (donateFullAmount.value)
-    resultAmount = Number(campaign.goal - campaign.raised);
-  else if (selectedPrice) resultAmount = await convertUsdToEth(selectedPrice);
+    resultAmount =
+      Number(campaign.goal - campaign.raised) / 10 ** +ETH_TOKEN.decimals;
+  else if (selectedPrice.value)
+    resultAmount = await convertUsdToEth(selectedPrice.value);
   else resultAmount = 0;
   return resultAmount;
 });
@@ -223,11 +228,10 @@ const { execute: contributeToCampaign, inProgress: contributionInProgress } =
   usePromise(async () => {
     if (campaign.id === undefined || !donateAmount.value) return;
     const amountToDonate = donateAmount.value;
-
     await contributeCampaignContract(
       campaign.id,
       decimalToBigNumber(amountToDonate, ETH_TOKEN.decimals),
-    ).finally(() => {
+    ).then(() => {
       emit("update:isOpen", false);
       confettiElement.value?.play();
     });

@@ -56,7 +56,7 @@ export function parseTokenAmount(amount: bigint, decimals: number): string {
 }
 
 export function decimalToBigNumber(amount: number, decimals: number): bigint {
-  return BigInt(amount * 10 ** decimals);
+  return BigInt(Math.floor(amount * 10 ** decimals));
 }
 
 export function formatRawTokenPrice(
