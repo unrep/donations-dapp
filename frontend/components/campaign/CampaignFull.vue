@@ -36,7 +36,7 @@
     >
       <div v-if="campaign?.createdAt" class="text-xl">
         Started at
-        {{ formatDate(bigIntToDate(campaign?.createdAt), "Do MMM YYYY") }}
+        {{ formatDate(bigIntToDate(campaign?.createdAt), "Do MMMM YYYY") }}
       </div>
 
       <div class="w-full">

@@ -224,18 +224,22 @@ const donateAmount = computedAsync(async () => {
 });
 
 const closeModal = () => emit("update:isOpen", false);
-const { execute: contributeToCampaign, inProgress: contributionInProgress } =
-  usePromise(async () => {
-    if (campaign.id === undefined || !donateAmount.value) return;
-    const amountToDonate = donateAmount.value;
-    await contributeCampaignContract(
-      campaign.id,
-      decimalToBigNumber(amountToDonate, ETH_TOKEN.decimals),
-    ).then(() => {
-      emit("update:isOpen", false);
-      confettiElement.value?.play();
-    });
+
+const contributionInProgress = ref(false);
+
+async function contributeToCampaign() {
+  contributionInProgress.value = true;
+  if (campaign.id === undefined || !donateAmount.value) return;
+  const amountToDonate = donateAmount.value;
+  await contributeCampaignContract(
+    campaign.id,
+    decimalToBigNumber(amountToDonate, ETH_TOKEN.decimals),
+  ).then(() => {
+    contributionInProgress.value = false;
+    emit("update:isOpen", false);
+    confettiElement.value?.play();
   });
+}
 </script>
 
 <style lang="scss" scoped>

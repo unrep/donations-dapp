@@ -29,6 +29,7 @@ onMounted(() => {
   editor = new Editor({
     el: el.value,
     height: "auto",
+    initialValue: inputted.value || "",
     initialEditType: "wysiwyg",
     previewStyle: "vertical",
     events: {
