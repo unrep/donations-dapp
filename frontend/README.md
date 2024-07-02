@@ -16,22 +16,9 @@ npm i
 - Paste the contract's address into .env file to FUNDRAISING_CONTRACT_ADDRESS variable
 
 ### Using IPFS
-This project uses web3.storage IPFS
-You need to register an account, then create a space and get the secrects (IPFS_KEY and IPFS_PROOF). And then paste them into your .env file
-Read documentation about web3 storage [here](https://web3.storage/docs/how-to/create-space/)
-#### To get the IPFS_KEY run:
-```bash
-w3 key create
-```
-And store the private key (starting "Mg...") in environment variable IPFS_KEY
-
-#### To get the IPFS_PROOF run:
-```bash
-w3 delegation create <did_from_ucan-key_command_above> --base64
-```
-Store the output in environment variable IPFS_PROOF
-
-More on how to get these variables and what are they used for [here](https://web3.storage/docs/how-to/upload/#bring-your-own-delegations)
+This project uses Pinata IPFS
+You need to register an account [here](https://www.pinata.cloud/), then follow the instructions and get your API Key. And then paste it into your .env file (IPFS_TOKEN)
+You can read documentation about Pinata [here](https://docs.pinata.cloud/introduction)
 
 ### To get the WALLET_CONNECT_PROJECT_ID
 Wallet connect is a tool used for providing a good already built wallet connection UX

@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="campaign.createdAt && campaign.eventType === 'created'"
-    class="flex-grow flex items-center justify-center gap-2"
+    class="flex-grow flex items-center justify-center gap-2 text-sm"
   >
     <CommonAccountView :address="campaign.organizer" />
     <div class="text-sm">created campaign</div>
@@ -11,10 +11,10 @@
     v-else-if="
       campaign.eventType === 'contributed' && campaign.latestContribution
     "
-    class="flex-grow flex flex-wrap justify-center items-center gap-1"
+    class="flex-grow flex flex-wrap justify-center items-center gap-1 text-sm"
   >
     <CommonAccountView :address="campaign.latestContribution.contributor" />
-    <div class="text-sm">donated</div>
+    <div class="">donated</div>
 
     <div>
       {{ computeETHPrice(campaign.latestContribution.amount) }}
