@@ -1,7 +1,7 @@
 import { getBlock, watchContractEvent } from "@wagmi/core";
 import { getContract as getContractViem, type Address } from "viem";
 
-import { useOnboardStore } from "./onboard";
+import { useOnboardStore } from "../stores/onboard";
 
 import { wagmiConfig } from "~/data/wagmi";
 import {
@@ -11,7 +11,7 @@ import {
 
 const BLOCKS_TO_FETCH = BigInt(100);
 
-export const useContractCampaignStore = defineStore("contact_campaign", () => {
+export const useContractCampaign = () => {
   const { getPublicClient } = useOnboardStore();
 
   function getReadContract() {
@@ -222,4 +222,4 @@ export const useContractCampaignStore = defineStore("contact_campaign", () => {
     getContributionEvents,
     getCreationEvents,
   };
-});
+};

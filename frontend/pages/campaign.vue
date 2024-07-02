@@ -19,7 +19,7 @@ import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { getCampaignFromLS } from "~/helpers/saveCampaignToLS";
 
-import { useContractCampaignStore } from "~/stores/contract.campaign";
+import { useContractCampaign } from "~/composables/contract.campaign";
 import { useLandingStore } from "~/stores/landing";
 import { fetchCampaign as fetchCampaignFromContract } from "~/utils/contract/fetchCampaigns";
 
@@ -56,7 +56,7 @@ watch(
   { immediate: true },
 );
 
-const { watchContributions } = useContractCampaignStore();
+const { watchContributions } = useContractCampaign();
 const { getContributionEvents } = useLandingStore();
 
 watchContributions((logs) => {

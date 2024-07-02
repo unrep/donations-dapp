@@ -25,6 +25,7 @@
           Start campaign
         </NuxtLink>
         <button
+          v-if="route.path === '/'"
           class="nav-button"
           @click.stop.prevent="scrollToAnchor('#searchElement')"
         >
@@ -90,7 +91,7 @@ import {
   computedAsync,
 } from "@vueuse/core";
 
-import { useContractCampaignStore } from "~/stores/contract.campaign";
+import { useContractCampaign } from "~/composables/contract.campaign";
 import { useOnboardStore } from "~/stores/onboard";
 
 const navRef = ref<HTMLElement | null>(null);
@@ -119,13 +120,15 @@ const scrollToAnchor = (anchor: string) => {
 };
 
 const { isConnected, account } = storeToRefs(useOnboardStore());
-const { getCampaignIdsByOrganizer } = useContractCampaignStore();
+const { getCampaignIdsByOrganizer } = useContractCampaign();
 
 const hasOwnCampaigns = computedAsync(async () => {
   if (!isConnected || !account.value.address) return false;
   const campaignIds = await getCampaignIdsByOrganizer(account.value.address);
   return !!campaignIds.length;
 });
+
+const route = useRoute();
 </script>
 
 <style lang="scss" scoped>

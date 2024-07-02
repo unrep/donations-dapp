@@ -118,11 +118,11 @@ import { useWindowScroll } from "@vueuse/core";
 import type { Campaign } from "~/types";
 
 import { useCampaignStore } from "~/stores/campaign";
-import { useContractCampaignStore } from "~/stores/contract.campaign";
+import { useContractCampaign } from "~/composables/contract.campaign";
 import { useOnboardStore } from "~/stores/onboard";
 import { saveCampaignToLS } from "~/helpers/saveCampaignToLS";
 
-const { getLastCampaignIndex } = useContractCampaignStore();
+const { getLastCampaignIndex } = useContractCampaign();
 
 const { openModal } = useOnboardStore();
 const { account } = storeToRefs(useOnboardStore());
@@ -221,4 +221,3 @@ onMounted(() => {
   if (inputs.value.length > 0) inputs.value[0].focus();
 });
 </script>
-

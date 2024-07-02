@@ -1,4 +1,4 @@
-import { useContractCampaignStore } from "./contract.campaign";
+import { useContractCampaign } from "../composables/contract.campaign";
 
 import {
   fetchCampaignsArray,
@@ -13,7 +13,7 @@ export const useLandingStore = defineStore("landing", () => {
     getLastCampaignIndex,
     getCreationEvents,
     getContributionEvents: getContributionEventsFromContract,
-  } = useContractCampaignStore();
+  } = useContractCampaign();
   const campaignsToPreview = ref(20);
 
   const {

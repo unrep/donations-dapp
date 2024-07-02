@@ -158,15 +158,17 @@
 <script lang="ts" setup>
 import { computedAsync } from "@vueuse/core";
 
+import { formatUnits } from "viem";
 import type { Campaign } from "~/types";
 
-import { useContractCampaignStore } from "~/stores/contract.campaign";
+import { useContractCampaign } from "~/composables/contract.campaign";
 import { useOnboardStore } from "~/stores/onboard";
 import Confetti from "~/assets/animations/Confetti.json";
+import { useLandingStore } from "~/stores/landing";
 
 const confettiElement = ref<any>();
 const { contributeCampaign: contributeCampaignContract } =
-  useContractCampaignStore();
+  useContractCampaign();
 
 const { isOpen, campaign } = defineProps({
   isOpen: Boolean,
@@ -215,8 +217,9 @@ const donateAmount = computedAsync(async () => {
   let resultAmount = 0;
   if (showEthInput.value) resultAmount = inputValue.value || 0;
   else if (donateFullAmount.value)
-    resultAmount =
-      Number(campaign.goal - campaign.raised) / 10 ** +ETH_TOKEN.decimals;
+    resultAmount = Number(
+      formatUnits(campaign.goal - campaign.raised, ETH_TOKEN.decimals),
+    );
   else if (selectedPrice.value)
     resultAmount = await convertUsdToEth(selectedPrice.value);
   else resultAmount = 0;
@@ -225,21 +228,23 @@ const donateAmount = computedAsync(async () => {
 
 const closeModal = () => emit("update:isOpen", false);
 
-const contributionInProgress = ref(false);
+const { getContributionEvents } = useLandingStore();
 
-async function contributeToCampaign() {
-  contributionInProgress.value = true;
-  if (campaign.id === undefined || !donateAmount.value) return;
-  const amountToDonate = donateAmount.value;
-  await contributeCampaignContract(
-    campaign.id,
-    decimalToBigNumber(amountToDonate, ETH_TOKEN.decimals),
-  ).then(() => {
-    contributionInProgress.value = false;
-    emit("update:isOpen", false);
-    confettiElement.value?.play();
-  });
-}
+const { execute: contributeToCampaign, inProgress: contributionInProgress } =
+  usePromise(
+    async () => {
+      if (campaign.id === undefined || !donateAmount.value) return;
+      const amountToDonate = donateAmount.value;
+      await contributeCampaignContract(
+        campaign.id,
+        decimalToBigNumber(amountToDonate, ETH_TOKEN.decimals),
+      );
+      emit("update:isOpen", false);
+      confettiElement.value?.play();
+      getContributionEvents();
+    },
+    { cache: false },
+  );
 </script>
 
 <style lang="scss" scoped>

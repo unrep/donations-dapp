@@ -1,6 +1,6 @@
 import type { Campaign } from "~/types";
 
-import { useContractCampaignStore } from "~/stores/contract.campaign";
+import { useContractCampaign } from "~/composables/contract.campaign";
 import { getContentByCid } from "~/helpers/IPFS";
 
 function enrichCampaignData(
@@ -34,7 +34,7 @@ export async function fetchCampaignsArray(
   startIndex: number,
   endIndex: number,
 ): Promise<Campaign[]> {
-  const { getCampaigns } = useContractCampaignStore();
+  const { getCampaigns } = useContractCampaign();
   const campaigns = await getCampaigns(startIndex, endIndex);
   if (!campaigns) throw new Error("Campaigns not found");
   return enrichCampaignData(campaigns);
@@ -43,7 +43,7 @@ export async function fetchCampaignsArray(
 export async function fetchIndexedCampaignsArray(
   indexes: number[],
 ): Promise<Campaign[]> {
-  const { getIndexedCampaigns } = useContractCampaignStore();
+  const { getIndexedCampaigns } = useContractCampaign();
   const campaigns = await getIndexedCampaigns(indexes);
   if (!campaigns) throw new Error("Campaigns not found");
   return enrichCampaignData(campaigns);
@@ -54,7 +54,7 @@ export async function searchCampaigns(
   endDate: Date,
   filters: string[],
 ): Promise<Campaign[]> {
-  const { searchCampaigns } = useContractCampaignStore();
+  const { searchCampaigns } = useContractCampaign();
   const campaigns = await searchCampaigns(
     startDate.getTime(),
     endDate.getTime(),
@@ -66,7 +66,7 @@ export async function searchCampaigns(
 }
 
 export async function fetchCampaign(id: number): Promise<Campaign> {
-  const { getCampaign } = useContractCampaignStore();
+  const { getCampaign } = useContractCampaign();
 
   const campaign = await getCampaign(id);
   if (!campaign || !campaign.goal)

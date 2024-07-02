@@ -74,7 +74,7 @@
 <script setup lang="ts">
 import type { Campaign } from "~/types";
 
-import { useContractCampaignStore } from "~/stores/contract.campaign";
+import { useContractCampaign } from "~/composables/contract.campaign";
 
 const { campaign } = defineProps<{
   campaign: Campaign;
@@ -87,7 +87,7 @@ const emit = defineEmits<{
 const { title, image } = campaign;
 
 const { withdrawCampaignFunds, stopCampaign: stopCampaignContract } =
-  useContractCampaignStore();
+  useContractCampaign();
 
 const { inProgress: withdrawalInProgress, execute: withdrawCampaign } =
   usePromise(() =>

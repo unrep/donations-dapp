@@ -1,4 +1,4 @@
-import { useContractCampaignStore } from "./contract.campaign";
+import { useContractCampaign } from "../composables/contract.campaign";
 import {
   CommonLineInput,
   CommonRichEditor,
@@ -15,7 +15,7 @@ export const useCampaignStore = defineStore("campaign", () => {
   const description = ref<string | null>(null);
   const image = ref<File | null>(null);
   const { result: filters, execute: getFilters } = usePromise(() => {
-    const { getCampaignFilters } = useContractCampaignStore();
+    const { getCampaignFilters } = useContractCampaign();
     return getCampaignFilters().then((res) =>
       res.map((filter) => ({ text: filter, selected: false })),
     );
@@ -158,7 +158,7 @@ export const useCampaignStore = defineStore("campaign", () => {
   }
 
   async function sendCampaign() {
-    const { createCampaign } = useContractCampaignStore();
+    const { createCampaign } = useContractCampaign();
 
     if (!goalAmount.value || !selectedFilters.value) {
       throw new Error("Required fields are empty");

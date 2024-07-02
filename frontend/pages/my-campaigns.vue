@@ -27,12 +27,12 @@
 <script setup lang="ts">
 import { computedAsync } from "@vueuse/core";
 
-import { useContractCampaignStore } from "~/stores/contract.campaign";
+import { useContractCampaign } from "~/composables/contract.campaign";
 import { useOnboardStore } from "~/stores/onboard";
 import { fetchIndexedCampaignsArray } from "~/utils/contract/fetchCampaigns";
 
 const { isConnected, account } = storeToRefs(useOnboardStore());
-const { getCampaignIdsByOrganizer } = useContractCampaignStore();
+const { getCampaignIdsByOrganizer } = useContractCampaign();
 
 const campaignIds = computedAsync(async () => {
   if (!isConnected || !account.value.address) return [];

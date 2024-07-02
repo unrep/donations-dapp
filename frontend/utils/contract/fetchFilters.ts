@@ -1,7 +1,7 @@
-import { useContractCampaignStore } from "~/stores/contract.campaign";
+import { useContractCampaign } from "~/composables/contract.campaign";
 
 export function fetchFilters() {
-  const { getCampaignFilters } = useContractCampaignStore();
+  const { getCampaignFilters } = useContractCampaign();
 
   return getCampaignFilters().then((res) =>
     res.map((filter) => ({

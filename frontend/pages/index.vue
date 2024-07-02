@@ -36,6 +36,7 @@
       </LandingCampaignSearchResultList>
 
       <button
+        id="searchElement"
         :class="[
           'px-4 py-2 duration-200 border rounded-full text-sm shadow-sm hover:scale-105',
           showAllCampaigns
