@@ -44,7 +44,7 @@
 <script setup lang="ts">
 const props = defineProps({
   modelValue: {
-    type: [File, null] as any,
+    type: Object as PropType<File | null>,
     required: true,
   },
 });

@@ -29,7 +29,12 @@
 
 <script lang="ts" setup>
 const props = defineProps({
-  filters: Array<any>,
+  filters: Array as PropType<
+    {
+      text: string;
+      selected: boolean;
+    }[]
+  >,
   shorten: {
     type: Boolean,
     default: false,

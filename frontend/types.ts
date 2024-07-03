@@ -1,4 +1,4 @@
-import type { Address } from "viem";
+import type { Address, Log } from "viem";
 
 export type Hash = `0x${string}`;
 
@@ -176,3 +176,110 @@ export interface CampaignWEvents extends Campaign {
   eventTime: Date;
   latestContribution?: Contribution;
 }
+
+export interface LottieComponent {
+  animationData?: Record<string, any>;
+  animationLink?: string;
+  width?: number | string;
+  height?: number | string;
+  speed?: number;
+  direction?: "forward" | "reverse" | "alternate";
+  loop?: number | boolean;
+  autoPlay?: boolean;
+  pauseAnimation?: boolean;
+  pauseOnHover?: boolean;
+  playOnHover?: boolean;
+  delay?: number;
+  backgroundColor?: string;
+  noMargin?: boolean;
+  scale?: number;
+  assetsPath?: string;
+  renderer?: "svg" | "canvas" | "html";
+  rendererSettings?: Record<string, any>;
+
+  play: () => void;
+  pause: () => void;
+  stop: () => void;
+  destroy: () => void;
+  setSpeed: (speed: number) => void;
+  setDirection: (direction: "forward" | "reverse") => void;
+  getDuration: (inFrames?: boolean) => number;
+  goToAndStop: (frame: number, isFrame?: boolean) => void;
+  goToAndPlay: (frame: number, isFrame?: boolean) => void;
+  playSegments: (
+    segments: [number, number] | [number, number][],
+    forceFlag?: boolean,
+  ) => void;
+  setSubFrame: (useSubFrame: boolean) => void;
+  updateDocumentData: (
+    documentData: {
+      t?: string;
+      s?: number;
+      fc?: [number, number, number];
+      lh?: number;
+      sc?: [number, number, number];
+      j?: number;
+    },
+    index?: number,
+  ) => void;
+}
+
+export type CampaignCreatedEventLog = Log<
+  bigint,
+  number,
+  false,
+  {
+    readonly anonymous: false;
+    readonly inputs: readonly [
+      {
+        readonly indexed: false;
+        readonly internalType: "uint256";
+        readonly name: "campaignId";
+        readonly type: "uint256";
+      },
+    ];
+    readonly name: "CampaignCreated";
+    readonly type: "event";
+  },
+  undefined
+>;
+
+export type ContributionsEventLog = Log<
+  bigint,
+  number,
+  false,
+  {
+    readonly anonymous: false;
+    readonly inputs: readonly [
+      {
+        readonly indexed: false;
+        readonly internalType: "uint256";
+        readonly name: "campaignId";
+        readonly type: "uint256";
+      },
+    ];
+    readonly name: "ContributionReceived";
+    readonly type: "event";
+  },
+  undefined
+>;
+
+export type CampaignCompletedEventLog = Log<
+  bigint,
+  number,
+  false,
+  {
+    readonly anonymous: false;
+    readonly inputs: readonly [
+      {
+        readonly indexed: false;
+        readonly internalType: "uint256";
+        readonly name: "campaignId";
+        readonly type: "uint256";
+      },
+    ];
+    readonly name: "CampaignCompleted";
+    readonly type: "event";
+  },
+  undefined
+>;

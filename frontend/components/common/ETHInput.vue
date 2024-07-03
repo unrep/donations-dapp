@@ -31,7 +31,7 @@
 <script setup lang="ts">
 const props = defineProps({
   modelValue: {
-    type: [Number, null] as any,
+    type: Number as PropType<number | null>,
     required: true,
   },
 });

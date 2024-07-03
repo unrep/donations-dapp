@@ -1,4 +1,5 @@
 import { waitForTransactionReceipt } from "@wagmi/core";
+import type { Hash, TransactionReceipt } from "viem";
 
 import { wagmiConfig } from "~/data/wagmi";
 
@@ -51,7 +52,9 @@ export async function convertUsdToEth(usdAmount: number): Promise<number> {
   return usdAmount / +ethData.value.tokenPriceUSD;
 }
 
-export async function awaitTransactionResponse(fn: () => Promise<any>) {
+export async function awaitTransactionResponse(
+  fn: () => Promise<Hash>,
+): Promise<TransactionReceipt> {
   const txHash = await fn();
   return waitForTransactionReceipt(wagmiConfig, { hash: txHash });
 }

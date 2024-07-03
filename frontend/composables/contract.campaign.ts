@@ -8,6 +8,11 @@ import {
   prettifyCampaign,
   prettifyCampaignArray,
 } from "~/utils/contract/campaignHelpers";
+import type {
+  CampaignCompletedEventLog,
+  CampaignCreatedEventLog,
+  ContributionsEventLog,
+} from "~/types";
 
 const BLOCKS_TO_FETCH = BigInt(100);
 
@@ -135,7 +140,9 @@ export const useContractCampaign = () => {
     );
   }
 
-  function watchCampaignCreated(onLogs: (logs: any) => void) {
+  function watchCampaignCreated(
+    onLogs: (logs: CampaignCreatedEventLog[]) => void,
+  ) {
     return watchContractEvent(wagmiConfig, {
       address: fundraisingContractConfig.address,
       abi: fundraisingContractConfig.abi,
@@ -144,19 +151,18 @@ export const useContractCampaign = () => {
     });
   }
 
-  function watchContributions(onLogs: (logs: any) => void) {
+  function watchContributions(onLogs: (logs: ContributionsEventLog[]) => void) {
     return watchContractEvent(wagmiConfig, {
       address: fundraisingContractConfig.address,
       abi: fundraisingContractConfig.abi,
       eventName: "ContributionReceived",
-      onLogs: (logs) => {
-        // push contribution to contribution events array
-        onLogs(logs);
-      },
+      onLogs,
     });
   }
 
-  function watchCampaignCompleted(onLogs: (logs: any) => void) {
+  function watchCampaignCompleted(
+    onLogs: (logs: CampaignCompletedEventLog[]) => void,
+  ) {
     return watchContractEvent(wagmiConfig, {
       address: fundraisingContractConfig.address,
       abi: fundraisingContractConfig.abi,

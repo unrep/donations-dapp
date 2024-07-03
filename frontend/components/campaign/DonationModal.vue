@@ -149,7 +149,7 @@
         :animation-data="Confetti"
         :auto-play="false"
         :loop="1"
-        @on-complete="() => confettiElement.stop()"
+        @on-complete="() => confettiElement?.stop()"
       />
     </ClientOnly>
   </div>
@@ -159,14 +159,14 @@
 import { computedAsync } from "@vueuse/core";
 
 import { formatUnits } from "viem";
-import type { Campaign } from "~/types";
+import type { Campaign, LottieComponent } from "~/types";
 
 import { useContractCampaign } from "~/composables/contract.campaign";
 import { useOnboardStore } from "~/stores/onboard";
 import Confetti from "~/assets/animations/Confetti.json";
 import { useLandingStore } from "~/stores/landing";
 
-const confettiElement = ref<any>();
+const confettiElement = ref<LottieComponent | undefined>();
 const { contributeCampaign: contributeCampaignContract } =
   useContractCampaign();
 
