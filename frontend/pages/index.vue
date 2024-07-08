@@ -18,7 +18,7 @@
 
       <LandingCampaignSearchResultList
         v-if="campaigns"
-        class="z-10 -mt-2 px-10"
+        class="z-10 -mt-8 px-10"
       >
         <template v-if="campaignsInProgress">
           <CampaignCardLoader v-for="(_, index) in Array(5)" :key="index" />
@@ -27,7 +27,7 @@
           <div
             v-for="campaign in campaigns"
             :key="campaign.title"
-            class="flex flex-col gap-4 items-center justify-between"
+            class="flex flex-col gap-4 items-center justify-between mt-6"
           >
             <CampaignEvent :campaign="campaign" />
             <CampaignCard :campaign="campaign" />
@@ -40,8 +40,8 @@
         :class="[
           'px-4 py-2 duration-200 border rounded-full text-sm shadow-sm hover:scale-105',
           showAllCampaigns
-            ? 'bg-indigo-800 text-white'
-            : 'bg-white text-gray-500',
+            ? 'bg-white text-gray-500'
+            : 'bg-indigo-800 text-white',
         ]"
         @click="showAllCampaigns = !showAllCampaigns"
       >

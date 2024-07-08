@@ -35,18 +35,32 @@
 
       <template v-else-if="campaignCreationStep === 'create-campaign'">
         <div />
-        <div
-          v-if="!account.isConnected"
-          class="w-full text-center text-4xl mlg:text-5xl font-bold text-indigo-800"
-        >
-          You need to connect your wallet first
-        </div>
-        <div
-          v-else
-          class="w-full text-center text-4xl mlg:text-5xl font-bold text-indigo-800"
-        >
-          Now you can create the campaign
-        </div>
+        <transition v-bind="TransitionPrimaryButtonText" mode="out-in">
+          <div
+            v-if="account.isConnecting"
+            class="w-full text-center text-4xl mlg:text-5xl font-bold text-indigo-800"
+          >
+            Choose wallet you want in the extension
+          </div>
+          <div
+            v-else-if="!account.isConnected"
+            class="w-full text-center text-4xl mlg:text-5xl font-bold text-indigo-800"
+          >
+            You need to connect your wallet first
+          </div>
+          <div
+            v-else-if="isCampaignSending"
+            class="w-full text-center text-4xl mlg:text-5xl font-bold text-indigo-800"
+          >
+            Accept the transaction in your wallet
+          </div>
+          <div
+            v-else
+            class="w-full text-center text-4xl mlg:text-5xl font-bold text-indigo-800"
+          >
+            Now you can create the campaign
+          </div>
+        </transition>
       </template>
 
       <template v-else-if="campaignCreationStep === 'done'">

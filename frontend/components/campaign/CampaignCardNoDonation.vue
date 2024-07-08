@@ -46,7 +46,7 @@
         </button>
 
         <button
-          :disabled="campaign.isOpen || +campaign.goal - +campaign.raised !== 0"
+          v-if="campaign.goal - campaign.raised === 0n && !campaign.isWithdrawn"
           class="px-2 py-1 border border-gray-400 rounded-lg hover:scale-105 duration-200 cursor-pointer"
           @click="withdrawCampaign()"
         >
@@ -55,7 +55,7 @@
               v-if="withdrawalInProgress"
               class="flex items-center justify-center px-5"
             >
-              <IconsLoadingDots width="1.5em" height="1.5em" />
+              <IconsLoadingDots width="1.5em" height="1.5em" color="#000" />
             </span>
             <span v-else class="flex items-center justify-center gap-1">
               <IconsArrowBold class="rotate-180" size="1.2rem" color="black" />
@@ -91,12 +91,16 @@ const { withdrawCampaignFunds, stopCampaign: stopCampaignContract } =
 
 const { inProgress: withdrawalInProgress, execute: withdrawCampaign } =
   usePromise(() =>
-    withdrawCampaignFunds(+campaign.id).finally(() =>
+    withdrawCampaignFunds(Number(campaign.id)).finally(() =>
       emit("refresh:campaigns"),
     ),
   );
 
-const { inProgress: stopInProgress, execute: stopCampaign } = usePromise(() =>
-  stopCampaignContract(+campaign.id).finally(() => emit("refresh:campaigns")),
+const { inProgress: stopInProgress, execute: stopCampaign } = usePromise(
+  () =>
+    stopCampaignContract(Number(campaign.id)).finally(() =>
+      emit("refresh:campaigns"),
+    ),
+  { cache: false },
 );
 </script>

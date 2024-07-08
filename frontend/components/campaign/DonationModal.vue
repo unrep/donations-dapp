@@ -17,75 +17,99 @@
           v-if="isConnected"
           class="w-full flex flex-col mlg:grid grid-cols-2 items-center justify-center gap-10"
         >
-          <div class="self-start space-y-1 mlg:space-y-5">
+          <div
+            v-if="contributionInProgress"
+            class="w-full col-span-2 flex flex-col gap-5 items-center justify-center mt-20 mb-16"
+          >
             <h1
               class="text-4xl font-bold text-indigo-800 text-center mlg:text-left"
             >
-              Donate to this campaign
+              Accept the transaction in your wallet
             </h1>
 
             <p class="text-base text-gray-500 hidden mlg:block">
-              Your donation will help this campaign reach its goal.
+              You've had to receive a transaction request in your wallet
+              extension.
             </p>
           </div>
 
           <div
-            class="self-start w-full grid grid-cols-3 gap-2 items-center justify-start"
+            v-else
+            class="w-full col-span-2 grid grid-cols-2 items-center justify-center gap-10"
           >
-            <p class="text-lg col-span-3 mb-3">
-              You can choose a preset amount or enter a custom amount.
-            </p>
-            <button
-              v-for="(price, index) in presetPrices"
-              :key="index"
-              :class="['button-style', price.selected && 'active']"
-              @click="
-                () => {
-                  showEthInput = false;
-                  donateFullAmount = false;
-                  togglePresetPrice(index);
-                }
-              "
-            >
-              {{ price.priceValue }}$
-            </button>
-            <button
-              :class="['col-span-3 button-style', donateFullAmount && 'active']"
-              @click="
-                () => {
-                  showEthInput = false;
-                  togglePresetPrice(null);
-                  donateFullAmount = !donateFullAmount;
-                }
-              "
-            >
-              Donate a full amount
-            </button>
-            <button
-              :class="['col-span-3 button-style', showEthInput && 'active']"
-              @click="
-                () => {
-                  showEthInput = !showEthInput;
-                  donateFullAmount = false;
-                  togglePresetPrice(null);
-                }
-              "
-            >
-              Custom amount
-            </button>
+            <div class="self-start space-y-1 mlg:space-y-5">
+              <h1
+                class="text-4xl font-bold text-indigo-800 text-center mlg:text-left"
+              >
+                Donate to this campaign
+              </h1>
 
-            <Transition name="slide">
-              <div v-if="showEthInput" class="w-full col-span-3 mt-5">
-                <CommonETHInput
-                  :model-value="inputValue"
-                  @update:model-value="
-                    (newValue) => {
-                      inputValue = newValue;
-                    }
-                  "
-                />
-              </div>
-            </Transition>
+              <p class="text-base text-gray-500 hidden mlg:block">
+                Your donation will help this campaign reach its goal.
+              </p>
+            </div>
+
+            <div
+              class="self-start w-full grid grid-cols-3 gap-2 items-center justify-start"
+            >
+              <p class="text-lg col-span-3 mb-3">
+                You can choose a preset amount or enter a custom amount.
+              </p>
+              <button
+                v-for="(price, index) in presetPrices"
+                :key="index"
+                :class="['button-style', price.selected && 'active']"
+                @click="
+                  () => {
+                    showEthInput = false;
+                    donateFullAmount = false;
+                    togglePresetPrice(index);
+                  }
+                "
+              >
+                {{ price.priceValue }}$
+              </button>
+              <button
+                :class="[
+                  'col-span-3 button-style',
+                  donateFullAmount && 'active',
+                ]"
+                @click="
+                  () => {
+                    showEthInput = false;
+                    togglePresetPrice(null);
+                    donateFullAmount = !donateFullAmount;
+                  }
+                "
+              >
+                Donate a full amount
+              </button>
+              <button
+                :class="['col-span-3 button-style', showEthInput && 'active']"
+                @click="
+                  () => {
+                    showEthInput = !showEthInput;
+                    donateFullAmount = false;
+                    togglePresetPrice(null);
+                  }
+                "
+              >
+                Custom amount
+              </button>
+
+              <Transition name="slide">
+                <div v-if="showEthInput" class="w-full col-span-3 mt-5">
+                  <CommonETHInput
+                    :model-value="inputValue"
+                    @update:model-value="
+                      (newValue) => {
+                        inputValue = newValue;
+                      }
+                    "
+                  />
+                </div>
+              </Transition>
+            </div>
           </div>
 
           <div class="w-full col-span-2 flex justify-between items-center">
