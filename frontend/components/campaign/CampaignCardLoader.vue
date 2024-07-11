@@ -1,6 +1,6 @@
 <template>
   <div
-    class="shrink-0 snap-center overflow-hidden rounded-3xl w-80 h-96 bg-gray-100 animate-pulse flex flex-col items-center justify-between"
+    class="overflow-hidden rounded-3xl w-full h-96 bg-gray-100 animate-pulse flex flex-col items-center justify-between"
   >
     <div class="bg-gray-300 animate-pulse delay-50 w-full h-1/2" />
 

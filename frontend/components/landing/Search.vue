@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative text-gray-700 w-full max-w-3xl flex flex-col justify-center items-center gap-3"
+    class="w-full text-gray-700 flex justify-start items-start gap-3"
   >
     <!-- <div
       class="rounded-full bg-gray-100 w-full overflow-hidden py-3 px-5 max-w-xl flex items-center gap-3"

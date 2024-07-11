@@ -19,7 +19,7 @@
 
     <button
       v-if="props.shorten"
-      class="px-4 py-2 capitalize font-semibold duration-200 border rounded-full text-sm shadow-sm hover:scale-105"
+      class="bg-white px-4 py-2 capitalize font-semibold duration-200 border rounded-full text-sm shadow-sm hover:scale-105"
       @click="isExpanded = !isExpanded"
     >
       ...

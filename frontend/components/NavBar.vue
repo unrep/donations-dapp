@@ -24,17 +24,9 @@
         <NuxtLink to="/create-campaign" class="nav-button">
           Start campaign
         </NuxtLink>
-        <button
-          v-if="route.path === '/'"
-          class="nav-button"
-          @click.stop.prevent="scrollToAnchor('#searchElement')"
-        >
-          Search
-        </button>
         <NuxtLink v-if="hasOwnCampaigns" to="/my-campaigns" class="nav-button">
           Your campaigns
         </NuxtLink>
-
         <CommonW3ModalButton />
       </div>
 
@@ -69,13 +61,9 @@
       <NuxtLink to="/create-campaign" class="nav-button"
         >Start campaign</NuxtLink
       >
-      <button class="nav-button" @click="scrollToAnchor('#searchElement')">
-        Search
-      </button>
       <NuxtLink v-if="hasOwnCampaigns" to="/my-campaigns" class="nav-button">
         Your campaigns
       </NuxtLink>
-
       <div class="py-2 px-5">
         <CommonW3ModalButton />
       </div>
@@ -84,18 +72,12 @@
 </template>
 
 <script setup lang="ts">
-import {
-  useElementSize,
-  useWindowScroll,
-  onClickOutside,
-  computedAsync,
-} from "@vueuse/core";
+import { useWindowScroll, onClickOutside, computedAsync } from "@vueuse/core";
 
 import { useContractCampaign } from "~/composables/contract.campaign";
 import { useOnboardStore } from "~/stores/onboard";
 
 const navRef = ref<HTMLElement | null>(null);
-const { height: headerHeight } = useElementSize(navRef);
 const { y: windowScrollTop } = useWindowScroll();
 
 const mobileNavRef = ref<HTMLElement | null>(null);
@@ -105,20 +87,6 @@ onClickOutside(mobileNavRef, () => {
   navbarOpen.value = false;
 });
 
-const scrollToAnchor = (anchor: string) => {
-  navbarOpen.value = false;
-  const element = document.querySelector(anchor);
-  if (!element) return;
-
-  const scrollOffset = 40;
-  const elementPosition =
-    element.getBoundingClientRect().top + windowScrollTop.value;
-  window.scrollTo({
-    top: elementPosition - (headerHeight.value || 0) - scrollOffset,
-    behavior: "smooth",
-  });
-};
-
 const { isConnected, account } = storeToRefs(useOnboardStore());
 const { getCampaignIdsByOrganizer } = useContractCampaign();
 
@@ -127,8 +95,6 @@ const hasOwnCampaigns = computedAsync(async () => {
   const campaignIds = await getCampaignIdsByOrganizer(account.value.address);
   return !!campaignIds.length;
 });
-
-const route = useRoute();
 </script>
 
 <style lang="scss" scoped>

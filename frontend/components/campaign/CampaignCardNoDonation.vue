@@ -55,7 +55,7 @@
               v-if="withdrawalInProgress"
               class="flex items-center justify-center px-5"
             >
-              <IconsLoadingDots width="1.5em" height="1.5em" color="#000" />
+              <IconsLoadingDots width="1.5em" height="1.5em" />
             </span>
             <span v-else class="flex items-center justify-center gap-1">
               <IconsArrowBold class="rotate-180" size="1.2rem" color="black" />

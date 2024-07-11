@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white shrink-0 snap-center w-full max-w-xs relative group flex flex-col items-center justify-between from-gray-100 bg-gradient-to-br shadow-lg rounded-3xl overflow-hidden hover:border-indigo-800 hover:border-2 duration-300"
+    class="bg-white w-full relative group flex flex-col items-center justify-between from-gray-100 bg-gradient-to-br shadow-lg rounded-3xl overflow-hidden hover:border-indigo-800 hover:border-2 duration-300"
   >
     <img
       class="z-10 w-full max-h-[50%] h-full aspect-video object-cover object-center relative group-hover:scale-[2.5] group-hover:translate-y-1/2 duration-500 ease-in-out"

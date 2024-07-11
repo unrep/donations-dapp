@@ -5,7 +5,7 @@
     height="1em"
     viewBox="0 0 24 24"
   >
-    <circle cx="18" cy="12" r="0" :fill="color">
+    <circle cx="18" cy="12" r="0" fill="currentColor">
       <animate
         attributeName="r"
         begin=".67"
@@ -16,7 +16,7 @@
         values="0;2;0;0"
       />
     </circle>
-    <circle cx="12" cy="12" r="0" :fill="color">
+    <circle cx="12" cy="12" r="0" fill="currentColor">
       <animate
         attributeName="r"
         begin=".33"
@@ -27,7 +27,7 @@
         values="0;2;0;0"
       />
     </circle>
-    <circle cx="6" cy="12" r="0" :fill="color">
+    <circle cx="6" cy="12" r="0" fill="currentColor">
       <animate
         attributeName="r"
         begin="0"
@@ -41,8 +41,4 @@
   </svg>
 </template>
 
-<script lang="ts" setup>
-defineProps({
-  color: String,
-});
-</script>
+<script lang="ts" setup></script>

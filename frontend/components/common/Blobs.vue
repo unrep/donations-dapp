@@ -1,102 +1,71 @@
 <template>
-  <div class="bouncing-blobs-container">
-    <div class="bouncing-blobs-glass"></div>
-    <div class="bouncing-blobs">
-      <div class="bouncing-blob bouncing-blob--pink"></div>
-      <div class="bouncing-blob bouncing-blob--pink"></div>
-      <div class="bouncing-blob bouncing-blob--white"></div>
-      <div class="bouncing-blob bouncing-blob--pink"></div>
-      <div class="bouncing-blob bouncing-blob--purple"></div>
-      <div class="bouncing-blob bouncing-blob--purple"></div>
-      <div class="bouncing-blob bouncing-blob--pink"></div>
+  <div id="hero-block" class="circles-container">
+    <div class="relative isolate">
+      <div
+        class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+        aria-hidden="true"
+      >
+        <div
+          class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+          style="
+            clip-path: polygon(
+              74.1% 44.1%,
+              100% 61.6%,
+              97.5% 26.9%,
+              85.5% 0.1%,
+              80.7% 2%,
+              72.5% 32.5%,
+              60.2% 62.4%,
+              52.4% 68.1%,
+              47.5% 58.3%,
+              45.2% 34.5%,
+              27.5% 76.7%,
+              0.1% 64.9%,
+              17.9% 100%,
+              27.6% 76.8%,
+              76.1% 97.7%,
+              74.1% 44.1%
+            );
+          "
+        />
+      </div>
+      <div
+        class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
+        aria-hidden="true"
+      >
+        <div
+          class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
+          style="
+            clip-path: polygon(
+              74.1% 44.1%,
+              100% 61.6%,
+              97.5% 26.9%,
+              85.5% 0.1%,
+              80.7% 2%,
+              72.5% 32.5%,
+              60.2% 62.4%,
+              52.4% 68.1%,
+              47.5% 58.3%,
+              45.2% 34.5%,
+              27.5% 76.7%,
+              0.1% 64.9%,
+              17.9% 100%,
+              27.6% 76.8%,
+              76.1% 97.7%,
+              74.1% 44.1%
+            );
+          "
+        />
+      </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-import { initBlobs } from "~/helpers/useBlobAnimation";
-
-onMounted(initBlobs);
-</script>
-
 <style lang="scss" scoped>
-.bouncing-blob {
-  width: 32vw;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  will-change: transform;
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  transform-origin: left top;
+.circles-container {
+  @apply w-full h-[calc(95vh_-_var(--header-height))] pb-[calc(var(--header-height)_/_2)];
 }
-
-.bouncing-blob--blue {
-  background: #4783c7;
-}
-
-.bouncing-blob--white {
-  background: #ffffff;
-  z-index: 2;
-  width: 15vw;
-}
-
-.bouncing-blob--purple {
-  background: #8c8ff1;
-}
-
-.bouncing-blob--pink {
-  background: #e289cd50;
-}
-
-.bouncing-blobs-container {
-  position: fixed;
-  z-index: -1;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.bouncing-blobs-glass {
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(140px);
-  -webkit-backdrop-filter: blur(140px);
-  pointer-events: none;
-}
-
-.bouncing-blobs {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-@media (max-width: 1200px) {
-  .bouncing-blobs-glass {
-    backdrop-filter: blur(120px);
-    -webkit-backdrop-filter: blur(120px);
-  }
-}
-
-@media (max-width: 500px) {
-  .bouncing-blob {
-    width: 60vw;
-  }
-  .bouncing-blob--white {
-    width: 30vw;
-  }
-  .bouncing-blobs-glass {
-    backdrop-filter: blur(90px);
-    -webkit-backdrop-filter: blur(90px);
-  }
+.circles-container {
+  @apply absolute left-0 top-[var(--header-height)];
 }
 </style>

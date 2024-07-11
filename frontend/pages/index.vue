@@ -1,31 +1,43 @@
 <template>
   <div>
     <NavBar />
-    <LandingHero />
+    <CommonBlobs class="-z-10" />
 
-    <div
-      class="w-full bg-white flex flex-col justify-center items-center gap-16 pb-10"
-    >
-      <div
-        class="text-gray-700 p-16 pb-0 w-full flex flex-col items-start md:items-center justify-center gap-4"
-      >
-        <div class="text-4xl font-semibold">Latest events</div>
-        <div class="text-base text-neutral-600">
-          Explore active campaigns and support community-driven efforts that
-          make a real difference
-        </div>
-      </div>
-
+    <div class="w-full flex flex-col justify-center items-center gap-16 py-10">
       <LandingCampaignSearchResultList
-        v-if="campaigns"
-        class="z-10 -mt-8 px-10"
+        v-if="latestCampaigns"
+        class="z-10 -mt-8 px-5 max-w-7xl"
       >
+        <div
+          class="col-span-full z-10 text-4xl md:text-5xl font-bold text-indigo-800 text-left py-5 md:py-10"
+        >
+          A crypto powered fundraising service
+        </div>
+
+        <div
+          class="col-span-full text-gray-700 w-full flex flex-col items-start justify-center gap-2 md:pb-5"
+        >
+          <CommonFiltersLoader v-if="filtersInProgress" />
+          <CommonFiltersSelect
+            v-else
+            :filters="filters"
+            :shorten="true"
+            @update:select-item="onFilterSelect"
+          />
+        </div>
         <template v-if="campaignsInProgress">
           <CampaignCardLoader v-for="(_, index) in Array(5)" :key="index" />
         </template>
-        <template v-else>
+        <template v-else-if="filtersSelected && searchedCampaigns?.length">
+          <CampaignCard
+            v-for="campaign in searchedCampaigns"
+            :key="campaign.title"
+            :campaign="campaign"
+          />
+        </template>
+        <template v-else-if="latestCampaigns.length && !filtersSelected">
           <div
-            v-for="campaign in campaigns"
+            v-for="campaign in latestCampaigns"
             :key="campaign.title"
             class="flex flex-col gap-4 items-center justify-between mt-6"
           >
@@ -33,78 +45,28 @@
             <CampaignCard :campaign="campaign" />
           </div>
         </template>
-      </LandingCampaignSearchResultList>
-
-      <button
-        id="searchElement"
-        :class="[
-          'px-4 py-2 duration-200 border rounded-full text-sm shadow-sm hover:scale-105',
-          showAllCampaigns
-            ? 'bg-white text-gray-500'
-            : 'bg-indigo-800 text-white',
-        ]"
-        @click="showAllCampaigns = !showAllCampaigns"
-      >
-        View all campaigns
-      </button>
-
-      <Transition
-        name="slide"
-        @after-enter="
-          () => (searchElementHeight = searchElement?.clientHeight || 0)
-        "
-      >
-        <div
-          v-if="showAllCampaigns"
-          id="searchElement"
-          ref="searchElement"
-          :style="{
-            '--slide-height': searchElementHeight + 'px',
-          }"
-          class="text-gray-700 w-full flex flex-col items-start md:items-center justify-center gap-2 px-10"
-        >
-          <div class="text-4xl font-semibold">View all campaigns</div>
-          <div class="text-base text-neutral-600">
-            Search campaigns by categories to find the one you need
+        <template v-else>
+          <div
+            class="col-span-full min-h-96 w-full text-3xl font-bold text-indigo-800 flex flex-col gap-2 items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="6em"
+              height="6em"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M3.464 20.536C4.93 22 7.286 22 12 22c4.714 0 7.071 0 8.535-1.465C22 19.072 22 16.714 22 12s0-7.071-1.465-8.536C19.072 2 16.714 2 12 2S4.929 2 3.464 3.464C2 4.93 2 7.286 2 12c0 4.714 0 7.071 1.464 8.535"
+                opacity="0.5"
+              />
+              <path
+                fill="currentColor"
+                d="M8.397 17.447a.75.75 0 0 0 1.05.155A4.267 4.267 0 0 1 12 16.75a4.27 4.27 0 0 1 2.553.852a.75.75 0 1 0 .894-1.204A5.766 5.766 0 0 0 12 15.25a5.766 5.766 0 0 0-3.447 1.148a.75.75 0 0 0-.156 1.049M15 12c.552 0 1-.672 1-1.5S15.552 9 15 9s-1 .672-1 1.5s.448 1.5 1 1.5m-6 0c.552 0 1-.672 1-1.5S9.552 9 9 9s-1 .672-1 1.5s.448 1.5 1 1.5"
+              />
+            </svg>
+            No campaigns found
           </div>
-
-          <LandingSearch class="z-20 px-10 pt-4">
-            <template #filters>
-              <template v-if="filtersInProgress">
-                <CommonFiltersLoader />
-              </template>
-              <template v-else>
-                <CommonFiltersSelect
-                  class="w-full justify-center"
-                  :filters="filters"
-                  :shorten="true"
-                  @update:select-item="onFilterSelect"
-                />
-              </template>
-            </template>
-          </LandingSearch>
-        </div>
-      </Transition>
-
-      <LandingCampaignSearchResultList
-        v-if="showAllCampaigns"
-        class="z-10 -mt-2 px-10"
-      >
-        <template
-          v-if="
-            allCampaignsInProgress ||
-            searchedCampaignsInProgress ||
-            previewCampaignsInProgress
-          "
-        >
-          <CampaignCardLoader v-for="(_, index) in Array(3)" :key="index" />
-        </template>
-        <template v-else-if="allCampaigns">
-          <CampaignCard
-            v-for="campaign in allCampaigns"
-            :key="campaign.title"
-            :campaign="campaign"
-          />
         </template>
       </LandingCampaignSearchResultList>
     </div>
@@ -114,16 +76,13 @@
 </template>
 
 <script setup lang="ts">
+import { computedAsync } from "@vueuse/core";
 import { useLandingStore } from "~/stores/landing";
-import type { Campaign, CampaignWEvents } from "~/types";
+import type { CampaignWEvents } from "~/types";
 import {
   formatCampaignWEvents,
   getCampaignLatestContribution,
 } from "~/utils/contract/campaignHelpers";
-
-const showAllCampaigns = ref(false);
-const searchElement = ref<HTMLElement | null>(null);
-const searchElementHeight = ref(200);
 
 const {
   searchedCampaigns,
@@ -135,8 +94,6 @@ const {
   latestContributedCampaigns,
   latestContributedCampaignsInProgress,
   contributionEvents,
-  previewCampaigns,
-  previewCampaignsInProgress,
 } = storeToRefs(useLandingStore());
 const {
   onFilterSelect,
@@ -153,33 +110,11 @@ onMounted(() => {
   getContributionEvents();
 });
 
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+const filtersSelected = computed(() => {
+  return !!filters.value?.find((filter) => filter.selected);
+});
 
-const allCampaigns = ref<Campaign[] | undefined>(undefined);
-const allCampaignsInProgress = ref(false);
-
-watch(
-  [filters, previewCampaigns, searchedCampaigns],
-  async () => {
-    allCampaignsInProgress.value = true;
-    let res: Campaign[] | undefined = previewCampaigns.value;
-    if (filters.value?.some((filter) => filter.selected)) {
-      res = searchedCampaigns.value;
-    }
-
-    allCampaigns.value = res?.filter((campaign) => !!campaign);
-
-    // Using a delay, to make ui not flicker
-    await delay(300).finally(() => {
-      allCampaignsInProgress.value = false;
-    });
-  },
-  { immediate: true },
-);
-
-const campaigns = computed(() => {
+const latestCampaigns = computed(() => {
   const createdCamapaigns =
     latestCreatedCampaigns.value?.map((campaign) =>
       formatCampaignWEvents(campaign, "created"),
@@ -223,10 +158,42 @@ const campaigns = computed(() => {
   );
 });
 
-const campaignsInProgress = computed(() => {
-  return (
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+const campaignsInProgress = computedAsync(async () => {
+  // Using a delay, to make ui not flicker
+  const result =
     latestCreatedCampaignsInProgress.value ||
-    latestContributedCampaignsInProgress.value
-  );
+    latestContributedCampaignsInProgress.value ||
+    searchedCampaignsInProgress.value;
+
+  if (!result) await delay(300);
+
+  return result;
 });
+
+// watch(
+//   [
+//     latestCreatedCampaignsInProgress,
+//     latestContributedCampaignsInProgress,
+//     searchedCampaignsInProgress,
+//   ],
+//   async () => {
+//     console.log(
+//       "setting campaignsInProgress to watch",
+//       latestCreatedCampaignsInProgress.value ||
+//         latestContributedCampaignsInProgress.value ||
+//         searchedCampaignsInProgress.value,
+//     );
+
+//     await delay(300);
+
+//     campaignsInProgress.value =
+//       latestCreatedCampaignsInProgress.value ||
+//       latestContributedCampaignsInProgress.value ||
+//       searchedCampaignsInProgress.value;
+//   },
+// );
 </script>
