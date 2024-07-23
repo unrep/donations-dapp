@@ -115,7 +115,6 @@ const publicChains: ZkSyncNetwork[] = [
 ];
 
 const determineChainList = (): ZkSyncNetwork[] => {
-  console.log({ nodeType });
   switch (nodeType) {
     case "memory":
       return [inMemoryNode];
