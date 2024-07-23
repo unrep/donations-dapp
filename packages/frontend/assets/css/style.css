@@ -1,0 +1,18 @@
+html, body {
+  @apply min-h-full font-sans text-black;
+  -webkit-text-size-adjust: 100%;
+}
+html *::-moz-selection, body *::-moz-selection {
+  @apply bg-indigo-800 text-white;
+}
+html *::selection, body *::selection {
+  @apply bg-indigo-800 text-white;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}/*# sourceMappingURL=style.css.map */

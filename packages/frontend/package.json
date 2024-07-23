@@ -2,14 +2,12 @@
   "name": "nuxt-app",
   "private": true,
   "type": "module",
-  "workspaces": ["packages/a"],
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "lint": "lerna run lint --parallel"
+    "postinstall": "nuxt prepare"
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.19",
