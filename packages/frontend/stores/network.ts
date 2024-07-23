@@ -5,7 +5,6 @@ import { chainList, defaultNetwork } from "~/data/networks";
 import type { L1Network, ZkSyncNetwork } from "~/data/networks";
 
 export const useNetworkStore = defineStore("network", () => {
-  console.log({ defaultNetwork });
   const networkUsesLocalStorage = useStorage<boolean>(
     "networkUsesLocalStorage",
     false,
