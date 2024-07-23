@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "lerna run lint --parallel"
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.19",

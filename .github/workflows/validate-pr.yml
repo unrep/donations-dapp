@@ -55,6 +55,10 @@ jobs:
     permissions:
       contents: read
       pull-requests: read
+    env:
+      WALLET_PRIVATE_KEY: ${{ secrets.WALLET_PRIVATE_KEY }}
+      ADDR1_PRIVATE_KEY: ${{ secrets.ADDR1_PRIVATE_KEY }}
+      ADDR2_PRIVATE_KEY: ${{ secrets.ADDR2_PRIVATE_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
