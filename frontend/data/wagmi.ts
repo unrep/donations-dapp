@@ -46,4 +46,6 @@ export const wagmiConfig = defaultWagmiConfig({
 });
 
 export const chain =
-  import.meta.env.MODE === "development" ? dockerizedLocalNode : zkSync;
+  import.meta.env.MODE === "development"
+    ? dockerizedLocalNode
+    : zkSyncSepoliaTestnet;
