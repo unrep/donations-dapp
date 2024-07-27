@@ -66,18 +66,6 @@ export const dockerizedNode: ZkSyncNetwork = {
 
 const publicChains: ZkSyncNetwork[] = [
   {
-    id: 324,
-    key: "mainnet",
-    name: "zkSync",
-    rpcUrl: "https://mainnet.era.zksync.io",
-    blockExplorerUrl: "https://era.zksync.network",
-    blockExplorerApi: "https://block-explorer-api.mainnet.zksync.io",
-    displaySettings: {
-      showPartnerLinks: true,
-    },
-    l1Network: l1Networks.mainnet,
-  },
-  {
     id: 300,
     key: "sepolia",
     name: "zkSync Sepolia Testnet",
@@ -88,6 +76,18 @@ const publicChains: ZkSyncNetwork[] = [
       showPartnerLinks: true,
     },
     l1Network: l1Networks.sepolia,
+  },
+  {
+    id: 324,
+    key: "mainnet",
+    name: "zkSync",
+    rpcUrl: "https://mainnet.era.zksync.io",
+    blockExplorerUrl: "https://era.zksync.network",
+    blockExplorerApi: "https://block-explorer-api.mainnet.zksync.io",
+    displaySettings: {
+      showPartnerLinks: true,
+    },
+    l1Network: l1Networks.mainnet,
   },
   {
     id: 280,
