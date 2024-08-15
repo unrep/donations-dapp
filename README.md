@@ -3,7 +3,7 @@
 **Donations dapp** is a decentralized app (dapp), integrating the capabilities of a fundraising platform, smart contract management, and transaction tracking into a single, intuitive interface. Designed with a focus on simplicity and user accessibility.
 
 ## Try it out
-- Live now at https://helpful-sorbet-70757f.netlify.app
+- Live now at https://raisenreach.netlify.app
 
 ### 🔧 Local development
 To get started, clone the repository and install the necessary dependencies:
