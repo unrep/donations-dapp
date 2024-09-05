@@ -1,9 +1,11 @@
 <template>
-  <div>
+  <div class="h-full min-h-screen flex flex-col justify-start">
     <NavBar />
     <CommonBlobs class="-z-10" />
 
-    <div class="w-full flex flex-col justify-center items-center gap-16 py-10">
+    <div
+      class="w-full flex-grow flex flex-col justify-center items-center gap-16 py-10"
+    >
       <LandingCampaignSearchResultList
         v-if="latestCampaigns"
         class="z-10 -mt-8 px-5 max-w-7xl"
@@ -71,7 +73,7 @@
       </LandingCampaignSearchResultList>
     </div>
 
-    <LandingFooter />
+    <LandingFooter class="justify-self-end self-end" />
   </div>
 </template>
 
